@@ -95,6 +95,7 @@ class FrankaMotion:
 
     def start(self, intent, tcp, sim_time, step):
         self.active, self.goal, self.setpoint = intent, tuple(intent.value), tcp
+        self.start_height = tcp[2]
         self.first_in_range = None
         self.reached = self.failed = False
         self.applied_step = step
@@ -126,7 +127,12 @@ class FrankaMotion:
             return
         self._sync()
         remaining = self.setpoint[2] - self.goal[2]
-        speed = .04 if 0. < remaining <= .050 else (.10 if carrying else .15)
+        speed = .10 if carrying else .15
+        # Ease the first 30 mm of loaded ascent while the part clears its support.
+        starting_lift = (carrying and self.goal[2] - self.start_height >= .030
+                         and self.setpoint[2] - self.start_height < .030)
+        if 0. < remaining <= .050 or starting_lift:
+            speed = .04
         self.setpoint = interpolate_target(self.setpoint, self.goal, speed, 1./120)
         command = self.controller.forward(self._state(), self._target(), sim_time)
         if command is None or command.joints.positions is None:

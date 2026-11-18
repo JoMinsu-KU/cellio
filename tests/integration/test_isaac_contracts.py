@@ -51,6 +51,29 @@ def test_authoritative_waypoint_dwell_uses_13_measured_boundaries():
     assert motion.reached and motion.completed == 11 and not motion.failed
 
 
+@pytest.mark.parametrize("carrying,current_height,goal_height,expected_speed", [
+    (True, .815, 1.030, .04),
+    (True, .844, 1.030, .04),
+    (True, .846, 1.030, .10),
+    (False, .815, 1.030, .15),
+    (True, .815, .817, .10),
+    (True, .825, .815, .04),
+])
+def test_loaded_takeoff_target_and_other_registered_speeds(
+        carrying, current_height, goal_height, expected_speed):
+    motion = object.__new__(FrankaMotion)
+    motion.active = SimpleNamespace(command_id="test-pose")
+    motion.start_height = .815
+    motion.setpoint = (0., 0., current_height, 1., 0., 0., 0.)
+    motion.goal = (0., 0., goal_height, 1., 0., 0., 0.)
+    motion._sync = motion._state = motion._target = lambda: None
+    # Inspect the setpoint produced before a backend reports a missing joint command.
+    motion.controller = SimpleNamespace(forward=lambda *args: None)
+    with pytest.raises(CellIOError, match="MOTION_COMMAND_MISSING"):
+        motion.servo(0., carrying)
+    assert abs(motion.setpoint[2] - current_height) == pytest.approx(expected_speed / 120)
+
+
 def test_scene_seed_coordinates_and_fixture_clearance_geometry():
     a, b = get_scene("cell_a"), get_scene("cell_b")
     p, q = a.initial_pose({"x_offset_m": .001, "y_offset_m": -.004, "yaw_rad": .03})
