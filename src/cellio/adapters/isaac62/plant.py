@@ -13,7 +13,7 @@ from cellio.core.models import (
 )
 from cellio.scenes import get_scene
 from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, HOME
-from .assets import CATALOG_PATH, verify_assets
+from .assets import CATALOG_PATH, LOCK, file_sha256, motion_files, verify_assets
 from .geometry import compose, rotate, world_aabb
 
 DT = 1 / 120
@@ -40,9 +40,13 @@ class IsaacPlant:
         self.profile = dict(robot_profile or {})
         self.hand_T_tcp = tuple(self.profile.get("hand_T_tcp", (0., 0., .1034, 1., 0., 0., 0.)))
         self.scene = self.app = self.builder = self.contact = self.motion = None
+        self.views = {}
+        self._stage_open = False
         self.generation = None
         self.provenance = {}
         self.geometry_manifest = {}
+        self._stage_epoch = 0
+        self._previous_handles_invalidated = True
 
     def load(self, scene_config):
         scene_id = scene_config.get("scene_id", scene_config.get("id"))
@@ -82,15 +86,21 @@ class IsaacPlant:
         if self.contact is not None:
             self.contact.close()
             self.contact = None
-        if self.builder is not None:
+        if self._stage_open:
             self.timeline.stop()
             self.app.update()  # Dispatch STOP before destroying PhysX tensor objects.
+            self._previous_handles_invalidated = all(
+                not view.is_physics_tensor_entity_valid() for view in (self.views or {}).values())
             self.motion = self.robot = self.views = self.builder = self.physics_scene = None
             self._cache = None
             gc.collect()
             self.context.close_stage()
+            self._stage_open = False
 
     def reset(self, initial_state, generation):
+        self._reset(initial_state, generation, HOME, (0., 0., .750))
+
+    def _reset(self, initial_state, generation, home, robot_base):
         if self.app is None:
             raise CellIOError("ENV_NOT_LOADED", "Call load before reset")
         if self.generation is not None and generation <= self.generation:
@@ -102,8 +112,11 @@ class IsaacPlant:
         from .stage import ROBOT, StageBuilder
 
         self._release_stage()
+        self._stage_epoch += 1
         self.generation, self.step, self._cache = generation, 0, None
+        self._last_applied = None
         self.context.new_stage()
+        self._stage_open = True
         stage = self.context.get_stage()
         self.manager.switch_physics_engine("physx")
         self.physics_scene = PhysxScene("/World/PhysicsScene")
@@ -111,7 +124,7 @@ class IsaacPlant:
         self.physics_scene.set_solver_type("TGS")
         self.physics_scene.set_enabled_gpu_dynamics(False)
         self.physics_scene.set_gravity((0., 0., -9.81))
-        self.builder = StageBuilder(stage, self.scene, self.robot_asset, self.profile)
+        self.builder = StageBuilder(stage, self.scene, self.robot_asset, self.profile, robot_base=robot_base)
         self.manager.setup_simulation(dt=DT, device="cpu")
         self.manager.enable_fabric(True)
         self.timeline.play()
@@ -125,19 +138,36 @@ class IsaacPlant:
         if tuple(n for n in self.names if n in ARM_NAMES) != ARM_NAMES or not set(FINGER_NAMES) <= set(self.names):
             raise CellIOError("ASSET_BINDING_MISMATCH", f"Unexpected robot joints: {self.names!r}")
         indices = self.robot.get_dof_indices(list(ARM_NAMES + FINGER_NAMES)).numpy().tolist()
-        self.robot.set_dof_positions([[*HOME, .040, .040]], dof_indices=indices)
+        self.robot.set_dof_positions([[*home, .040, .040]], dof_indices=indices)
         self.robot.set_dof_velocities([[0.] * len(indices)], dof_indices=indices)
         driver_names = list(ARM_NAMES) + self.builder.finger_drivers
         drivers = self.robot.get_dof_indices(driver_names).numpy().tolist()
-        self.robot.set_dof_position_targets([[*HOME, *([.040]*len(self.builder.finger_drivers))]], dof_indices=drivers)
-        self.views = {entity: RigidPrim(path) for entity, path in self.builder.paths.items()}
+        self.robot.set_dof_position_targets([[*home, *([.040]*len(self.builder.finger_drivers))]], dof_indices=drivers)
+        bodies = RigidPrim(list(self.builder.paths.values()))
+        by_path = {path: entity for entity, path in self.builder.paths.items()}
+        if len(bodies.paths) != len(by_path) or set(bodies.paths) != set(by_path):
+            raise CellIOError("ASSET_BINDING_MISMATCH", f"Resolved rigid bodies: {bodies.paths}")
+        self.body_order = tuple(by_path[path] for path in bodies.paths)
+        self.views = {"bodies": bodies}
+        part_index = [self.body_order.index("part_000")]
         pos, rotation = self.scene.initial_pose(initial_state)
-        self.views["part_000"].set_world_poses(positions=[pos], orientations=[rotation])
-        self.views["part_000"].set_velocities(linear_velocities=[[0., 0., 0.]], angular_velocities=[[0., 0., 0.]])
+        bodies.set_world_poses(positions=[pos], orientations=[rotation], indices=part_index)
+        bodies.set_velocities(linear_velocities=[[0., 0., 0.]], angular_velocities=[[0., 0., 0.]], indices=part_index)
         self.contact = ContactPairs(self.builder.collider_ids)
         self.motion = FrankaMotion(self.robot, self.builder, self.profile, self.hand_T_tcp)
-        self._goals = {"actuator.gripper": .080, "actuator.belt": False}
+        motion_hashes = {path.name: file_sha256(path) for path in motion_files(Path(self.motion.config.directory))}
+        if self.asset_root is not None:
+            frozen = json.loads((Path(self.asset_root) / LOCK).read_text(encoding="utf-8"))["motion_config"]
+            if motion_hashes != {name: record["sha256"] for name, record in frozen.items()}:
+                raise CellIOError("ASSET_VERIFY_FAILED", "Installed cuMotion configuration differs from asset lock")
+        self._goals = {"actuator.gripper": .080}
+        if self.builder.belt is not None:
+            self._goals["actuator.belt"] = False
+        if self.builder.clamp is not None:
+            self._goals.update({"actuator.clamp": 0., "actuator.process": False})
         self._slewed = {n: .040 for n in self.builder.finger_drivers}
+        if self.builder.clamp is not None:
+            self._slewed["clamp"] = 0.
         self._held_drivers = {}
         self._evidence, self._overrides = {}, set()
         self.belt_speed, self.process_steps = 0., 0
@@ -146,18 +176,27 @@ class IsaacPlant:
         self._offset = self.manager.get_simulation_time()
         self.geometry_manifest = {"part_dimensions_m": (.04, .04, .04),
                                   "collider_local_corners": self.builder.local_corners,
+                                  "pad_collider_paths": self.builder.pad_paths,
+                                  "pad_collider_local_corners": self.builder.pad_corners,
+                                  "composed_materials": self.builder.material_readbacks,
                                   "collider_id_by_path": self.builder.collider_ids,
                                   "hand_T_tcp": self.hand_T_tcp, "site_T_tcp": self.motion.site_T_tcp}
         self.provenance = {"device": str(self.manager.get_device()), "solver": self.physics_scene.get_solver_type(),
                            "physics_hz": self.physics_scene.get_steps_per_second(),
                            "gravity": list(self.physics_scene.get_gravity()), "episode_clock_offset_s": self._offset,
                            "robot_asset": str(self.robot_asset), "tool_site": self.motion.site,
+                           "motion_config_hashes": motion_hashes,
                            "dof_names": self.names, "finger_drivers": list(self.builder.finger_drivers)}
 
-    def _body(self, entity, view):
-        p, q = view.get_world_poses()
-        v, w = view.get_velocities()
-        return BodyState(entity, "world", _floats(p), _floats(q), _floats(v), _floats(w), True)
+    def _read_bodies(self):
+        view = self.views["bodies"]
+        if not view.is_physics_tensor_entity_valid() or not self.robot.is_physics_tensor_entity_valid():
+            raise CellIOError("SIM_STATE_INVALID", "Rigid body or articulation tensor view became invalid")
+        poses = view.get_world_poses()
+        velocities = view.get_velocities()
+        arrays = [a.numpy() for a in (*poses, *velocities)]
+        return {entity: BodyState(entity, "world", *(tuple(map(float, values[index])) for values in arrays), True)
+                for index, entity in enumerate(self.body_order)}
 
     def snapshot(self, tick):
         if self.generation != tick.generation or self.step != tick.step:
@@ -166,7 +205,7 @@ class IsaacPlant:
             if self._cache.tick != tick:
                 raise CellIOError("CLOCK_ORDER", "Tick identity changed")
             return self._cache
-        bodies = {entity: self._body(entity, view) for entity, view in self.views.items()}
+        bodies = self._read_bodies()
         hand = bodies["hand"]
         hand_pose = (*hand.position_m, *hand.orientation_wxyz)
         tcp = compose(hand_pose, self.hand_T_tcp)
@@ -185,12 +224,26 @@ class IsaacPlant:
                 "robot.completed_command_id": self.motion.completed}
         if self.builder.belt is not None:
             meta["belt.surface_speed_mps"] = float(self.builder.belt.GetSurfaceVelocityAttr().Get()[1])
+        if self.builder.clamp is not None:
+            jaw = bodies["moving_jaw"]
+            joints["clamp"] = JointState("clamp", "prismatic", jaw.position_m[0]-.590,
+                                          jaw.linear_velocity_mps[0], None, True)
+            meta["process.done"] = self.process_steps >= 120
+            meta["process.elapsed_steps"] = self.process_steps
+            meta["process.enabled"] = self._goals["actuator.process"]
+        clear_of_fixture = True
         for entity, corners in self.builder.local_corners.items():
             body = bodies[entity]
             bounds = world_aabb((*body.position_m, *body.orientation_wxyz), corners)
+            if self.builder.clamp is not None:
+                overlap = all(low <= upper and lower <= high for low, high, lower, upper in
+                              zip(bounds[0], bounds[1], (.39, .02, .79), (.66, .22, 1.00)))
+                clear_of_fixture = clear_of_fixture and not overlap
             for suffix, point in zip(("min", "max"), bounds):
                 for axis, coordinate in zip("xyz", point):
                     meta[f"{entity}.bounds.{suffix}_{axis}"] = coordinate
+        if self.builder.clamp is not None:
+            meta["robot.clear_fixture"] = clear_of_fixture
         self._cache = TruthSnapshot(tick, bodies, joints, self.contact.snapshot(), meta, True)
         return self._cache
 
@@ -209,9 +262,29 @@ class IsaacPlant:
     def actuation_evidence(self, target):
         return self._evidence.get(target, {})
 
+    def reset_evidence(self, truth):
+        return {"new_generation": truth.tick.generation == self.generation and self.step == 0,
+                "stage_is_current": self.builder.stage == self.context.get_stage() and self._stage_epoch > 0,
+                "previous_handles_invalidated": self._previous_handles_invalidated,
+                "fresh_handles": all(view.valid and view.is_physics_tensor_entity_valid() for view in self.views.values())
+                                 and self.manager.get_physics_simulation_view() is not None,
+                "motion_empty": self.motion.active is None and self.motion.completed == -1,
+                "overrides_clear": not self._overrides and not self._held_drivers,
+                "belt_off": self.builder.belt is None or truth.plant_state["belt.surface_speed_mps"] == 0.,
+                "process_clear": self.process_steps == 0 and not self._goals.get("actuator.process", False)}
+
     def _receive(self, intent, truth, sim_time):
         target = intent.actuator_id
         if intent.kind == CommandKind.CANCEL_OPERATION:
+            # Invalidate the old trajectory. Explicit HOLD/OFF intents below own
+            # braking; cancellation alone must not create a successful HOLD receipt.
+            self.motion.cancel()
+            self._held_drivers.clear()
+            previous = {n: self._slewed[n] for n in self.builder.finger_drivers}
+            self._held_drivers["actuator.gripper"] = previous
+            self._goals["actuator.gripper"] = 2 * sum(previous.values()) / len(previous)
+            if self.builder.clamp is not None:
+                self._goals["actuator.clamp"] = self._slewed["clamp"]
             return
         if target == "actuator.robot":
             if intent.kind == CommandKind.HOLD:
@@ -249,6 +322,25 @@ class IsaacPlant:
         self._evidence[target] = {"nominal_coordinate": coordinate, "nominal_targets": nominal, "applied_targets": actual}
         return tuple(actual.values())
 
+    def _clamp(self, truth, overrides):
+        target = "actuator.clamp"
+        coordinate = self._goals[target]
+        override = overrides.get(target)
+        if (target in self._overrides) != (override is not None):
+            self._slewed["clamp"] = truth.joints["clamp"].position
+        nominal = _slew(self._slewed["clamp"], coordinate, .040 * DT)
+        value = nominal if override is None else override["driver_positions"]["clamp"]
+        drive = self.builder.clamp
+        if not drive.GetTargetPositionAttr().Set(value) or not drive.GetTargetVelocityAttr().Set(0.):
+            raise CellIOError("BACKEND_TARGET_REJECTED", target)
+        actual = float(drive.GetTargetPositionAttr().Get())
+        if abs(actual - value) > 1e-6:
+            raise CellIOError("BACKEND_TARGET_REJECTED", target)
+        self._slewed["clamp"] = actual
+        self._evidence[target] = {"nominal_coordinate": coordinate, "nominal_targets": {"clamp": nominal},
+                                  "applied_targets": {"clamp": actual}}
+        return actual
+
     def apply(self, commands, overrides, tick):
         truth = self.snapshot(tick)
         if getattr(self, "_last_applied", None) == tick:
@@ -259,6 +351,11 @@ class IsaacPlant:
             self._receive(decision.intent, truth, sim_time)
         self.motion.servo(sim_time, carrying=self._goals["actuator.gripper"] < .055)
         committed = {"actuator.gripper": self._gripper(truth, overrides)}
+        if self.builder.clamp is not None:
+            committed["actuator.clamp"] = self._clamp(truth, overrides)
+            committed["actuator.process"] = self._goals["actuator.process"]
+            if not self._goals["actuator.process"]:
+                self.process_steps = 0
         if self.builder.belt is not None:
             self.belt_speed = _slew(self.belt_speed, .06 if self._goals["actuator.belt"] else 0., DT)
             self.builder.belt.GetSurfaceVelocityAttr().Set(self.builder.Gf.Vec3f(0., self.belt_speed, 0.))
@@ -285,6 +382,8 @@ class IsaacPlant:
             if self.manager.get_simulation_time() != after:
                 raise CellIOError("CLOCK_ADVANCE_MISMATCH", "Render advanced PhysX")
         self.step += 1
+        if self._goals.get("actuator.process", False):
+            self.process_steps = min(120, self.process_steps+1)
         self._cache = None
         return AdvanceReceipt(self.step-1, self.step, before, after, True, render)
 

@@ -18,6 +18,13 @@ PROFILES = {"cell_a": Profile("A",(.45,.25),{
     "transfer_mid":(.45,.08,1.030),"output_hover":(.45,.25,1.030),"output_place":(.45,.25,.815)},
     ("control.operation","actuator.robot","actuator.gripper","actuator.belt"),True,False)}
 
+PROFILES["cell_b"] = Profile("B",(.35,.30),{
+    "park":(.30,0.,1.10), "source_hover":(.45,-.24,1.030),"source_grasp":(.45,-.24,.815),
+    "fixture_load_hover":(.507,.12,1.030),"fixture_load_place":(.507,.12,.815),
+    "fixture_unload_hover":(.500,.12,1.030),"fixture_unload_grasp":(.500,.12,.815),
+    "output_hover":(.35,.30,1.030),"output_place":(.35,.30,.815)},
+    ("control.operation","actuator.robot","actuator.gripper","actuator.clamp","actuator.process"),False,True)
+
 
 def profile_for(cell):
     try:

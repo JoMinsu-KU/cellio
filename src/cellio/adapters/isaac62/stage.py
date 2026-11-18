@@ -1,8 +1,6 @@
 """Build CellIO stages after SimulationApp starts. Lengths and masses are SI."""
 
 from itertools import product
-from pathlib import Path
-
 from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, TABLE, Box
 from cellio.core.models import CellIOError
 
@@ -16,7 +14,7 @@ def _vec(Gf, xyz):
 
 
 class StageBuilder:
-    def __init__(self, stage, scene, robot_asset, profile):
+    def __init__(self, stage, scene, robot_asset, profile, *, robot_base=(0., 0., .750)):
         from pxr import Gf, PhysxSchema, Sdf, Usd, UsdGeom, UsdPhysics, UsdShade
         self.stage, self.scene, self.profile = stage, scene, profile
         self.Gf, self.Physx, self.Sdf, self.Usd = Gf, PhysxSchema, Sdf, Usd
@@ -24,6 +22,9 @@ class StageBuilder:
         self.paths = {"part_000": PART}
         self.collider_ids = {}
         self.local_corners = {}
+        self.pad_corners = {}
+        self.pad_paths = {}
+        self.material_readbacks = {}
         self.materials = {}
         self.finger_drivers = []
         self.belt = None
@@ -45,7 +46,7 @@ class StageBuilder:
             UsdGeom.Imageable(visual).MakeInvisible()
         self._box(PART, Box("Part_000", scene.part_center, (.04, .04, .04), "dynamic", .05))
         base = UsdGeom.Xform.Define(stage, ROBOT)
-        base.AddTranslateOp().Set(Gf.Vec3d(0., 0., .750))
+        base.AddTranslateOp().Set(Gf.Vec3d(*robot_base))
         if not base.GetPrim().GetReferences().AddReference(str(robot_asset)):
             raise CellIOError("ASSET_REFERENCE_FAILED", str(robot_asset))
         stage.Load()
@@ -78,6 +79,13 @@ class StageBuilder:
         collider = self.Physx.PhysxCollisionAPI.Apply(prim)
         collider.CreateContactOffsetAttr(.001)
         collider.CreateRestOffsetAttr(0.)
+        material_api = self.Physics.MaterialAPI(bound.GetPrim())
+        self.material_readbacks[str(prim.GetPath())] = {
+            "material": str(bound.GetPath()), "static_friction": float(material_api.GetStaticFrictionAttr().Get()),
+            "dynamic_friction": float(material_api.GetDynamicFrictionAttr().Get()),
+            "restitution": float(material_api.GetRestitutionAttr().Get()),
+            "contact_offset": float(collider.GetContactOffsetAttr().Get()),
+            "rest_offset": float(collider.GetRestOffsetAttr().Get())}
 
     def _box(self, path, box):
         P, X, G = self.Physics, self.Physx, self.Geom
@@ -86,7 +94,7 @@ class StageBuilder:
         collider = self._shape(path + "/Geometry", (0., 0., 0.), box.size)
         P.CollisionAPI.Apply(collider)
         self._bind_material(collider, "PartContact")
-        if box.kind != "static":
+        if box.kind not in {"static", "fixed_jaw"}:
             rb = P.RigidBodyAPI.Apply(body.GetPrim())
             if box.kind == "belt":
                 rb.CreateKinematicEnabledAttr(True)
@@ -97,6 +105,26 @@ class StageBuilder:
                 P.MassAPI.Apply(body.GetPrim()).CreateMassAttr(box.mass)
                 X.PhysxRigidBodyAPI.Apply(body.GetPrim()).CreateSleepThresholdAttr(0.)
         entity = "part_000" if path == PART else box.name
+        if box.kind in {"fixed_jaw", "moving_jaw"}:
+            entity = box.kind
+        if box.kind == "moving_jaw":
+            self.paths[entity] = path
+            joint = P.PrismaticJoint.Define(self.stage, BASE + "/Fixture/ClampJoint")
+            joint.CreateBody1Rel().SetTargets([self.Sdf.Path(path)])
+            joint.CreateAxisAttr("X")
+            joint.CreateLocalPos0Attr(self.Gf.Vec3f(*box.center))
+            joint.CreateLocalPos1Attr(self.Gf.Vec3f(0.))
+            joint.CreateLocalRot0Attr(self.Gf.Quatf(1.))
+            joint.CreateLocalRot1Attr(self.Gf.Quatf(1.))
+            joint.CreateLowerLimitAttr(-.070)
+            joint.CreateUpperLimitAttr(0.)
+            self.clamp = P.DriveAPI.Apply(joint.GetPrim(), "linear")
+            self.clamp.CreateTypeAttr("force")
+            self.clamp.CreateMaxForceAttr(30.)
+            self.clamp.CreateStiffnessAttr(4000.)
+            self.clamp.CreateDampingAttr(100.)
+            self.clamp.CreateTargetPositionAttr(0.)
+            self.clamp.CreateTargetVelocityAttr(0.)
         self.collider_ids[str(collider.GetPath())] = entity
         if path == PART:
             X.PhysxContactReportAPI.Apply(body.GetPrim()).CreateThresholdAttr(0.)
@@ -147,6 +175,8 @@ class StageBuilder:
                     raise CellIOError("ASSET_PAD_BINDING", f"Specify actual pad_collider_paths for {name}")
                 for pad in pads:
                     self._bind_material(pad, "FingerPad")
+                self.pad_paths[entity] = [str(pad.GetPath()) for pad in pads]
+                self.pad_corners[entity] = self._geometry(link, pads)
             self.local_corners[entity] = self._geometry(link, colliders)
             for collider in colliders:
                 self.collider_ids[str(collider.GetPath())] = entity
