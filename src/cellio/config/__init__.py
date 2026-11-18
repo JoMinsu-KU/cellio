@@ -11,6 +11,7 @@ from yaml.constructor import ConstructorError
 
 from cellio.io import CellIOError
 from cellio.core.faults.spec import compile_fault
+from cellio.plugins import BUILTINS, allowed_scenes, scene_plugin
 from .schema import CTRL_DEFAULTS, config_schema
 
 
@@ -54,11 +55,18 @@ def read_document(path):
 
 
 _types = Draft202012Validator.TYPE_CHECKER.redefine("integer", lambda _, v: type(v) is int)
-_validator = extend(Draft202012Validator, type_checker=_types)(config_schema())
+_validator_type = extend(Draft202012Validator, type_checker=_types)
+_validator = _validator_type(config_schema())
 
 
 def resolve(doc, *, project_root=None):
-    error = next(_validator.iter_errors(doc), None)
+    validator = _validator
+    scene = doc.get("scene", {}) if isinstance(doc,dict) else {}
+    cell = scene.get("cell_id") if isinstance(scene,dict) else None
+    if isinstance(cell,str) and cell not in BUILTINS and cell in allowed_scenes():
+        plugin = scene_plugin(cell)
+        validator = _validator_type(config_schema((cell,), plugin.controller_presets()))
+    error = next(validator.iter_errors(doc), None)
     if error:
         raise CellIOError("CFG_SCHEMA", error.message, path=error.json_path)
     cfg = copy.deepcopy(doc)
@@ -93,8 +101,7 @@ def resolve(doc, *, project_root=None):
     if set(expected.get("fault_coverage", {})) - {f["fault_id"] for f in cfg["faults"]}:
         raise CellIOError("CFG_REFERENCE", "Unknown expected fault")
     if expected.get("requirements"):
-        from cellio.core.oracle import preset
-        registered = {r["id"] for r in preset(cell,cfg["episode"]["horizon_steps"])}
+        registered = {r["id"] for r in scene_plugin(cell).requirement_presets(cfg["episode"]["horizon_steps"])}
         if set(expected["requirements"])-registered:
             raise CellIOError("CFG_REFERENCE", "Unknown expected requirement")
     return cfg
@@ -113,9 +120,6 @@ def _resolve_fault(fault, cell, horizon):
     trigger = fault["trigger"]
     if trigger["kind"] == "at_step" and not lower <= trigger["at_step"] < upper:
         raise CellIOError("CFG_SEMANTIC", "Scheduled trigger is outside its arm window")
-    if trigger["kind"] == "controller_event":
-        if trigger["event_type"] != "controller.stage_enter" or set(trigger["event_filter"]) - {"stage_id"}:
-            raise CellIOError("CFG_REFERENCE", "Unknown controller event or filter")
 
 
 def load(path, *, project_root=None):

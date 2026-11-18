@@ -55,7 +55,7 @@ class IsaacPlant:
             return
         from isaacsim.simulation_app import SimulationApp
         self.app = SimulationApp({"headless": self.headless, "multi_gpu": False,
-                                  "disable_viewport_updates": self.headless})
+                                  "disable_viewport_updates": self.headless, "fast_shutdown": False})
         import omni.kit.app
         import omni.timeline
         import omni.usd

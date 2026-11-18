@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cellio.trace/1.0"
+    },
+    "record_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "episode_start",
+        "tick",
+        "final_snapshot",
+        "episode_end"
+      ]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "attempt_id": {
+      "type": "string"
+    },
+    "episode_id": {
+      "type": "string"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "previous_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "record_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "step": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "tick_kind": {},
+    "truth": {},
+    "previous_advance": {},
+    "raw_signals": {},
+    "observed_signals": {},
+    "controller_called": {},
+    "controller_view_hash": {},
+    "controller_output": {},
+    "intents": {},
+    "deliveries": {},
+    "actuation": {},
+    "applied": {},
+    "actuator_targets": {},
+    "fault_audit": {},
+    "events": {},
+    "oracle_updates": {},
+    "performance": {},
+    "reused_snapshot": {},
+    "reused_record_step": {},
+    "completion_status": {},
+    "end_step": {},
+    "errors": {},
+    "task_outcome": {}
+  },
+  "required": [
+    "schema_version",
+    "record_index",
+    "record_type",
+    "run_id",
+    "attempt_id",
+    "episode_id",
+    "generation",
+    "previous_hash",
+    "record_hash",
+    "step"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "type": "string",
+            "enum": [
+              "tick",
+              "final_snapshot"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "truth",
+          "raw_signals",
+          "observed_signals",
+          "controller_called",
+          "actuation",
+          "intents",
+          "deliveries",
+          "applied",
+          "actuator_targets",
+          "events",
+          "previous_advance",
+          "tick_kind"
+        ],
+        "properties": {
+          "truth": {
+            "type": "object"
+          },
+          "raw_signals": {
+            "type": "object"
+          },
+          "observed_signals": {
+            "type": "object"
+          },
+          "controller_called": {
+            "type": "boolean"
+          },
+          "intents": {
+            "type": "array"
+          },
+          "applied": {
+            "type": "array"
+          },
+          "deliveries": {
+            "type": "array"
+          },
+          "events": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  ]
+}

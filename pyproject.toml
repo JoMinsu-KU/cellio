@@ -17,8 +17,18 @@ dev = ["pytest>=8,<9", "hypothesis>=6,<7", "coverage>=7,<8", "mypy>=1,<2", "ruff
 [project.scripts]
 cellio = "cellio.cli:main"
 
+[project.entry-points."cellio.scene_plugins"]
+cell_a = "cellio.plugins.reference:cell_a"
+cell_b = "cellio.plugins.reference:cell_b"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.data-files]
+"share/cellio/fixtures/oracle" = ["fixtures/oracle/gold.json", "fixtures/oracle/gold.sha256"]
+"share/cellio/schemas" = ["schemas/*.json"]
+"share/cellio/examples/cell_a" = ["examples/cell_a/*.yaml"]
+"share/cellio/examples/cell_b" = ["examples/cell_b/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

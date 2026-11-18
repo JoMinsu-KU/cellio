@@ -5,7 +5,15 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from math import isfinite
 
-from ..models import CellIOError, Event, Quality, SignalSample, Verdict, freeze, json_value
+from ..models import (
+    CellIOError,
+    Event,
+    Quality,
+    SignalSample,
+    Verdict,
+    freeze,
+    json_value,
+)
 from ..signals import usable
 from .spec import compile_fault
 
@@ -79,7 +87,9 @@ class FaultEngine:
     def __init__(self, spec, horizon_steps=7200, cell_id="cell_a", **registry):
         self.horizon = horizon_steps
         self.spec = (
-            None if spec is None else compile_fault(spec, horizon_steps, cell_id, **registry)
+            None
+            if spec is None
+            else compile_fault(spec, horizon_steps, cell_id, **registry)
         )
         self.reset(None, 0)
 
@@ -94,7 +104,9 @@ class FaultEngine:
         self._cache = {}
         self._enqueued = 0
         self._observation_queue = ObservationDelayQueue(
-            self.spec.parameters["delay_steps"] + 2 if self.spec and self.spec.family == "F3" else 0
+            self.spec.parameters["delay_steps"] + 2
+            if self.spec and self.spec.family == "F3"
+            else 0
         )
         self._hold = {}
         self._captured_coordinate = None
@@ -108,6 +120,16 @@ class FaultEngine:
     def active(self):
         return self.spec is not None and self.state.application_status == "ACTIVE"
 
+    @property
+    def last_inspected_step(self):
+        return self._inspected_step
+
+    def reset_evidence(self):
+        return {
+            "observation_queue_empty": not self._observation_queue.items and not self._cache,
+            "fault_reset": not self.active and not self._hold and self.state.scheduled_start is None,
+        }
+
     def active_for(self, family, target=None):
         return (
             self.active
@@ -117,7 +139,9 @@ class FaultEngine:
 
     def ended_at(self, family, step):
         return (
-            self.spec is not None and self.spec.family == family and self.state.actual_end == step
+            self.spec is not None
+            and self.spec.family == family
+            and self.state.actual_end == step
         )
 
     def _matches(self, tick, events, predicates):
@@ -128,7 +152,11 @@ class FaultEngine:
         if kind == "controller_event":
             for e in events:
                 event = json_value(e) if isinstance(e, Event) else e
-                if (event["episode_id"], event["generation"], event["available_step"]) != (
+                if (
+                    event["episode_id"],
+                    event["generation"],
+                    event["available_step"],
+                ) != (
                     tick.episode_id,
                     tick.generation,
                     tick.step,
@@ -159,7 +187,12 @@ class FaultEngine:
         )
 
     def advance(
-        self, tick, events=(), predicates=None, driver_positions=None, actuator_coordinate=None
+        self,
+        tick,
+        events=(),
+        predicates=None,
+        driver_positions=None,
+        actuator_coordinate=None,
     ):
         if self.episode_id is None:
             self.episode_id = tick.episode_id
@@ -168,7 +201,9 @@ class FaultEngine:
             tick.generation,
             tick.step,
         ) or tick.step >= self.horizon:
-            raise CellIOError("CLOCK_ORDER", "fault scheduler expected next episode tick")
+            raise CellIOError(
+                "CLOCK_ORDER", "fault scheduler expected next episode tick"
+            )
         self._next += 1
         changes = []
         self.transitions = ()
@@ -213,20 +248,24 @@ class FaultEngine:
                     )
                 ):
                     raise CellIOError(
-                        "SIM_STATE_INVALID", "F6 requires measured independent driver positions"
+                        "SIM_STATE_INVALID",
+                        "F6 requires measured independent driver positions",
                     )
                 if type(actuator_coordinate) not in (int, float) or not isfinite(
                     actuator_coordinate
                 ):
                     raise CellIOError(
-                        "SIM_STATE_INVALID", "F6 requires measured full gap or clamp position"
+                        "SIM_STATE_INVALID",
+                        "F6 requires measured full gap or clamp position",
                     )
                 self._hold = dict(driver_positions)
                 self._captured_coordinate = actuator_coordinate
             self.channel_generation += 1
             s.actual_start, s.application_status = k, "ACTIVE"
             changes.append({"kind": "ACTIVE", "step": k})
-        self.transitions = tuple(freeze({"fault_id": self.spec.fault_id, **e}) for e in changes)
+        self.transitions = tuple(
+            freeze({"fault_id": self.spec.fault_id, **e}) for e in changes
+        )
         return self.transitions
 
     def _deliver(self, raw, k):
@@ -239,7 +278,9 @@ class FaultEngine:
     def transform_observations(self, raw, tick):
         k = tick.step
         if self._next != k + 1 or k <= self._sample_step:
-            raise CellIOError("CLOCK_ORDER", "observation transform requires a new scheduled tick")
+            raise CellIOError(
+                "CLOCK_ORDER", "observation transform requires a new scheduled tick"
+            )
         self._sample_step = k
         result = {}
         for key, sample in raw.items():
@@ -249,7 +290,9 @@ class FaultEngine:
             ) or sample.deliver_step is not None:
                 raise CellIOError("SIGNAL_STALE", key)
             if self.active_for("F1", key) and sample.quality == Quality.GOOD:
-                packet = self._deliver(replace(sample, value=self.spec.parameters["value"]), k)
+                packet = self._deliver(
+                    replace(sample, value=self.spec.parameters["value"]), k
+                )
             elif self.active_for("F2", key) and k > self.state.actual_start:
                 packet = self._cache[key]
             elif self.active_for("F3", key):
@@ -348,13 +391,20 @@ class FaultEngine:
                 self.state.restoration_status = "PATH_RESTORED"
 
     def _observe_hold(
-        self, k, receipt, actual_positions, nominal_coordinate, nominal_targets, applied_targets
+        self,
+        k,
+        receipt,
+        actual_positions,
+        nominal_coordinate,
+        nominal_targets,
+        applied_targets,
     ):
         # S_k is evidence about the *previous* command interval. Only bridge adjacent samples.
         if self._previous_conflict:
             measured = actual_positions or {}
             if set(measured) != set(self._hold) or any(
-                type(v) not in (int, float) or not isfinite(v) for v in measured.values()
+                type(v) not in (int, float) or not isfinite(v)
+                for v in measured.values()
             ):
                 self._conflict_start = self._last_hold_step = None
             else:
@@ -445,7 +495,9 @@ class FaultEngine:
             )
         if family == "F4" and frame.actuation and frame.actuation.accepted:
             queued = [
-                d for d in frame.deliveries if d.intent.actuator_id == key and d.status == "QUEUED"
+                d
+                for d in frame.deliveries
+                if d.intent.actuator_id == key and d.status == "QUEUED"
             ]
             delivered = [
                 d
@@ -463,8 +515,12 @@ class FaultEngine:
                     and key in frame.actuation.targets_by_actuator
                 ):
                     self._realized(k, "deliveries/actuation")
-            s.delayed_packet_count += sum(d.delivery_step > d.intent.issued_step for d in delivered)
-            s.flushed_packet_count += sum(d.reason == "RESTORE_FLUSH" for d in frame.deliveries)
+            s.delayed_packet_count += sum(
+                d.delivery_step > d.intent.issued_step for d in delivered
+            )
+            s.flushed_packet_count += sum(
+                d.reason == "RESTORE_FLUSH" for d in frame.deliveries
+            )
             if (
                 s.actual_end is not None
                 and s.actual_end <= k <= s.actual_end + 12

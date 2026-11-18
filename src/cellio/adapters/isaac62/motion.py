@@ -9,16 +9,22 @@ from .geometry import compose, inverse, interpolate_target, quat_distance
 class FrankaMotion:
     def __init__(self, articulation, builder, profile, hand_T_tcp):
         import numpy as np
+        import warp as wp
         from isaacsim.core.experimental.objects import Cube
         from isaacsim.robot_motion import cumotion
         from isaacsim.robot_motion.experimental import motion_generation as mg
 
-        self.np, self.mg, self.robot = np, mg, articulation
+        self.np, self.wp, self.mg, self.robot = np, wp, mg, articulation
         self.names = list(articulation.dof_names)
         self.arm_indices = tuple(self.names.index(n) for n in ARM_NAMES)
         self.config = cumotion.load_cumotion_supported_robot("franka")
+        self.kinematics = self.config.robot_description.kinematics()
+        self.cspace = [self.kinematics.cspace_coord_name(i)
+                       for i in range(self.kinematics.num_cspace_coords())]
         self.sites = list(self.config.robot_description.tool_frame_names())
-        self.site = profile.get("tool_frame") or self.sites[0]
+        # The 6.2 Franka XRDF also exposes a fingertip, which moves relative to
+        # the palm. Use the rigid hand site for the calibrated CellTCP transform.
+        self.site = profile.get("tool_frame", "panda_hand")
         if self.site not in self.sites:
             raise CellIOError("ASSET_TOOL_FRAME", f"{self.site!r} not in {self.sites}")
         self.site_T_tcp = self._site_to_tcp(builder, profile, hand_T_tcp)
@@ -45,13 +51,32 @@ class FrankaMotion:
         if self.site == hand.GetName():
             return hand_T_tcp
         sites = [p for p in builder.Usd.PrimRange(hand) if p.GetName() == self.site]
-        if len(sites) != 1:
-            raise CellIOError("ASSET_TOOL_FRAME", f"Calibrate site_T_tcp for {self.site!r}")
+        if not sites:
+            # Some virtual cuMotion sites live only in the URDF. Evaluate both frames
+            # using the same loaded robot description, then discard the common world pose.
+            if self.site not in self.kinematics.frame_names() or hand.GetName() not in self.kinematics.frame_names():
+                raise CellIOError("ASSET_TOOL_FRAME", f"Calibrate site_T_tcp for {self.site!r}")
+            hand_T_site = self._fk(self.site, reference=hand.GetName())
+            return compose(inverse(hand_T_site), hand_T_tcp)
+        if len(sites) > 1:
+            raise CellIOError("ASSET_TOOL_FRAME", f"Ambiguous site {self.site!r}")
         cache = builder.Geom.XformCache(builder.Usd.TimeCode.Default())
         matrix, _ = cache.ComputeRelativeTransform(sites[0], hand)
         rot = matrix.ExtractRotationQuat()
         hand_T_site = (*matrix.ExtractTranslation(), rot.GetReal(), *rot.GetImaginary())
         return compose(inverse(hand_T_site), hand_T_tcp)
+
+    def _fk(self, frame, reference=None):
+        positions = self.robot.get_dof_positions(dof_indices=[self.names.index(n) for n in self.cspace])
+        q = self.np.asarray(positions.numpy()[0], dtype=self.np.float64)
+        result = self.kinematics.pose(q, frame, reference) if reference else self.kinematics.pose(q, frame)
+        quat = result.rotation
+        return (*map(float, self.np.asarray(result.translation).ravel()), quat.w(), quat.x(), quat.y(), quat.z())
+
+    def measured_fk_tcp(self):
+        xyz, quaternion = self.robot.get_world_poses()
+        base = (*map(float, xyz.numpy()[0]), *map(float, quaternion.numpy()[0]))
+        return compose(compose(base, self._fk(self.site)), self.site_T_tcp)
 
     def _state(self):
         joints = self.mg.JointState.from_name(
@@ -63,8 +88,8 @@ class FrankaMotion:
     def _target(self):
         site = compose(self.setpoint, inverse(self.site_T_tcp))
         # The underlying buffer shape matches a single robot with one indexed site.
-        xyz = self.np.array([site[:3]], dtype=self.np.float32)
-        wxyz = self.np.array([site[3:]], dtype=self.np.float32)
+        xyz = self.wp.array([site[:3]], dtype=self.wp.float32, device="cpu")
+        wxyz = self.wp.array([site[3:]], dtype=self.wp.float32, device="cpu")
         return self.mg.RobotState(sites=self.mg.SpatialState.from_name(
             spatial_space=self.sites, positions=([self.site], xyz), orientations=([self.site], wxyz)))
 
@@ -108,16 +133,22 @@ class FrankaMotion:
             raise CellIOError("MOTION_COMMAND_MISSING", self.active.command_id)
         def array(v):
             return self.np.asarray(v.numpy() if hasattr(v, "numpy") else v).ravel().copy()
-        indices = array(command.joints.position_indices)
         positions = array(command.joints.positions)
-        by_index = dict(zip(indices.tolist(), positions.tolist(), strict=True))
+        reported_indices = command.joints.position_indices
+        indices = list(range(len(self.names))) if reported_indices is None else array(reported_indices).tolist()
+        if len(indices) != len(positions):
+            raise CellIOError("MOTION_COMMAND_MISSING", "RMP target dimensions disagree with joint indices")
+        by_index = dict(zip(indices, positions.tolist(), strict=True))
         if any(i not in by_index for i in self.arm_indices):
             raise CellIOError("MOTION_COMMAND_MISSING", "RMP result is missing one or more arm DOFs")
         self.robot.set_dof_position_targets([[by_index[i] for i in self.arm_indices]], dof_indices=list(self.arm_indices))
 
-    def hold(self):
+    def cancel(self):
         self.active = self.goal = self.setpoint = None
         self.first_in_range, self.reached, self.failed = None, False, False
+
+    def hold(self):
+        self.cancel()
         indices = list(self.arm_indices)
         measured = self.robot.get_dof_positions(dof_indices=indices).numpy().copy()
         self.robot.set_dof_position_targets(measured, dof_indices=indices)

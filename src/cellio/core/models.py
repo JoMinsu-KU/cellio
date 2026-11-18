@@ -8,12 +8,16 @@ from enum import StrEnum
 from math import isfinite, sqrt
 from types import MappingProxyType
 from typing import TypeAlias
-from cellio.io import CellIOError as DomainError, json_value
+
+from cellio.io import CellIOError as DomainError
+from cellio.io import json_value as json_value
 
 
 class CellIOError(DomainError):
     def __init__(self, code: str, message: str):
-        super().__init__(code, f"{code}: {message}", exit_code=2 if code.startswith("CFG_") else 4)
+        super().__init__(
+            code, f"{code}: {message}", exit_code=2 if code.startswith("CFG_") else 4
+        )
 
 
 Scalar: TypeAlias = bool | int | float
@@ -46,7 +50,9 @@ def vector(value, size):
         or len(value) != size
         or any(type(n) not in (float, int) or not isfinite(n) for n in value)
     ):
-        raise CellIOError("SIM_STATE_INVALID", f"expected {size} finite numeric coordinates")
+        raise CellIOError(
+            "SIM_STATE_INVALID", f"expected {size} finite numeric coordinates"
+        )
     return tuple(float(n) for n in value)
 
 
@@ -101,7 +107,9 @@ class Tick(Record):
         uint(self.generation, "generation", 2**64 - 1)
         uint(self.step, "step")
         if self.hz != 120 or type(self.hz) is not int or not self.episode_id:
-            raise CellIOError("CLOCK_INVALID", "expected episode identity and 120 Hz clock")
+            raise CellIOError(
+                "CLOCK_INVALID", "expected episode identity and 120 Hz clock"
+            )
 
 
 @dataclass(frozen=True)
@@ -126,7 +134,9 @@ class BodyState(Record):
             value = getattr(self, name)
             if value is None and not self.valid:
                 continue
-            converted = quaternion(value) if name == "orientation_wxyz" else vector(value, 3)
+            converted = (
+                quaternion(value) if name == "orientation_wxyz" else vector(value, 3)
+            )
             object.__setattr__(self, name, converted)
 
 
@@ -181,9 +191,14 @@ class SignalSample(Record):
         quality = Quality(self.quality)
         object.__setattr__(self, "quality", quality)
         if quality == Quality.GOOD:
-            if type(self.value) is not dtype or (dtype is float and not isfinite(self.value)):
+            if type(self.value) is not dtype or (
+                dtype is float and not isfinite(self.value)
+            ):
                 raise CellIOError("SIGNAL_DTYPE", self.signal_id)
-            if any(v is None for v in (self.source_step, self.source_seq, self.publish_step)):
+            if any(
+                v is None
+                for v in (self.source_step, self.source_seq, self.publish_step)
+            ):
                 raise CellIOError("SIGNAL_TIME", "GOOD packet lacks source metadata")
         elif self.value is not None:
             raise CellIOError("SIGNAL_DTYPE", "invalid sample must have a null value")
@@ -199,14 +214,26 @@ class SignalSample(Record):
             if v is not None:
                 uint(v, name)
                 if quality == Quality.MISSING and name != "generation":
-                    raise CellIOError("SIGNAL_TIME", "MISSING has no timestamps or packet identity")
+                    raise CellIOError(
+                        "SIGNAL_TIME", "MISSING has no timestamps or packet identity"
+                    )
         if (self.deliver_step is None) != (self.transport_seq is None):
             raise CellIOError("SIGNAL_TIME", "delivery identity incomplete")
 
     @classmethod
     def missing(cls, signal_id, dtype, generation):
         return cls(
-            signal_id, dtype, None, Quality.MISSING, None, None, None, None, None, generation, None
+            signal_id,
+            dtype,
+            None,
+            Quality.MISSING,
+            None,
+            None,
+            None,
+            None,
+            None,
+            generation,
+            None,
         )
 
 

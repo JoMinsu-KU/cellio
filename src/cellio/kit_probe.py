@@ -6,16 +6,21 @@ from cellio.io import write_json
 
 
 def probe(level):
-    from isaacsim import SimulationApp
-    app=SimulationApp({"headless":True,"disable_viewport_updates":True,"multi_gpu":False})
+    from isaacsim.simulation_app import SimulationApp
+    app=SimulationApp({"headless":True,"disable_viewport_updates":True,"multi_gpu":False,"fast_shutdown":False})
     try:
         import omni.kit.app
+        import omni.timeline
+        manager=omni.kit.app.get_app().get_extension_manager()
+        for name in ("isaacsim.robot_motion.experimental.motion_generation", "isaacsim.robot_motion.cumotion"):
+            manager.set_extension_enabled_immediate(name, True)
+            if not manager.is_extension_enabled(name):
+                raise RuntimeError(f"Cannot enable {name}")
         import isaacsim.robot_motion.cumotion as motion
-        from isaacsim.core.simulation_manager import SimulationManager
+        from isaacsim.core.simulation_manager import SimulationManager, PhysxScene
         from isaacsim.core.experimental.prims import RigidPrim, Articulation
         from pxr import Gf, UsdGeom, UsdPhysics
         import omni.usd
-        manager=omni.kit.app.get_app().get_extension_manager()
         names=("isaacsim.robot_motion.cumotion","omni.physx","isaacsim.core.simulation_manager")
         versions={name:manager.get_enabled_extension_id(name) for name in names}
         robot=motion.load_cumotion_supported_robot("franka")
@@ -29,6 +34,10 @@ def probe(level):
             scene=UsdPhysics.Scene.Define(stage,"/World/PhysicsScene")
             scene.CreateGravityDirectionAttr().Set(Gf.Vec3f(0,0,-1))
             scene.CreateGravityMagnitudeAttr().Set(9.81)
+            scene_api=PhysxScene("/World/PhysicsScene")
+            scene_api.set_steps_per_second(120)
+            scene_api.set_solver_type("TGS")
+            scene_api.set_enabled_gpu_dynamics(False)
             prim=UsdGeom.Cube.Define(stage,"/World/SmokeCube")
             prim.CreateSizeAttr(.04)
             prim.AddTranslateOp().Set(Gf.Vec3d(0,0,10))
@@ -36,18 +45,24 @@ def probe(level):
             UsdPhysics.CollisionAPI.Apply(prim.GetPrim())
             SimulationManager.setup_simulation(dt=1/120,device="cpu")
             SimulationManager.enable_fabric(True)
+            omni.timeline.get_timeline_interface().play()
             SimulationManager.initialize_physics()
             body=RigidPrim("/World/SmokeCube")
             def height():
                 positions,_=body.get_world_poses()
                 return float(positions.numpy()[0,2])
             z0=height()
+            clock0=SimulationManager.get_simulation_time()
             for _ in range(120):
                 SimulationManager.step(steps=1,update_fabric=True)
             z1=height()
-            if not 4.7 < z0-z1 < 5.2:
+            clock1=SimulationManager.get_simulation_time()
+            if not body.is_physics_tensor_entity_valid():
+                raise RuntimeError("Physics tensor view is invalid")
+            if abs((clock1-clock0)-1.)>1e-5 or not 4.7 < z0-z1 < 5.2:
                 raise RuntimeError(f"Unexpected 1 s free fall: {z0} -> {z1}")
-            info.update(smoke_steps=120,start_z_m=z0,end_z_m=z1,physics_device=str(SimulationManager.get_device()))
+            info.update(smoke_steps=120,start_z_m=z0,end_z_m=z1,clock_delta_s=clock1-clock0,
+                        solver=scene_api.get_solver_type(),physics_device=str(SimulationManager.get_device()))
         return {"passed":True,**info}
     finally:
         app.close()

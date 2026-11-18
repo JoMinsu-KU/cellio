@@ -1,4 +1,4 @@
-from decimal import Decimal, InvalidOperation, ROUND_CEILING
+from decimal import ROUND_CEILING, Decimal, InvalidOperation
 from enum import IntEnum
 from fractions import Fraction
 from math import isclose, isfinite
@@ -13,7 +13,9 @@ def steps_from_seconds(decimal_string: str) -> int:
             raise ValueError()
         return int((seconds * 120).to_integral_value(rounding=ROUND_CEILING))
     except (InvalidOperation, ValueError, TypeError) as exc:
-        raise CellIOError("CFG_CLOCK", "expected a finite nonnegative decimal string") from exc
+        raise CellIOError(
+            "CFG_CLOCK", "expected a finite nonnegative decimal string"
+        ) from exc
 
 
 class Phase(IntEnum):
@@ -36,7 +38,9 @@ class PhaseGuard:
 
     def enter(self, step, phase):
         if step != self._next_step or phase != self._next_phase:
-            raise CellIOError("CLOCK_PHASE", f"expected ({self._next_step}, {self._next_phase})")
+            raise CellIOError(
+                "CLOCK_PHASE", f"expected ({self._next_step}, {self._next_phase})"
+            )
         if phase == Phase.ADVANCE:
             self._next_step += 1
             self._next_phase = Phase.GUARD
@@ -70,8 +74,14 @@ class StepClock:
             or self.step >= self.horizon
             or (receipt.from_step, receipt.to_step) != (self.step, self.step + 1)
         ):
-            raise CellIOError("SIM_ADVANCE_FAILED", "missing or out-of-order physics advance")
-        offset = receipt.engine_time_before_s if self.engine_offset is None else self.engine_offset
+            raise CellIOError(
+                "SIM_ADVANCE_FAILED", "missing or out-of-order physics advance"
+            )
+        offset = (
+            receipt.engine_time_before_s
+            if self.engine_offset is None
+            else self.engine_offset
+        )
         for index, time in (
             (self.step, receipt.engine_time_before_s),
             (self.step + 1, receipt.engine_time_after_s),

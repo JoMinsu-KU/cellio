@@ -1,9 +1,9 @@
 # CellIO 개발·검증·논문 산출물 통합 명세서
 
-**문서 버전:** 1.1 / **기준일:** 2026-11-18, Asia/Seoul  
+**문서 버전:** 1.1 / **기준일:** 2026-11-18, Asia/Seoul
 **대상 제품:** CellIO 1.0.0 / **설정 스키마:** cellio.config/1.0  
 **대상 논문:** *CellIO: Scene-bound I/O fault injection and regression testing for robotic workcells in Isaac Sim*  
-**개발 환경:** Windows 11 Pro x86_64, 전용 Conda Python 3.12, NVIDIA Isaac Sim 6.2.0.0 Python 패키지. WSL2 Ubuntu는 독립적인 오프라인 검사에 사용한다.  
+**개발 환경:** Windows 11 Pro x86_64, 전용 Conda Python 3.12, NVIDIA Isaac Sim 6.2.0.0 Python 패키지. WSL2 Ubuntu는 독립적인 오프라인 검사에 사용한다.
 **기본 실행 모드:** 시뮬레이터 단독, 고정 physics step, Python 참조 제어기  
 **문서 성격:** 구현해야 할 규범과 검증 방법을 정의한 개발 명세. 성능 측정 결과나 구현 완료 보고서가 아니다.
 
@@ -260,11 +260,11 @@ Windows 물리 실행과 WSL2 재판정은 각각 환경 식별자와 잠금 파
 5. mock smoke, Isaac import smoke, 정상 장면 smoke 순서로 실행한다.
 6. confirmatory 실험 전 assets verify --offline가 성공해야 한다.
 
-아래 CellIO 명령은 **구현해야 할 CLI 계약**이다. 현재 이미 존재하는 명령이라고 가정하지 않는다.
+아래 명령은 Windows 전용 환경에서 실행한다. 개발 중인 후보의 지원 수준은 같은 커밋의 시험 및 수락 보고서에서 확인한다.
 
 ~~~powershell
 conda activate cellio-isaac62
-python -m pip install --require-hashes -r requirements.lock
+python -m pip install --require-hashes -r locks/windows-isaac62/requirements.lock
 python -m pip install -e . --no-deps
 python -m cellio doctor --profile isaac62 --output artifacts/doctor.json
 python -m cellio assets resolve --profile franka_panda

@@ -77,14 +77,17 @@ def test_T_CLK_01_02_exact_time_and_control():
 def test_T_CLK_03_controller_and_world_event_availability():
     bus = EventBus()
     events = bus.commit_controller(
-        tick(0), [{"event_type": "controller.stage_enter", "payload": {"stage_id": "grasp"}}]
+        tick(0),
+        [{"event_type": "controller.stage_enter", "payload": {"stage_id": "grasp"}}],
     )
     assert bus.pop_ready_for_fault_trigger(0) == () and events[0].step == 0
     assert not bus.world_edges(tick(0), {"world.part_dropped": False})
     world = bus.world_edges(tick(1), {"world.part_dropped": True})
     pending = bus.pop_ready_for_fault_trigger(1)
     merged = bus.merge_unique(world, pending)
-    assert [e.step for e in merged] == [1, 0] and all(e.available_step == 1 for e in merged)
+    assert [e.step for e in merged] == [1, 0] and all(
+        e.available_step == 1 for e in merged
+    )
     assert not bus.pop_ready_for_fault_trigger(1)
     with pytest.raises(CellIOError, match="EVENT_DUPLICATE"):
         bus.merge_unique(world, world)
@@ -149,7 +152,12 @@ def test_matched_controller_event_latches_after_arm_closes():
         if k == 0:
             bus.commit_controller(
                 tick(k),
-                [{"event_type": "controller.stage_enter", "payload": {"stage_id": "grasp"}}],
+                [
+                    {
+                        "event_type": "controller.stage_enter",
+                        "payload": {"stage_id": "grasp"},
+                    }
+                ],
             )
         assert engine.active == (3 <= k < 5)
     assert engine.state.trigger_match_step == 1
@@ -158,7 +166,11 @@ def test_matched_controller_event_latches_after_arm_closes():
 @pytest.mark.parametrize("initial,start", [(True, 0), (False, 3)])
 def test_world_rising_edge(initial, start):
     spec = base_fault(
-        {"kind": "world_rising", "predicate_id": "world.part_dropped", "fire_on_initial": initial},
+        {
+            "kind": "world_rising",
+            "predicate_id": "world.part_dropped",
+            "fire_on_initial": initial,
+        },
         {"open_step": 0, "close_step": 5},
         0,
     )
@@ -169,7 +181,9 @@ def test_world_rising_edge(initial, start):
 
 
 def test_scheduled_after_horizon_is_censored():
-    spec = base_fault({"kind": "at_step", "at_step": 2}, {"open_step": 0, "close_step": 4}, 2)
+    spec = base_fault(
+        {"kind": "at_step", "at_step": 2}, {"open_step": 0, "close_step": 4}, 2
+    )
     engine = FaultEngine(spec, 4)
     for k in range(4):
         engine.advance(tick(k))
@@ -182,7 +196,9 @@ def test_scheduled_after_horizon_is_censored():
 
 
 def packet(k=0):
-    return SignalSample("example", "bool", False, Quality.GOOD, k, k, k, None, None, 0, None)
+    return SignalSample(
+        "example", "bool", False, Quality.GOOD, k, k, k, None, None, 0, None
+    )
 
 
 def test_T_SIG_01_typed_scalar_and_null():
@@ -196,8 +212,14 @@ def test_T_SIG_01_typed_scalar_and_null():
 def test_T_SIG_02_03_source_age_and_cached_identity():
     p = replace(packet(3), deliver_step=10, transport_seq=0)
     assert usable(p, 15) and not usable(p, 16)
-    a, b = for_controller({"example": p}, tick(12)), for_controller({"example": p}, tick(16))
-    assert a.signals["example"] == b.signals["example"] and a.signals["example"].deliver_step == 10
+    a, b = (
+        for_controller({"example": p}, tick(12)),
+        for_controller({"example": p}, tick(16)),
+    )
+    assert (
+        a.signals["example"] == b.signals["example"]
+        and a.signals["example"].deliver_step == 10
+    )
 
 
 def test_T_SIG_04_deep_snapshot_immutability():
@@ -216,7 +238,9 @@ def test_T_SIG_04_deep_snapshot_immutability():
 
 def test_T_SIG_05_obb_sat_separates_rotated_slender_body_from_aabb_corner():
     q = (cos(pi / 8), 0.0, 0.0, sin(pi / 8))
-    assert obb_intersects_aabb((0, 0, 0), q, (1.0, 0.1, 0.1), (0.3, 0.3, 0), (0.02, 0.02, 0.02))
+    assert obb_intersects_aabb(
+        (0, 0, 0), q, (1.0, 0.1, 0.1), (0.3, 0.3, 0), (0.02, 0.02, 0.02)
+    )
     assert not obb_intersects_aabb(
         (0, 0, 0), q, (1.0, 0.1, 0.1), (0.3, -0.3, 0), (0.02, 0.02, 0.02)
     )
@@ -249,17 +273,31 @@ def test_T_SIG_07_hash_represents_exact_visible_content():
 
 def test_world_predicates_use_physical_coordinates_and_dwell():
     p = BodyState(
-        "part_000", "world", (0.507, 0.12, 0.810), (1, 0, 0, 0), (0, 0, 0), (0, 0, 0), True
+        "part_000",
+        "world",
+        (0.507, 0.12, 0.810),
+        (1, 0, 0, 0),
+        (0, 0, 0),
+        (0, 0, 0),
+        True,
     )
     world = WorldPredicates("cell_b")
     state = {"gripper.gap_m": 0.04, "gripper.max_speed_mps": 0.0}
-    readings = [world.sample(truth(k, state, {"part_000": p}), tick(k)) for k in range(13)]
+    readings = [
+        world.sample(truth(k, state, {"part_000": p}), tick(k)) for k in range(13)
+    ]
     assert readings[-1]["world.fixture_loaded"] and readings[-1]["world.gripper_closed"]
-    assert not readings[-2]["world.gripper_closed"] and readings[-1]["world.clamp_closed"] is None
+    assert (
+        not readings[-2]["world.gripper_closed"]
+        and readings[-1]["world.clamp_closed"] is None
+    )
     p = replace(p, position_m=(0.50, 0.12, 0.650))
     reading = world.sample(truth(13, state, {"part_000": p}), tick(13))
     assert reading["world.part_dropped"] and not reading["world.fixture_loaded"]
-    assert len(canonical_bindings("cell_a")) == 9 and len(canonical_bindings("cell_b")) == 13
+    assert (
+        len(canonical_bindings("cell_a")) == 9
+        and len(canonical_bindings("cell_b")) == 13
+    )
 
 
 def test_T_CMD_01_duplicate_conflict_and_out_of_order():
@@ -294,16 +332,24 @@ def test_T_CMD_03_superseded_due_and_immediate():
         duration_steps=4,
         parameters={"delay_steps": 2},
     )
-    faults, router = FaultEngine(spec, 5), CommandRouter("cell_a", "attempt", "episode", 0)
+    faults, router = (
+        FaultEngine(spec, 5),
+        CommandRouter("cell_a", "attempt", "episode", 0),
+    )
     for k in range(3):
         faults.advance(tick(k))
         pending = (
             (command(0, 0),)
             if k == 0
-            else (replace(command(2, 1), kind=CommandKind.HOLD, value=()),) if k == 2 else ()
+            else (replace(command(2, 1), kind=CommandKind.HOLD, value=()),)
+            if k == 2
+            else ()
         )
         ds = router.resolve(pending, faults, tick(k))
-    assert [(d.intent.sequence, d.status) for d in ds] == [(0, "SUPERSEDED"), (1, "DELIVERED")]
+    assert [(d.intent.sequence, d.status) for d in ds] == [
+        (0, "SUPERSEDED"),
+        (1, "DELIVERED"),
+    ]
     assert router.effective["actuator.gripper"].kind == CommandKind.HOLD
 
 
@@ -321,8 +367,14 @@ def test_T_CMD_04_05_cancel_precedes_new_work_and_is_idempotent():
         router.resolve([cancel, replace(command(0, 1), operation_epoch=1)], f, tick(0))
     assert router.epoch == 0 and not router.effective
     hold = replace(command(0, 1), kind=CommandKind.HOLD, value=(), operation_epoch=1)
-    assert [d.intent for d in router.resolve([cancel, hold], f, tick(0))] == [cancel, hold]
-    assert router.resolve([cancel], f, tick(1))[0].status == "DUPLICATE" and router.epoch == 1
+    assert [d.intent for d in router.resolve([cancel, hold], f, tick(0))] == [
+        cancel,
+        hold,
+    ]
+    assert (
+        router.resolve([cancel], f, tick(1))[0].status == "DUPLICATE"
+        and router.epoch == 1
+    )
 
 
 @pytest.mark.parametrize(
@@ -342,12 +394,16 @@ def test_T_CMD_04_05_cancel_precedes_new_work_and_is_idempotent():
             actuator_id="actuator.robot",
             value=(0.4, 0.1, 1.0, 0.0, 0.0, 0.0, 0.0),
         ),
-        replace(command(0, 0), kind=CommandKind.BOOL, actuator_id="actuator.belt", value=1),
+        replace(
+            command(0, 0), kind=CommandKind.BOOL, actuator_id="actuator.belt", value=1
+        ),
     ],
 )
 def test_T_CMD_06_type_and_range(cmd):
     with pytest.raises(CellIOError, match="CTRL_COMMAND_RANGE"):
-        CommandRouter("cell_a", "attempt", "episode", 0).resolve([cmd], FaultEngine(None), tick(0))
+        CommandRouter("cell_a", "attempt", "episode", 0).resolve(
+            [cmd], FaultEngine(None), tick(0)
+        )
 
 
 def test_T_CMD_07_08_backend_failure_and_public_receipts():
@@ -361,11 +417,19 @@ def test_T_CMD_07_08_backend_failure_and_public_receipts():
         router.acknowledge(ActuationReceipt(tick(0), False, (rejected,), {}, ()))
     assert router.public_receipts(tick(0)) == ()
     accepted, error = router.public_receipts(tick(4))
-    assert (accepted.status, error.status, error.reason) == ("ACCEPTED", "REJECTED", "UNAVAILABLE")
+    assert (accepted.status, error.status, error.reason) == (
+        "ACCEPTED",
+        "REJECTED",
+        "UNAVAILABLE",
+    )
     router = CommandRouter("cell_a", "attempt", "episode", 0)
     router.resolve([i], FaultEngine(None), tick(0))
-    applied = replace(rejected, applied_step=0, status="APPLIED", reason="RESTORE_RESUME")
-    router.acknowledge(ActuationReceipt(tick(0), True, (applied,), {i.actuator_id: 0.02}, ()))
+    applied = replace(
+        rejected, applied_step=0, status="APPLIED", reason="RESTORE_RESUME"
+    )
+    router.acknowledge(
+        ActuationReceipt(tick(0), True, (applied,), {i.actuator_id: 0.02}, ())
+    )
     public = router.public_receipts(tick(4))
     assert public[-1].status == "APPLIED" and public[-1].reason is None
     assert set(json_value(public[-1])) == {

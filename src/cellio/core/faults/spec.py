@@ -4,9 +4,9 @@ import re
 from collections.abc import Mapping
 from math import isfinite
 
-from ..models import CellIOError, FaultSpec
-from ..signals import canonical_bindings
+from cellio.plugins import scene_plugin
 
+from ..models import CellIOError, FaultSpec
 
 MODEL_IDS = {
     "F1": "boolean_stuck_at_v1",
@@ -27,46 +27,64 @@ def _integer(value, minimum, maximum):
     return type(value) is int and minimum <= value <= maximum
 
 
-def compile_fault(spec, horizon, cell_id, *, signal_types=None, endpoints=None, predicates=None):
+def compile_fault(
+    spec, horizon, cell_id, *, signal_types=None, endpoints=None, predicates=None
+):
     if isinstance(spec, Mapping):
         try:
             spec = FaultSpec(**spec)
         except (TypeError, ValueError) as exc:
             raise CellIOError("CFG_FAULT_SPEC", str(exc)) from exc
-    _valid(isinstance(spec, FaultSpec), "CFG_FAULT_SPEC", "expected one registered specification")
+    _valid(
+        isinstance(spec, FaultSpec),
+        "CFG_FAULT_SPEC",
+        "expected one registered specification",
+    )
     family = spec.family
     _valid(
-        family in MODEL_IDS and spec.model_id == MODEL_IDS[family], "CFG_FAULT_MODEL", spec.model_id
+        family in MODEL_IDS and spec.model_id == MODEL_IDS[family],
+        "CFG_FAULT_MODEL",
+        spec.model_id,
     )
     _valid(
-        isinstance(spec.fault_id, str) and re.fullmatch(r"[a-z][a-z0-9_.-]{0,95}", spec.fault_id),
+        isinstance(spec.fault_id, str)
+        and re.fullmatch(r"[a-z][a-z0-9_.-]{0,95}", spec.fault_id),
         "CFG_FAULT_SPEC",
         "invalid fault_id",
     )
-    _valid(type(spec.require_exercised) is bool, "CFG_FAULT_SPEC", "invalid require_exercised")
+    _valid(
+        type(spec.require_exercised) is bool,
+        "CFG_FAULT_SPEC",
+        "invalid require_exercised",
+    )
+    registry = scene_plugin(cell_id).entity_registry()
     if signal_types is None:
-        signal_types = {b.signal_id: b.dtype for b in canonical_bindings(cell_id)}
+        signal_types = registry["signals"]
     if endpoints is None:
-        endpoints = {"actuator.robot", "actuator.gripper"}
-        endpoints.update(
-            {"actuator.belt"} if cell_id == "cell_a" else {"actuator.clamp", "actuator.process"}
-        )
+        endpoints = set(registry["actuators"]) - {"control.operation"}
+    hold_targets = {
+        name
+        for name, kinds in registry["actuators"].items()
+        if {"GRIPPER_GAP", "JOINT_POSITION"}.intersection(kinds)
+    }
     target = spec.target_id
     if family in {"F1", "F2", "F3", "F5"}:
         _valid(
-            target in signal_types and (family != "F1" or signal_types[target] == "bool"),
+            target in signal_types
+            and (family != "F1" or signal_types[target] == "bool"),
             "CFG_FAULT_TARGET",
             target,
         )
     else:
         _valid(
-            target in endpoints
-            and (family != "F6" or target in {"actuator.gripper", "actuator.clamp"}),
+            target in endpoints and (family != "F6" or target in hold_targets),
             "CFG_FAULT_TARGET",
             target,
         )
     p = spec.parameters
-    _valid(isinstance(p, Mapping), "CFG_FAULT_PARAMETER", "parameters must be a mapping")
+    _valid(
+        isinstance(p, Mapping), "CFG_FAULT_PARAMETER", "parameters must be a mapping"
+    )
     expected = {
         "F1": {"value"},
         "F3": {"delay_steps"},
@@ -75,10 +93,16 @@ def compile_fault(spec, horizon, cell_id, *, signal_types=None, endpoints=None, 
     }.get(family, set())
     _valid(set(p) == expected, "CFG_FAULT_PARAMETER", f"expected {sorted(expected)}")
     if family == "F1":
-        _valid(type(p["value"]) is bool, "CFG_FAULT_PARAMETER", "stuck value must be boolean")
+        _valid(
+            type(p["value"]) is bool,
+            "CFG_FAULT_PARAMETER",
+            "stuck value must be boolean",
+        )
     elif family in {"F3", "F4"}:
         _valid(
-            _integer(p["delay_steps"], 1, 120), "CFG_FAULT_PARAMETER", "delay_steps must be 1..120"
+            _integer(p["delay_steps"], 1, 120),
+            "CFG_FAULT_PARAMETER",
+            "delay_steps must be 1..120",
         )
     elif family == "F6":
         _valid(
@@ -109,7 +133,9 @@ def compile_fault(spec, horizon, cell_id, *, signal_types=None, endpoints=None, 
     kind = tr.get("kind")
     if kind == "at_step":
         _valid(
-            set(tr) == {"kind", "at_step"} and type(tr["at_step"]) is int and tr["at_step"] >= 0,
+            set(tr) == {"kind", "at_step"}
+            and type(tr["at_step"]) is int
+            and tr["at_step"] >= 0,
             "CFG_FAULT_TRIGGER",
             "invalid time trigger",
         )
@@ -126,14 +152,19 @@ def compile_fault(spec, horizon, cell_id, *, signal_types=None, endpoints=None, 
             "CFG_FAULT_TRIGGER",
             "invalid controller event trigger",
         )
+        fields=registry.get("events",{}).get(tr["event_type"])
+        _valid(fields is not None,"CFG_FAULT_TRIGGER",f"unregistered controller event {tr['event_type']}")
+        types={"string":(str,),"integer":(int,),"boolean":(bool,),"number":(int,float)}
+        for key,value in tr["event_filter"].items():
+            declaration=fields.get(key,{})
+            _valid(type(value) in types.get(declaration.get("type"),()) and
+                   (type(value) is not float or isfinite(value)) and
+                   ("enum" not in declaration or value in declaration["enum"]) and
+                   ("minimum" not in declaration or value>=declaration["minimum"]),
+                   "CFG_FAULT_TRIGGER",f"unregistered or invalid filter {tr['event_type']}.{key}")
     elif kind in {"world_level", "world_rising"}:
         if predicates is None:
-            predicates = {"world.part_dropped", "world.gripper_closed"}
-            predicates.update(
-                {"world.pickup_present"}
-                if cell_id == "cell_a"
-                else {"world.fixture_loaded", "world.clamp_closed"}
-            )
+            predicates = registry["predicates"]
         allowed = {"kind", "predicate_id"} | (
             {"fire_on_initial"} if kind == "world_rising" else set()
         )

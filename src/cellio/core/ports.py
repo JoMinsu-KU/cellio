@@ -28,7 +28,9 @@ class PlantPort(Protocol):
 
 class SignalMapperPort(Protocol):
     def reset(self, generation: int) -> None: ...
-    def sample(self, truth: TruthSnapshot, tick: Tick) -> Mapping[str, SignalSample]: ...
+    def sample(
+        self, truth: TruthSnapshot, tick: Tick
+    ) -> Mapping[str, SignalSample]: ...
 
 
 class ControllerPort(Protocol):

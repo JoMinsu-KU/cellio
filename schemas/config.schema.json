@@ -1,0 +1,1171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cellio.config/1.0"
+    },
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "isaac62_lockstep",
+        "mock_lockstep"
+      ]
+    },
+    "scene": {
+      "type": "object",
+      "properties": {
+        "cell_id": {
+          "type": "string",
+          "enum": [
+            "cell_a",
+            "cell_b"
+          ]
+        },
+        "revision": {
+          "const": 1
+        },
+        "variant_id": {
+          "const": "canonical"
+        }
+      },
+      "required": [
+        "cell_id"
+      ],
+      "additionalProperties": false
+    },
+    "clock": {
+      "type": "object",
+      "properties": {
+        "physics_hz": {
+          "const": 120
+        },
+        "controller_divisor": {
+          "const": 4
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "controller": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "reference",
+            "mutant.c_m1",
+            "mutant.c_m2",
+            "mutant.c_m3",
+            "mutant.c_m4",
+            "mutant.c_m5",
+            "mutant.c_m6"
+          ]
+        },
+        "revision": {
+          "const": 1
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "freshness_limit_steps": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7200
+            },
+            "wait_timeout_steps": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7200
+            },
+            "motion_timeout_steps": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7200
+            },
+            "grip_timeout_steps": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7200
+            },
+            "terminal_mode": {
+              "const": "hold"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "seeds": {
+      "type": "object",
+      "properties": {
+        "scene": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "controller": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "fault": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "required": [
+        "scene",
+        "controller",
+        "fault"
+      ],
+      "additionalProperties": false
+    },
+    "episode": {
+      "type": "object",
+      "properties": {
+        "horizon_steps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "warmup_steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reset_mode": {
+          "type": "string",
+          "enum": [
+            "fresh_process",
+            "hard_reload"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "faults": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F1"
+              },
+              "model_id": {
+                "const": "boolean_stuck_at_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F2"
+              },
+              "model_id": {
+                "const": "frozen_sample_with_age_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F3"
+              },
+              "model_id": {
+                "const": "fifo_delay_flush_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "delay_steps": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120
+                  }
+                },
+                "required": [
+                  "delay_steps"
+                ],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F4"
+              },
+              "model_id": {
+                "const": "fixed_delay_flush_resume_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "delay_steps": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120
+                  }
+                },
+                "required": [
+                  "delay_steps"
+                ],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F5"
+              },
+              "model_id": {
+                "const": "explicit_invalid_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "fault_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "family": {
+                "const": "F6"
+              },
+              "model_id": {
+                "const": "position_target_hold_v1"
+              },
+              "target_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+              },
+              "trigger": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "at_step"
+                      },
+                      "at_step": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "at_step"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "controller_event"
+                      },
+                      "event_type": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "event_filter": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^[a-z][a-z0-9_.-]{0,95}$": {
+                            "type": [
+                              "string",
+                              "boolean",
+                              "integer",
+                              "number"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "event_type",
+                      "event_filter"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "world_level",
+                          "world_rising"
+                        ]
+                      },
+                      "predicate_id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_.-]{0,95}$"
+                      },
+                      "fire_on_initial": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "predicate_id"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "arm": {
+                "type": "object",
+                "properties": {
+                  "open_step": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "close_step": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "open_step",
+                  "close_step"
+                ],
+                "additionalProperties": false
+              },
+              "offset_steps": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1200
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "hold_tolerance_m": {
+                    "const": 0.0005
+                  },
+                  "conflicting_travel_min_m": {
+                    "const": 0.01
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "require_exercised": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fault_id",
+              "family",
+              "model_id",
+              "target_id",
+              "trigger",
+              "arm",
+              "offset_steps",
+              "duration_steps",
+              "parameters"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "preset": {
+          "type": "string",
+          "enum": [
+            "cell_a",
+            "cell_b"
+          ]
+        },
+        "revision": {
+          "const": 1
+        },
+        "parameter_overrides": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "preset"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "output_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace_format": {
+          "const": "jsonl_gzip"
+        },
+        "video": {
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "expected": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "completion_status": {
+              "type": "string",
+              "enum": [
+                "COMPLETED",
+                "INFRA_ERROR",
+                "CANCELLED"
+              ]
+            },
+            "task_outcome": {
+              "type": "string",
+              "enum": [
+                "SUCCESS",
+                "CONTROLLED_ABORT",
+                "FAILED",
+                "UNKNOWN"
+              ]
+            },
+            "requirements": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z][a-z0-9_.-]{0,95}$": {
+                  "type": "string",
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "UNKNOWN",
+                    "NOT_APPLICABLE"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "fault_coverage": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z][a-z0-9_.-]{0,95}$": {
+                  "type": "string",
+                  "enum": [
+                    "EXERCISED",
+                    "NOT_EXERCISED",
+                    "CENSORED",
+                    "INJECTOR_ERROR"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "scene",
+    "controller",
+    "seeds",
+    "requirements"
+  ],
+  "additionalProperties": false
+}

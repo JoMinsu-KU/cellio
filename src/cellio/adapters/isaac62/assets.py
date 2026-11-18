@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import tempfile
 
 from cellio.io import CellIOError
@@ -50,6 +51,7 @@ def verify_assets(root):
 
 
 def _collect(root, source):
+    import omni.kit.app
     from pxr import Sdf, UsdUtils
 
     destination = root / "localized"
@@ -69,14 +71,35 @@ def _collect(root, source):
     for identifier in [str(layer.realPath) for layer in local_layers] + list(map(str, local_assets)):
         if not Path(identifier).resolve().is_relative_to(destination):
             raise _failure(f"Dependency is not self-contained: {identifier}")
+    extensions = omni.kit.app.get_app().get_extension_manager()
+    extensions.set_extension_enabled_immediate("isaacsim.robot_motion.cumotion", True)
+    from isaacsim.robot_motion.cumotion import load_cumotion_supported_robot
+    motion_root = Path(load_cumotion_supported_robot("franka").directory)
+    motion_paths = motion_files(motion_root)
+    frozen_motion = destination / ".cellio-motion"
+    frozen_motion.mkdir()
+    for path in motion_paths:
+        shutil.copyfile(path, frozen_motion / path.name)
     files = {
         path.relative_to(root).as_posix(): {"sha256": file_sha256(path), "bytes": path.stat().st_size}
         for path in sorted(destination.rglob("*")) if path.is_file()
     }
     return {"schema": "cellio.assets/1.0", "source": source, "entry": entry.relative_to(root).as_posix(),
-            "terms": LICENSE_URL, "files": files,
+            "terms": LICENSE_URL, "files": files, "motion_config": {
+                path.name: {"source_path": str(path), "sha256": file_sha256(path)}
+                for path in motion_paths},
             "source_layers": sorted(str(layer.identifier) for layer in layers),
             "source_assets": sorted(map(str, assets))}
+
+
+def motion_files(directory):
+    """Discover the official Franka kinematic descriptions and its tuned RMPflow file."""
+    urdf = sorted(directory.glob("*.urdf"))
+    xrdf = sorted(directory.glob("*.xrdf"))
+    rmp = directory / "rmp_flow.yaml"
+    if not urdf or not xrdf or not rmp.is_file():
+        raise _failure(f"Incomplete cuMotion configuration directory: {directory}")
+    return (*urdf, *xrdf, rmp)
 
 
 def resolve_assets(root, *, source=None):
@@ -89,7 +112,8 @@ def resolve_assets(root, *, source=None):
         raise _failure("Uncommitted localized directory exists. Select a fresh cache directory.")
     from isaacsim.simulation_app import SimulationApp
 
-    app = SimulationApp({"headless": True, "multi_gpu": False, "disable_viewport_updates": True})
+    app = SimulationApp({"headless": True, "multi_gpu": False, "disable_viewport_updates": True,
+                         "fast_shutdown": False})
     try:
         if source is None:
             from isaacsim.storage.native import get_assets_root_path

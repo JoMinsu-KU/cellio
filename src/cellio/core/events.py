@@ -38,14 +38,20 @@ class EventBus:
             if current is not None and type(current) is not bool:
                 raise CellIOError("SIM_STATE_INVALID", key)
             previous = self._previous.get(key)
-            if current and (previous is False or tick.step == 0 and key in fire_on_initial):
-                events.append(self._event(tick, 2, len(events), key, {"predicate_id": key}))
+            if current and (
+                previous is False or tick.step == 0 and key in fire_on_initial
+            ):
+                events.append(
+                    self._event(tick, 2, len(events), key, {"predicate_id": key})
+                )
             self._previous[key] = current
         return tuple(events)
 
     def commit_controller(self, tick, emissions):
         events = tuple(
-            self._event(tick, 4, i, e["event_type"], e.get("payload", {}), e.get("entity_id"))
+            self._event(
+                tick, 4, i, e["event_type"], e.get("payload", {}), e.get("entity_id")
+            )
             for i, e in enumerate(emissions)
         )
         if events:

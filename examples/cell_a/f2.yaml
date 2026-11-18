@@ -1,0 +1,53 @@
+schema_version: cellio.config/1.0
+scenario_id: cell_a.f2
+profile: isaac62_lockstep
+scene:
+  revision: 1
+  variant_id: canonical
+  cell_id: cell_a
+controller:
+  revision: 1
+  parameters:
+    freshness_limit_steps: 12
+    wait_timeout_steps: 360
+    motion_timeout_steps: 960
+    grip_timeout_steps: 240
+    terminal_mode: hold
+  id: reference
+seeds:
+  scene: 1000
+  controller: 0
+  fault: 0
+requirements:
+  revision: 1
+  parameter_overrides: {}
+  preset: cell_a
+faults:
+- fault_id: fault_primary
+  family: F2
+  model_id: frozen_sample_with_age_v1
+  target_id: gripper.closed
+  trigger:
+    kind: controller_event
+    event_type: controller.stage_enter
+    event_filter:
+      stage_id: grasp
+  arm:
+    open_step: 0
+    close_step: 4800
+  offset_steps: 0
+  duration_steps: 480
+  parameters: {}
+  require_exercised: true
+clock:
+  physics_hz: 120
+  controller_divisor: 4
+episode:
+  horizon_steps: 7200
+  warmup_steps: 240
+  reset_mode: fresh_process
+artifacts:
+  output_root: artifacts/runs
+  trace_format: jsonl_gzip
+  video: false
+expected: null

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "attempt_id": {
+      "type": "string"
+    },
+    "artifact_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "completion_status": {
+      "type": "string",
+      "enum": [
+        "COMPLETED",
+        "CANCELLED",
+        "INFRA_ERROR"
+      ]
+    },
+    "end_step": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "task_outcome": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAILED",
+        "CONTROLLED_ABORT",
+        "UNKNOWN"
+      ]
+    },
+    "case_verdict": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNKNOWN",
+        "NOT_SCORED"
+      ]
+    },
+    "compliance_verdict": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    }
+  },
+  "required": [
+    "run_id",
+    "attempt_id",
+    "artifact_digest",
+    "completion_status",
+    "end_step",
+    "task_outcome",
+    "case_verdict",
+    "compliance_verdict"
+  ]
+}

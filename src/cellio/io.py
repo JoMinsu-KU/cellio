@@ -14,7 +14,10 @@ def json_value(value):
     if isinstance(value, Enum):
         return json_value(value.value)
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
-        return {f.name: json_value(getattr(value, f.name)) for f in dataclasses.fields(value)}
+        return {
+            f.name: json_value(getattr(value, f.name))
+            for f in dataclasses.fields(value)
+        }
     if isinstance(value, Mapping):
         if not all(isinstance(key, str) for key in value):
             raise TypeError("JSON keys must be strings")
@@ -25,8 +28,13 @@ def json_value(value):
 
 
 def canonical(value) -> bytes:
-    return json.dumps(json_value(value), sort_keys=True, ensure_ascii=False,
-                      allow_nan=False, separators=(",", ":")).encode("utf-8")
+    return json.dumps(
+        json_value(value),
+        sort_keys=True,
+        ensure_ascii=False,
+        allow_nan=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
 
 def digest(value) -> str:

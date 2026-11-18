@@ -1,0 +1,8 @@
+PyYAML==6.0.3
+cellio==1.0.0.dev0
+isaacsim==6.2.0.0
+isaacsim-kernel==6.2.0.0
+isaacsim-robot-motion==6.2.0.0
+jsonschema==4.26.0
+torch==2.11.0+cu130
+warp-lang==1.19.0

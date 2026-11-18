@@ -46,7 +46,7 @@ def dynamic_map(values):
             "additionalProperties": False}
 
 
-def config_schema():
+def config_schema(scene_ids=CELLS, controller_ids=CONTROLLERS):
     const = lambda value: {"const": value}
     triggers = [
         obj({"kind": const("at_step"), "at_step": integer(0)}, ["kind", "at_step"]),
@@ -82,17 +82,17 @@ def config_schema():
     result = obj({
         "schema_version": const("cellio.config/1.0"), "scenario_id": ID,
         "profile": enum(["isaac62_lockstep", "mock_lockstep"]),
-        "scene": obj({"cell_id": enum(CELLS), "revision": const(1),
+        "scene": obj({"cell_id": enum(scene_ids), "revision": const(1),
                       "variant_id": const("canonical")}, ["cell_id"]),
         "clock": obj({"physics_hz": const(120), "controller_divisor": const(4)}),
-        "controller": obj({"id": enum(CONTROLLERS), "revision": const(1),
+        "controller": obj({"id": enum(controller_ids), "revision": const(1),
                            "parameters": obj({**params, "terminal_mode": const("hold")})}, ["id"]),
         "seeds": obj({k: integer(0, 2**32-1) for k in ["scene", "controller", "fault"]},
                      ["scene", "controller", "fault"]),
         "episode": obj({"horizon_steps": integer(1), "warmup_steps": integer(0),
                         "reset_mode": enum(["fresh_process", "hard_reload"])}),
         "faults": {"type": "array", "maxItems": 1, "items": {"oneOf": fault_forms}},
-        "requirements": obj({"preset": enum(CELLS), "revision": const(1),
+        "requirements": obj({"preset": enum(scene_ids), "revision": const(1),
                              "parameter_overrides": obj({})}, ["preset"]),
         "artifacts": obj({"output_root": {"type": "string", "minLength": 1},
                           "trace_format": const("jsonl_gzip"), "video": {"type": "boolean"}}),

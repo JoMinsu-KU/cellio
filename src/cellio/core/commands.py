@@ -6,29 +6,44 @@ from math import isfinite
 
 from .models import (
     CellIOError,
-    CommandKind as Kind,
     DeliveryDecision,
     PublicCommandReceipt,
     quaternion,
     uint,
 )
-
+from .models import (
+    CommandKind as Kind,
+)
 
 NORMAL = {Kind.POSE, Kind.BOOL, Kind.JOINT_POSITION, Kind.GRIPPER_GAP}
 
 
 def _safe_stop(intent):
-    return intent.kind == Kind.HOLD or intent.kind == Kind.BOOL and intent.value is False
+    return (
+        intent.kind == Kind.HOLD or intent.kind == Kind.BOOL and intent.value is False
+    )
 
 
 class CommandRouter:
     def __init__(
-        self, cell_id, attempt_id, episode_id, generation, *, queue_limit=256, intent_limit=4096
+        self,
+        cell_id,
+        attempt_id,
+        episode_id,
+        generation,
+        *,
+        queue_limit=256,
+        intent_limit=4096,
     ):
-        if cell_id not in {"cell_a", "cell_b"}:
-            raise CellIOError("CFG_SCENE", cell_id)
+        from cellio.plugins import scene_plugin
+
+        self.kinds = scene_plugin(cell_id).entity_registry()["actuators"]
         self.cell_id = cell_id
-        self.attempt_id, self.episode_id, self.generation = attempt_id, episode_id, generation
+        self.attempt_id, self.episode_id, self.generation = (
+            attempt_id,
+            episode_id,
+            generation,
+        )
         self.queue_limit, self.intent_limit = queue_limit, intent_limit
         self.epoch = 0
         self.cancelled = False
@@ -48,7 +63,8 @@ class CommandRouter:
         uint(intent.operation_epoch, "operation_epoch")
         if intent.command_id != f"{self.attempt_id}:cmd:{intent.sequence}":
             raise CellIOError(
-                "CTRL_COMMAND_CONFLICT", "command ID does not match attempt and sequence"
+                "CTRL_COMMAND_CONFLICT",
+                "command ID does not match attempt and sequence",
             )
         if (
             intent.issued_step != k
@@ -57,21 +73,7 @@ class CommandRouter:
             or intent.job_id != 0
         ):
             raise CellIOError("CTRL_COMMAND_CONFLICT", "unexpected issue step or job")
-        kinds = {
-            "actuator.robot": {Kind.POSE, Kind.HOLD},
-            "actuator.gripper": {Kind.GRIPPER_GAP, Kind.HOLD},
-            "control.operation": {Kind.CANCEL_OPERATION},
-        }
-        if self.cell_id == "cell_a":
-            kinds["actuator.belt"] = {Kind.BOOL}
-        else:
-            kinds.update(
-                {
-                    "actuator.clamp": {Kind.JOINT_POSITION, Kind.HOLD},
-                    "actuator.process": {Kind.BOOL},
-                }
-            )
-        if kind not in kinds.get(key, ()):
+        if kind not in self.kinds.get(key, ()):
             raise CellIOError("CTRL_COMMAND_KIND", key)
         if kind == Kind.POSE:
             valid = (
@@ -125,17 +127,32 @@ class CommandRouter:
         # An epoch can advance only through a same-generation cancellation. Stale packets
         # must never consume sequence numbers or disturb duplicate detection in the live epoch.
         proposed_cancel = any(
-            i.kind == Kind.CANCEL_OPERATION and i.episode_id == self.episode_id
-            and i.generation == self.generation and i.value == self.epoch
-            and i.operation_epoch == self.epoch+1 for i in intents
+            i.kind == Kind.CANCEL_OPERATION
+            and i.episode_id == self.episode_id
+            and i.generation == self.generation
+            and i.value == self.epoch
+            and i.operation_epoch == self.epoch + 1
+            for i in intents
         )
         eligible_epoch = self.epoch + int(proposed_cancel)
         for original in intents:
-            if (original.episode_id, original.generation) != (self.episode_id, self.generation):
-                decisions.append(self._decision(original, channel, k, "STALE", reason="GENERATION"))
+            if (original.episode_id, original.generation) != (
+                self.episode_id,
+                self.generation,
+            ):
+                decisions.append(
+                    self._decision(original, channel, k, "STALE", reason="GENERATION")
+                )
                 continue
-            if original.kind != Kind.CANCEL_OPERATION and original.operation_epoch != eligible_epoch:
-                decisions.append(self._decision(original, channel, k, "STALE", reason="OPERATION_EPOCH"))
+            if (
+                original.kind != Kind.CANCEL_OPERATION
+                and original.operation_epoch != eligible_epoch
+            ):
+                decisions.append(
+                    self._decision(
+                        original, channel, k, "STALE", reason="OPERATION_EPOCH"
+                    )
+                )
                 continue
             previous = self._original.get(
                 original.command_id, seen_this_tick.get(original.command_id)
@@ -144,10 +161,14 @@ class CommandRouter:
                 if previous != original:
                     raise CellIOError("CTRL_COMMAND_CONFLICT", original.command_id)
                 decisions.append(
-                    self._decision(original, channel, k, "DUPLICATE", reason="RETRANSMISSION")
+                    self._decision(
+                        original, channel, k, "DUPLICATE", reason="RETRANSMISSION"
+                    )
                 )
                 continue
-            if original.sequence <= sequence or (sequence == -1 and original.sequence != 0):
+            if original.sequence <= sequence or (
+                sequence == -1 and original.sequence != 0
+            ):
                 raise CellIOError("CTRL_COMMAND_CONFLICT", "nonmonotonic sequence")
             valid = self._validate(original, k)
             sequence = valid.sequence
@@ -176,7 +197,9 @@ class CommandRouter:
         target = faults.spec.target_id if faults.spec else None
         ending = faults.ended_at("F4", k)
         if faults.active_for("F4") and not cancels:
-            new_count = sum(i.kind in NORMAL and i.actuator_id == target for i in valid_new)
+            new_count = sum(
+                i.kind in NORMAL and i.actuator_id == target for i in valid_new
+            )
             if len(self._pending) + new_count > self.queue_limit:
                 raise CellIOError("QUEUE_OVERFLOW", target)
         self._last_step, self._sequence, self.epoch = k, sequence, next_epoch
@@ -185,7 +208,9 @@ class CommandRouter:
         self._seen.update({i.command_id: i for i in new})
         for i in new:
             if i.operation_epoch != next_epoch:
-                decisions.append(self._decision(i, channel, k, "STALE", reason="OPERATION_EPOCH"))
+                decisions.append(
+                    self._decision(i, channel, k, "STALE", reason="OPERATION_EPOCH")
+                )
         flushed_due = {}
         if cancels or ending:
             for d in self._pending:
@@ -209,7 +234,9 @@ class CommandRouter:
             self.effective.clear()
             self.desired.clear()
         ready = []
-        for i in sorted(valid_new, key=lambda i: (i.kind != Kind.CANCEL_OPERATION, i.sequence)):
+        for i in sorted(
+            valid_new, key=lambda i: (i.kind != Kind.CANCEL_OPERATION, i.sequence)
+        ):
             self._receipts.append(
                 PublicCommandReceipt(
                     i.command_id, i.operation_epoch, i.actuator_id, "ACCEPTED", k, None
@@ -217,7 +244,11 @@ class CommandRouter:
             )
             if i.kind != Kind.CANCEL_OPERATION:
                 self.desired[i.actuator_id] = i
-            if faults.active_for("F4", i.actuator_id) and i.kind in NORMAL and not self.cancelled:
+            if (
+                faults.active_for("F4", i.actuator_id)
+                and i.kind in NORMAL
+                and not self.cancelled
+            ):
                 delayed = self._decision(
                     i, channel, k + faults.spec.parameters["delay_steps"], "QUEUED"
                 )
@@ -244,7 +275,10 @@ class CommandRouter:
                 )
         waiting = []
         for d in self._pending:
-            if d.channel_generation != channel or d.intent.operation_epoch != self.epoch:
+            if (
+                d.channel_generation != channel
+                or d.intent.operation_epoch != self.epoch
+            ):
                 raise CellIOError("QUEUE_STALE", d.intent.command_id)
             if d.due_step <= k:
                 ready.append(replace(d, status="DELIVERED", delivery_step=k))
@@ -257,33 +291,58 @@ class CommandRouter:
         }
         for d in sorted(
             ready,
-            key=lambda d: (d.intent.kind != Kind.CANCEL_OPERATION, d.due_step, d.intent.sequence),
+            key=lambda d: (
+                d.intent.kind != Kind.CANCEL_OPERATION,
+                d.due_step,
+                d.intent.sequence,
+            ),
         ):
             if d.intent.sequence != latest[d.intent.actuator_id]:
                 decisions.append(
-                    replace(d, delivery_step=None, status="SUPERSEDED", reason="NEWER_SEQUENCE")
+                    replace(
+                        d,
+                        delivery_step=None,
+                        status="SUPERSEDED",
+                        reason="NEWER_SEQUENCE",
+                    )
                 )
             else:
                 if d.intent.kind != Kind.CANCEL_OPERATION:
                     self.effective[d.intent.actuator_id] = d.intent
                 decisions.append(d)
-        self._dispatched = {d.intent.command_id:d for d in decisions if d.status=="DELIVERED"}
+        self._dispatched = {
+            d.intent.command_id: d for d in decisions if d.status == "DELIVERED"
+        }
         return tuple(decisions)
 
     def acknowledge(self, receipt):
         if (receipt.tick.episode_id, receipt.tick.generation, receipt.tick.step) != (
-            self.episode_id, self.generation, self._last_step
+            self.episode_id,
+            self.generation,
+            self._last_step,
         ):
-            raise CellIOError("SIM_ACTUATION_FAILED", "receipt from another episode or tick")
+            raise CellIOError(
+                "SIM_ACTUATION_FAILED", "receipt from another episode or tick"
+            )
         for cmd in receipt.applied_commands:
             intent = self._seen.get(cmd.command_id)
             dispatched = self._dispatched.get(cmd.command_id)
-            if (not intent or dispatched is None or cmd.generation != self.generation or
-                cmd.actuator_id != intent.actuator_id or cmd.issued_step != intent.issued_step or
-                cmd.due_step != dispatched.due_step):
-                raise CellIOError("SIM_ACTUATION_FAILED", "backend receipt does not match a delivered command")
+            if (
+                not intent
+                or dispatched is None
+                or cmd.generation != self.generation
+                or cmd.actuator_id != intent.actuator_id
+                or cmd.issued_step != intent.issued_step
+                or cmd.due_step != dispatched.due_step
+            ):
+                raise CellIOError(
+                    "SIM_ACTUATION_FAILED",
+                    "backend receipt does not match a delivered command",
+                )
             if cmd.command_id in self._applied:
-                raise CellIOError("SIM_ACTUATION_FAILED", "duplicate backend application")
+                raise CellIOError(
+                    "SIM_ACTUATION_FAILED", "duplicate backend application"
+                )
             if cmd.status == "APPLIED" and cmd.applied_step == receipt.tick.step:
                 status, reason = "APPLIED", None
                 self._applied.add(cmd.command_id)
@@ -292,7 +351,9 @@ class CommandRouter:
             elif cmd.status == "CANCELLED":
                 status, reason = "CANCELLED", "CANCELLED"
             else:
-                raise CellIOError("SIM_ACTUATION_FAILED", "invalid backend acknowledgement")
+                raise CellIOError(
+                    "SIM_ACTUATION_FAILED", "invalid backend acknowledgement"
+                )
             self._receipts.append(
                 PublicCommandReceipt(
                     cmd.command_id,

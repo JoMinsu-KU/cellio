@@ -5,7 +5,12 @@ from dataclasses import replace
 import pytest
 
 from cellio.core.commands import CommandRouter
-from cellio.core.faults import MODEL_IDS, FaultEngine, ObservationDelayQueue, ScheduledObservation
+from cellio.core.faults import (
+    MODEL_IDS,
+    FaultEngine,
+    ObservationDelayQueue,
+    ScheduledObservation,
+)
 from cellio.core.models import (
     ActuationReceipt,
     CellIOError,
@@ -18,7 +23,6 @@ from cellio.core.models import (
     TruthSnapshot,
     Verdict,
 )
-
 
 FAMILIES = tuple(MODEL_IDS)
 SIGNAL = "gripper.closed"
@@ -49,7 +53,9 @@ def plan(family, start=2, duration=4, delay=1, value=False, horizon=240, target=
 
 
 def sample(signal, k, value=True, generation=0):
-    return SignalSample(signal, "bool", value, Quality.GOOD, k, k, k, None, None, generation, None)
+    return SignalSample(
+        signal, "bool", value, Quality.GOOD, k, k, k, None, None, generation, None
+    )
 
 
 def intent(
@@ -63,7 +69,16 @@ def intent(
     episode="episode",
 ):
     return CommandIntent(
-        f"attempt:cmd:{sequence}", sequence, episode, generation, epoch, k, endpoint, kind, value, 0
+        f"attempt:cmd:{sequence}",
+        sequence,
+        episode,
+        generation,
+        epoch,
+        k,
+        endpoint,
+        kind,
+        value,
+        0,
     )
 
 
@@ -71,7 +86,9 @@ class Fixture:
     def __init__(self, spec, horizon=240, generation=0, cell="cell_a", queue_limit=256):
         self.fault = FaultEngine(spec, horizon, cell)
         self.fault.reset("episode", generation)
-        self.router = CommandRouter(cell, "attempt", "episode", generation, queue_limit=queue_limit)
+        self.router = CommandRouter(
+            cell, "attempt", "episode", generation, queue_limit=queue_limit
+        )
         self.generation = generation
         self.cell = cell
 
@@ -108,10 +125,16 @@ class Fixture:
         overrides = self.fault.actuator_overrides()
         target = GRIPPER if self.cell == "cell_a" else "actuator.clamp"
         final = (
-            dict(overrides[target]["driver_positions"]) if overrides else {driver: nominal_target}
+            dict(overrides[target]["driver_positions"])
+            if overrides
+            else {driver: nominal_target}
         )
         receipt = ActuationReceipt(
-            tick, committed, (), {target: tuple(final.values())}, ("primary",) if overrides else ()
+            tick,
+            committed,
+            (),
+            {target: tuple(final.values())},
+            ("primary",) if overrides else (),
         )
         truth = TruthSnapshot(tick, {}, {}, (), {}, True)
         frame = TickEvidenceFrame(
@@ -146,7 +169,13 @@ class Fixture:
 def cases(suffix):
     values = []
     for f in FAMILIES:
-        variants = (False, True) if f == "F1" else (1, 24, 120) if f in ("F3", "F4") else (None,)
+        variants = (
+            (False, True)
+            if f == "F1"
+            else (1, 24, 120)
+            if f in ("F3", "F4")
+            else (None,)
+        )
         values.extend(pytest.param(f, v, id=f"T-{f}-{suffix:02}-{v}") for v in variants)
     return values
 
@@ -170,8 +199,14 @@ def build(f, v, start=2, duration=4, horizon=240):
 def test_start_boundary(f, v, start):
     fx = build(f, v, start, 4)
     for k in range(start + 1):
-        raw = {SIGNAL: sample(SIGNAL, k, not v), OTHER: sample(OTHER, k)} if f == "F1" else None
-        frame = fx.tick(k, raw=raw, commands=(intent(k, 0),) if f == "F4" and k == start else ())
+        raw = (
+            {SIGNAL: sample(SIGNAL, k, not v), OTHER: sample(OTHER, k)}
+            if f == "F1"
+            else None
+        )
+        frame = fx.tick(
+            k, raw=raw, commands=(intent(k, 0),) if f == "F4" and k == start else ()
+        )
         assert fx.fault.active == (k == start)
         if k < start:
             assert frame.observed_signals[SIGNAL].source_step == k
@@ -206,7 +241,9 @@ def test_end_exclusive(f, v):
     fx = build(f, v)
     frames = []
     for k in range(7):
-        frames.append(fx.tick(k, commands=(intent(k, 0),) if f == "F4" and k == 5 else ()))
+        frames.append(
+            fx.tick(k, commands=(intent(k, 0),) if f == "F4" and k == 5 else ())
+        )
         assert fx.fault.active == (2 <= k < 6)
     assert frames[6].observed_signals[SIGNAL].source_step == 6
     assert frames[6].observed_signals[SIGNAL].quality == Quality.GOOD
@@ -228,13 +265,18 @@ def test_single_tick(f, v):
     fx = build(f, v, start=1, duration=1)
     raw_value = v if f == "F1" else True
     for k in range(3):
-        frame = fx.tick(k, raw={SIGNAL: sample(SIGNAL, k, raw_value)}, nominal_target=0.04)
+        frame = fx.tick(
+            k, raw={SIGNAL: sample(SIGNAL, k, raw_value)}, nominal_target=0.04
+        )
         assert fx.fault.active == (k == 1)
     state = fx.fault.finalize(3)
     if f in ("F1", "F2", "F4", "F6"):
         assert state["effect_status"] == "NOT_REALIZED"
     else:
-        assert state["effect_status"] == "REALIZED" and state["controller_exposure_count"] == 0
+        assert (
+            state["effect_status"] == "REALIZED"
+            and state["controller_exposure_count"] == 0
+        )
     assert frame.observed_signals[SIGNAL].deliver_step == 2
 
 
@@ -244,7 +286,11 @@ def test_untargeted_channel_identical(f, v):
     clean = Fixture(None)
     for k in range(8):
         args = (
-            {"commands": (intent(k, 0, True, kind=CommandKind.BOOL, endpoint="actuator.belt"),)}
+            {
+                "commands": (
+                    intent(k, 0, True, kind=CommandKind.BOOL, endpoint="actuator.belt"),
+                )
+            }
             if k == 3
             else {}
         )
@@ -313,7 +359,11 @@ def test_horizon_has_no_restoration(f, v):
     for k in range(6):
         fx.tick(k)
     state = fx.fault.finalize(6)
-    assert (state["scheduled_end"], state["actual_end"], state["restoration_status"]) == (
+    assert (
+        state["scheduled_end"],
+        state["actual_end"],
+        state["restoration_status"],
+    ) == (
         6,
         6,
         "UNOBSERVED",
@@ -328,7 +378,10 @@ def test_T_F2_09_invalid_freeze():
         0,
         raw={
             SIGNAL: replace(
-                sample(SIGNAL, 0), quality=Quality.BAD, value=None, reason="SOURCE_INVALID"
+                sample(SIGNAL, 0),
+                quality=Quality.BAD,
+                value=None,
+                reason="SOURCE_INVALID",
             )
         },
     )
@@ -373,10 +426,17 @@ def test_T_F3_09_fifo_examples(start):
 def test_T_F3_10_long_delay_flush():
     fx = Fixture(plan("F3", start=0, duration=3, delay=120))
     frames = [fx.tick(k) for k in range(4)]
-    assert all(f.observed_signals[SIGNAL].quality == Quality.MISSING for f in frames[:3])
-    assert fx.fault.state.flushed_packet_count == 3 and fx.fault.state.delayed_packet_count == 0
+    assert all(
+        f.observed_signals[SIGNAL].quality == Quality.MISSING for f in frames[:3]
+    )
+    assert (
+        fx.fault.state.flushed_packet_count == 3
+        and fx.fault.state.delayed_packet_count == 0
+    )
     assert [
-        e["source_seq"] for e in frames[-1].fault_transitions if e["kind"] == "RESTORE_FLUSH"
+        e["source_seq"]
+        for e in frames[-1].fault_transitions
+        if e["kind"] == "RESTORE_FLUSH"
     ] == [0, 1, 2]
 
 
@@ -384,7 +444,9 @@ def test_T_F3_11_packet_due_on_E_discarded():
     fx = Fixture(plan("F3", start=4, duration=6, delay=3))
     frames = [fx.tick(k) for k in range(11)]
     assert [
-        e["due_step"] for e in frames[10].fault_transitions if e["kind"] == "RESTORE_FLUSH"
+        e["due_step"]
+        for e in frames[10].fault_transitions
+        if e["kind"] == "RESTORE_FLUSH"
     ] == [10, 11, 12]
     assert frames[10].observed_signals[SIGNAL].source_step == 10
 
@@ -411,7 +473,8 @@ def test_T_F4_09_due_and_old_goal():
         assert fx.router.effective[GRIPPER].sequence == int(k >= 7)
         if k == 4:
             assert (
-                fx.router.desired[GRIPPER].sequence == 1 and frame.deliveries[0].status == "QUEUED"
+                fx.router.desired[GRIPPER].sequence == 1
+                and frame.deliveries[0].status == "QUEUED"
             )
     assert delivered(frame)[0].due_step == delivered(frame)[0].delivery_step == 7
     assert fx.fault.state.first_effect_step == 4
@@ -430,7 +493,9 @@ def test_T_F4_11_latest_restored_once(new_at_E):
     inputs = {4: intent(4, 0, 0.04), 8: intent(8, 1, 0.02)}
     if new_at_E:
         inputs[10] = intent(10, 2, 0.01)
-    frames = [fx.tick(k, commands=(inputs[k],) if k in inputs else ()) for k in range(13)]
+    frames = [
+        fx.tick(k, commands=(inputs[k],) if k in inputs else ()) for k in range(13)
+    ]
     values = [
         (d.intent.sequence, d.delivery_step, d.delivery_step - d.intent.issued_step)
         for f in frames
@@ -467,7 +532,10 @@ def test_F4_cancel_precedes_poll_or_restore(cancel_at):
         frame = fx.tick(k, commands=cmds)
         if k == cancel_at:
             assert [d.intent.sequence for d in delivered(frame)] == [1, 2]
-            assert any(d.intent.sequence == 0 and d.status == "CANCELLED" for d in frame.deliveries)
+            assert any(
+                d.intent.sequence == 0 and d.status == "CANCELLED"
+                for d in frame.deliveries
+            )
     assert fx.router.effective[GRIPPER].kind == CommandKind.HOLD
 
 
