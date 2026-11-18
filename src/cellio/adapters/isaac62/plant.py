@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import gc
 import json
-from math import isclose, isfinite
+from math import dist, isclose, isfinite
 from pathlib import Path
 
 from cellio.core.models import (
@@ -13,9 +13,9 @@ from cellio.core.models import (
 )
 from cellio.scenes import get_scene
 from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, HOME
-from .assets import CATALOG_PATH, LOCK, file_sha256, motion_files, verify_assets
+from .assets import CATALOG_PATH, LOCK, file_sha256, motion_files, verify_assets, verify_sdk_materials
 from .application import release_application, start_application
-from .geometry import compose, rotate, world_aabb
+from .geometry import compose, quat_distance, rotate, world_aabb
 
 DT = 1 / 120
 
@@ -88,6 +88,7 @@ class IsaacPlant:
         if self.robot_asset is None:
             if self.asset_root:
                 lock = verify_assets(self.asset_root)
+                verify_sdk_materials(lock)
                 self.robot_asset = str((Path(self.asset_root) / lock["entry"]).resolve())
             else:
                 root = get_assets_root_path()
@@ -203,6 +204,14 @@ class IsaacPlant:
         pos, rotation = self.scene.initial_pose(initial_state)
         bodies.set_world_poses(positions=[pos], orientations=[rotation], indices=part_index)
         bodies.set_velocities(linear_velocities=[[0., 0., 0.]], angular_velocities=[[0., 0., 0.]], indices=part_index)
+        initial_xyz, initial_wxyz = map(_floats, bodies.get_world_poses(indices=part_index))
+        root_xyz, root_wxyz = map(_floats, self.robot.get_world_poses())
+        root_matrix = self.builder.Geom.XformCache().GetLocalToWorldTransform(stage.GetPrimAtPath(ROBOT))
+        root_scale = tuple(self.builder.Gf.Transform(root_matrix).GetScale())
+        if (dist(initial_xyz, pos) > 1e-5 or quat_distance(initial_wxyz, rotation) > .001
+                or dist(root_xyz, robot_base) > 1e-5 or quat_distance(root_wxyz, (1., 0., 0., 0.)) > .001
+                or dist(root_scale, (1., 1., 1.)) > 1e-6):
+            raise CellIOError("ASSET_TRANSFORM_MISMATCH", "Live reset poses or composed Franka base scale differ from the input")
         self.contact = ContactPairs(self.builder.collider_ids)
         self.motion = FrankaMotion(self.robot, self.builder, self.profile, self.hand_T_tcp)
         motion_dir = Path(self.motion.config.directory).resolve()
@@ -247,6 +256,9 @@ class IsaacPlant:
                            "finger_drive_settings": self.builder.finger_drive_settings,
                            "finger_tensor_readback": live_fingers,
                            "rigid_body_masses_kg": measured_masses,
+                           "robot_root_before_warmup": {"xyz_m": root_xyz, "orientation_wxyz": root_wxyz,
+                                                       "composed_scale": root_scale},
+                           "part_before_warmup": {"xyz_m": initial_xyz, "orientation_wxyz": initial_wxyz},
                            "gripper_slew_mps": self.gripper_slew_mps,
                            "gripper_open_slew_mps": self.gripper_open_slew_mps,
                            "articulation_solver": self.builder.solver_settings,

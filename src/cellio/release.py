@@ -474,6 +474,28 @@ def audit_clean(root, folder):
             reason="reproduction has a different candidate or a reused checkout",
         )
     commands = proof.get("commands", [])
+    for prior in proof.get("prior_preparations", []):
+        checkpoint = (directory / prior["log"]).resolve()
+        if checkpoint.parent != directory or file_hash(checkpoint) != prior["sha256"]:
+            return gate(
+                "FAIL", (proof_file,), reason="Prior preparation checkpoint differs"
+            )
+        failed = read(checkpoint).get("commands", [])
+        if (
+            not failed
+            or failed[-1]["exit_code"] == 0
+            or any(
+                item["key"] not in {"create_env", "torch", "isaac", "dependencies"}
+                or (directory / item["log"]).resolve().parent != directory
+                or file_hash(directory / item["log"]) != item["log_sha256"]
+                for item in failed
+            )
+        ):
+            return gate(
+                "FAIL",
+                (proof_file,),
+                reason="Prior setup history differs or included physical trials",
+            )
     keys = [item["key"] for item in commands]
     required = [
         "create_env",
@@ -528,6 +550,9 @@ def audit_clean(root, folder):
     pkg = Path(identity["package"]).resolve().parent
     if (
         Path(identity["prefix"]).resolve() != prefix
+        or Path(identity.get("conda_prefix", "")).resolve() != prefix
+        or Path(identity.get("conda_dll_directory", "")).resolve()
+        != prefix / "Library" / "bin"
         or not exe.is_relative_to(prefix)
         or not pkg.is_relative_to(prefix)
         or identity["os"] != "Windows"
@@ -543,6 +568,15 @@ def audit_clean(root, folder):
             "FAIL",
             (proof_file,),
             reason="isolated Python and Isaac runtime identities differ",
+        )
+    if identity.get("loaded_conda_dlls") != {
+        "python312.dll": str(prefix / "python312.dll"),
+        "sqlite3.dll": str(prefix / "Library" / "bin" / "sqlite3.dll"),
+    }:
+        return gate(
+            "FAIL",
+            (proof_file,),
+            reason="Loaded runtime DLLs differ from the clean Conda prefix",
         )
     if any(Path(c["argv"][0]).resolve() != exe for c in commands[1:]):
         return gate(

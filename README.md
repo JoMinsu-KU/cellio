@@ -8,6 +8,8 @@ The [installation guide](docs/installation.md) describes both runtimes. Follow t
 
 The Windows [physics probe](results/workstation/doctor-windows-drive.json) measures free fall and a driven prismatic joint. In separate full-horizon commissioning runs, Cell A transferred its part and Cell B clamped, processed and unloaded its part. Windows and WSL2 reproduced the first witness step of each requirement. The [commissioning record](docs/adr/002-gripper-commissioning.md) identifies the tuning conditions and the overlap of one initial state with the registered evaluation.
 
+The workstation completed 19 headless development attempts of 7,200 steps each. Using the observed mean for each cell, 410 attempts per cell would take about 13.82 hours from supervisor launch through closure and produce 9.64 GiB of sealed artifacts. The register retains the failed, aborted and successful trials, their hashes, and the GUI clock and gripper measurements. [Workstation commissioning register](results/workstation/commissioning-register.json)
+
 The [campaign guide](docs/run_campaigns.md) explains how to collect the repeated nominal trials, check the boundary states, freeze the candidate, and resume the registered physical campaigns. The [experiment protocols](protocols) specify their cells, seeds and repeat counts.
 
 A small Windows-generated [mock attempt](examples/traces/mock-36) is available for offline replay. It contains 36 physics decisions. The final placement goal expires at this short horizon. The [Windows verdicts](results/r0/replay-windows.json) and [WSL verdicts](results/r0/replay-linux.json) record the same source digest, rule digest and witness steps.

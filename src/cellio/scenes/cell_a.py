@@ -10,4 +10,5 @@ SCENE = Scene(
     {"park": (.30, 0., 1.10), "pickup_hover": (.45, -.116, 1.030),
      "pickup_grasp": (.45, -.116, .815), "transfer_mid": (.45, .08, 1.030),
      "output_hover": (.45, .25, 1.030), "output_place": (.45, .25, .815)},
+    "Conveyor/Belt",
 )

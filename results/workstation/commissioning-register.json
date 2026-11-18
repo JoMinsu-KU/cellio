@@ -1,0 +1,2130 @@
+{
+  "schema_version": "cellio.development_commissioning/1.0",
+  "scope": "Native Windows Isaac development commissioning; exploratory settings and repeated conditions",
+  "sample_definition": "Every sealed attempt discovered in the commissioning tree at enumeration, including early errors and short clock/video checks. The capacity subset uses every headless, completed H=7200 attempt, regardless of its task or compliance result.",
+  "time_and_storage_basis": "RUNNING is measured episode wall time. Supervisor time spans PLANNED to terminal, including boot and closure. Bytes sum sealed files, the final manifest and COMPLETE. Cache, simulator assets, unsealed logs, retries and separate studies are excluded from the projection.",
+  "initial_state_basis": "Seed matches require identical x/y offsets, yaw and mass to the registered sampler. Original attempts predate the proposal log. Explicit poses retain their nominal seed label.",
+  "physics_fields": "Worker overrides are explicit request values. ADR 002 states the intended force for identified, hash-matched published replays. Runtime articulation_solver and finger_drive_settings are USD/PhysX attribute readbacks; finger_tensor_readback and rigid_body_masses_kg are live tensor measurements where available. Slew values are software target limits. Absent historical fields have no recorded readback.",
+  "counts": {
+    "sealed": 23,
+    "full_headless_completed": 19,
+    "execution_status": {
+      "INFRA_ERROR": 1,
+      "COMPLETED": 22
+    },
+    "full_headless_task_outcomes": {
+      "FAILED": 5,
+      "SUCCESS": 9,
+      "CONTROLLED_ABORT": 5
+    }
+  },
+  "latest_included_closure_utc": "2026-11-18T12:06:32+00:00",
+  "attempts": [
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0009749801384202066,
+        "y_offset_m": 0.0008194595325801361,
+        "yaw_rad": -0.013537819117047257
+      },
+      "run_id": "e732224bdf7ac4f54cce34e1",
+      "attempt_id": "68cdb3df-8ddc-4d42-baaa-d68a67411cd8",
+      "closed_utc": "2026-11-18T11:18:05+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 0,
+      "end_step": null,
+      "execution_status": "INFRA_ERROR",
+      "artifact_status": "INFRA_ERROR",
+      "exit_reason": "CFG_SCENE_VARIANT",
+      "task_outcome": "UNKNOWN",
+      "compliance": "UNKNOWN",
+      "goal_verdict": "UNKNOWN",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {}
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "affa15016ee42fdd807bcaeba7dfeee7d2464a7d9c75e1100e53daab30a9ec38",
+      "trace_chain_sha256": "8c7bd3a507fd13535f50e97039e15755c05460a984d9dc29c9737f36a7df30cc",
+      "environment_lock_sha256": "3238430247eafba7a2018e7323fa7768c2f422e818b533b508cf996a81d0224c",
+      "timing": {
+        "running_wall_ns": null,
+        "startup_wall_ns": null,
+        "warmup_wall_ns": null,
+        "finalization_wall_ns": 24831800,
+        "rtf": null,
+        "supervisor_planned_to_terminal_s": 0.4282264
+      },
+      "memory": {
+        "peak_rss_bytes": 34000896,
+        "peak_vram_bytes": null,
+        "vram_measurement": "process_measurement_unavailable"
+      },
+      "sealed_attempt_bytes": 57149,
+      "compressed_trace_bytes": 527,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0009749801384202066,
+        "y_offset_m": 0.0008194595325801361,
+        "yaw_rad": -0.013537819117047257
+      },
+      "run_id": "674a3eea15822b8a5fa23a6e",
+      "attempt_id": "7776f59e-7cde-492c-8657-81395be38194",
+      "closed_utc": "2026-11-18T11:19:33+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "FAIL",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 2068,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "belt_run_speed_mps": 0.06
+        },
+        "adr_002_documented_force_limit_n": 20
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "58112cc870e0572ba857144ee1150a2bab84d29241f9e44d20254bb91e1d4ab4",
+      "trace_chain_sha256": "601261dff3a3c7761bdc5d4a18de80a9146259e75903bf220a4cb1f4b31794be",
+      "environment_lock_sha256": "3238430247eafba7a2018e7323fa7768c2f422e818b533b508cf996a81d0224c",
+      "timing": {
+        "running_wall_ns": 39434978700,
+        "startup_wall_ns": 11483207800,
+        "warmup_wall_ns": 791243700,
+        "finalization_wall_ns": 1071581200,
+        "rtf": 1.5214918830424016,
+        "supervisor_planned_to_terminal_s": 55.4154311
+      },
+      "memory": {
+        "peak_rss_bytes": 5812678656,
+        "peak_vram_bytes": null,
+        "vram_measurement": "process_measurement_unavailable"
+      },
+      "sealed_attempt_bytes": 10788140,
+      "compressed_trace_bytes": 10621004,
+      "video": null,
+      "published_replay_filename": "commissioning-a-before-tuning-windows.json"
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0005003545868284658,
+        "y_offset_m": -0.000805264567470258,
+        "yaw_rad": 0.02032000578879331
+      },
+      "run_id": "762ed87e6f74181e5fa6eabc",
+      "attempt_id": "ded7ea41-f93d-4f0d-bc0b-eec9ecf14c01",
+      "closed_utc": "2026-11-18T11:21:15+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "FAIL",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 1648,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ]
+        },
+        "adr_002_documented_force_limit_n": 20
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "dca7c19a6ef5611bab51d0fc37080afa6485aed2adfa2ac9fefc233e2013f700",
+      "trace_chain_sha256": "239fac3fd3bf1ab4bd0deef94de446e612ed7b3db44b649b989b3ce1f4e1518c",
+      "environment_lock_sha256": "3238430247eafba7a2018e7323fa7768c2f422e818b533b508cf996a81d0224c",
+      "timing": {
+        "running_wall_ns": 45203459100,
+        "startup_wall_ns": 14192660100,
+        "warmup_wall_ns": 975952300,
+        "finalization_wall_ns": 1373792400,
+        "rtf": 1.3273320492413376,
+        "supervisor_planned_to_terminal_s": 65.4900562
+      },
+      "memory": {
+        "peak_rss_bytes": 5107236864,
+        "peak_vram_bytes": null,
+        "vram_measurement": "process_measurement_unavailable"
+      },
+      "sealed_attempt_bytes": 11369720,
+      "compressed_trace_bytes": 11200229,
+      "video": null,
+      "published_replay_filename": "commissioning-b-before-tuning-windows.json"
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0009749801384202066,
+        "y_offset_m": 0.0008194595325801361,
+        "yaw_rad": -0.013537819117047257
+      },
+      "run_id": "18b3b4f503be6de43425ca78",
+      "attempt_id": "0e0b2c39-dfb4-42f2-802d-5d13d1dfcb9d",
+      "closed_utc": "2026-11-18T11:24:42+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 3474,
+      "controller_done_step": 4080,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "belt_run_speed_mps": 0.06
+        },
+        "adr_002_documented_force_limit_n": 4
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "1f9b7b8e8069eaf25aa6b77e78963a48df35d6ac48e80407c355c12779b232d1",
+      "trace_chain_sha256": "09a8d4320fdaf38197d2e73ec44e45cdab4c00949ece08171e12469f0f3431f9",
+      "environment_lock_sha256": "32ba794d63fb2af7b3d2fef345373c68c90d2eadafd7fcbbe062b93b5d8620b6",
+      "timing": {
+        "running_wall_ns": 47271040500,
+        "startup_wall_ns": 14552896500,
+        "warmup_wall_ns": 940520300,
+        "finalization_wall_ns": 1130343400,
+        "rtf": 1.2692760591973853,
+        "supervisor_planned_to_terminal_s": 67.1612954
+      },
+      "memory": {
+        "peak_rss_bytes": 5184978944,
+        "peak_vram_bytes": 2519986176,
+        "vram_measurement": "dxgi_process_local"
+      },
+      "sealed_attempt_bytes": 12466801,
+      "compressed_trace_bytes": 12300811,
+      "video": null,
+      "published_replay_filename": "commissioning-a-4n-windows.json"
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0005003545868284658,
+        "y_offset_m": -0.000805264567470258,
+        "yaw_rad": 0.02032000578879331
+      },
+      "run_id": "4325f3cc53127bfc32055f9e",
+      "attempt_id": "ae245ec0-3c49-4b7e-9a64-4d4aed050992",
+      "closed_utc": "2026-11-18T11:25:47+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "FAIL",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 1648,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          }
+        }
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "05b2b8a0dc4dd35352f9c8c61eeb00cfc1872696874ae95081b8b4c284e5fe99",
+      "trace_chain_sha256": "90951e5464845e028c43edff7d2379acffc5369ca734658f767198f3d44f39a3",
+      "environment_lock_sha256": "32ba794d63fb2af7b3d2fef345373c68c90d2eadafd7fcbbe062b93b5d8620b6",
+      "timing": {
+        "running_wall_ns": 43491147600,
+        "startup_wall_ns": 13228538900,
+        "warmup_wall_ns": 955947300,
+        "finalization_wall_ns": 1263565900,
+        "rtf": 1.3795910963729088,
+        "supervisor_planned_to_terminal_s": 62.0371702
+      },
+      "memory": {
+        "peak_rss_bytes": 5173219328,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6200635392,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 11088608,
+      "compressed_trace_bytes": 10919080,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0005003545868284658,
+        "y_offset_m": -0.000805264567470258,
+        "yaw_rad": 0.02032000578879331
+      },
+      "run_id": "8e56fe1487a5703d215fcd6b",
+      "attempt_id": "0caeafee-5153-4b3a-b3b4-7053e1c4cc24",
+      "closed_utc": "2026-11-18T11:28:02+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "FAIL",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 1648,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "position_iterations": 32,
+            "velocity_iterations": 8
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          }
+        }
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "6e3ecb80e31e2fcf08faf62079a4e571acb1ff89cdf2165665d1533187ef438c",
+      "trace_chain_sha256": "d259d0a8607d4de9b4021b699a38e42abe853e1fd3c802348a6bb05f3e377d08",
+      "environment_lock_sha256": "32ba794d63fb2af7b3d2fef345373c68c90d2eadafd7fcbbe062b93b5d8620b6",
+      "timing": {
+        "running_wall_ns": 39386898500,
+        "startup_wall_ns": 17624676900,
+        "warmup_wall_ns": 1036674900,
+        "finalization_wall_ns": 1489222800,
+        "rtf": 1.5233491918638884,
+        "supervisor_planned_to_terminal_s": 62.5445175
+      },
+      "memory": {
+        "peak_rss_bytes": 5150466048,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6184513536,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 11767363,
+      "compressed_trace_bytes": 11597785,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0009749801384202066,
+        "y_offset_m": 0.0008194595325801361,
+        "yaw_rad": -0.013537819117047257
+      },
+      "run_id": "12598dd99ed8cad759feb489",
+      "attempt_id": "06b2d426-3de9-4b49-bdf6-c2678c47eb33",
+      "closed_utc": "2026-11-18T11:29:06+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 3486,
+      "controller_done_step": 4092,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "position_iterations": 32,
+            "velocity_iterations": 8
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "d8907e8f329660f09869c03447cb32d1815b846ce72a596667d231eb25db2227",
+      "trace_chain_sha256": "2915abf361518613ac6d8dd45fc7048db49c7a07d125a96d544ed6d14d55ee20",
+      "environment_lock_sha256": "20bd69a63f8b9f4f7218dcb71cdd6b4ed7f9005d36664a92c9f89150119d406b",
+      "timing": {
+        "running_wall_ns": 43195836600,
+        "startup_wall_ns": 12264606800,
+        "warmup_wall_ns": 893894800,
+        "finalization_wall_ns": 1073078600,
+        "rtf": 1.3890227559569943,
+        "supervisor_planned_to_terminal_s": 60.8039536
+      },
+      "memory": {
+        "peak_rss_bytes": 5116624896,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6184513536,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 11839450,
+      "compressed_trace_bytes": 11673575,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 1000,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0005003545868284658,
+        "y_offset_m": -0.000805264567470258,
+        "yaw_rad": 0.02032000578879331
+      },
+      "run_id": "c8d86b89f12d7095c6e7f49f",
+      "attempt_id": "a79a0d8a-6d87-4685-8e24-6e584f8b7718",
+      "closed_utc": "2026-11-18T11:36:33+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "FAIL",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 1648,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        }
+      },
+      "source_sha256_when_recorded": null,
+      "manifest_final_sha256": "9f408a3ae3d12c95872d897e13e78ae5a47906e3f1347f8be9af07bdbf3983c0",
+      "trace_chain_sha256": "e0d7afd58bf20c568b42b495370d849dd4d1b9c4049e2fb11bb88031f2b19e8b",
+      "environment_lock_sha256": "20bd69a63f8b9f4f7218dcb71cdd6b4ed7f9005d36664a92c9f89150119d406b",
+      "timing": {
+        "running_wall_ns": 38261161100,
+        "startup_wall_ns": 11087482800,
+        "warmup_wall_ns": 847847400,
+        "finalization_wall_ns": 1471431400,
+        "rtf": 1.5681698692620176,
+        "supervisor_planned_to_terminal_s": 54.4827161
+      },
+      "memory": {
+        "peak_rss_bytes": 5115793408,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6184513536,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 11405755,
+      "compressed_trace_bytes": 11230571,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0004313157885222226,
+        "y_offset_m": 0.0003096472987062565,
+        "yaw_rad": 0.02563691393465848
+      },
+      "run_id": "f1ed93a38ee015a2c9c4b88f",
+      "attempt_id": "3146b456-67c0-498b-84d4-e40ef7f6d7b7",
+      "closed_utc": "2026-11-18T11:49:52+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "CONTROLLED_ABORT",
+      "compliance": "PASS",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 2852,
+      "controller_abort_reason": "ADMISSION_TIMEOUT",
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 0.10000000149011612,
+              "panda_finger_joint2": 0.10000000149011612
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        }
+      },
+      "source_sha256_when_recorded": "17ffa305c56118aee064434c127c58cb94d0b9f3ef32d0b5b747f0cffa943288",
+      "manifest_final_sha256": "666c0ee0f4090d98b5f1ad843e8e6343a3c8a5fb3053946619db128cf03655b8",
+      "trace_chain_sha256": "b7980f9282d2d5888fb7383f87b0fa40f87b4f4e717c7bdd7ff694d4dcf77f61",
+      "environment_lock_sha256": "ae79d80a30f3f05ab197a8b0f6ce3a3747365ae77f70953cca281328e22f4859",
+      "timing": {
+        "running_wall_ns": 39375820300,
+        "startup_wall_ns": 10636732500,
+        "warmup_wall_ns": 794925400,
+        "finalization_wall_ns": 1464804100,
+        "rtf": 1.5237777789228686,
+        "supervisor_planned_to_terminal_s": 55.0699841
+      },
+      "memory": {
+        "peak_rss_bytes": 5171441664,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6185168896,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 13353662,
+      "compressed_trace_bytes": 13179287,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "acf8e15084cd4ea9501afc91",
+      "attempt_id": "57020983-4650-4611-8f1c-fd71ae133d31",
+      "closed_utc": "2026-11-18T11:50:47+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 3579,
+      "controller_done_step": 4184,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 0.10000000149011612,
+              "panda_finger_joint2": 0.10000000149011612
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "17ffa305c56118aee064434c127c58cb94d0b9f3ef32d0b5b747f0cffa943288",
+      "manifest_final_sha256": "08387528070748ddbcd557df233a5a2fc255821b25ce66e95c902009533eea21",
+      "trace_chain_sha256": "d58c02549d2e569a0f2171e55f7d9183e530704fb19493348377b597d7d3b587",
+      "environment_lock_sha256": "ae79d80a30f3f05ab197a8b0f6ce3a3747365ae77f70953cca281328e22f4859",
+      "timing": {
+        "running_wall_ns": 39833797700,
+        "startup_wall_ns": 10540782800,
+        "warmup_wall_ns": 826984900,
+        "finalization_wall_ns": 1115103100,
+        "rtf": 1.5062585910557056,
+        "supervisor_planned_to_terminal_s": 55.102484
+      },
+      "memory": {
+        "peak_rss_bytes": 5193068544,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6185168896,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 11489597,
+      "compressed_trace_bytes": 11317787,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "explicit_offset_pose",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": -0.002,
+        "y_offset_m": -0.002,
+        "yaw_rad": -0.03
+      },
+      "run_id": "95417836585881edd8f6cb06",
+      "attempt_id": "9f6c7ddd-91d7-40a4-8e55-7fea88c21058",
+      "closed_utc": "2026-11-18T11:51:53+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 6571,
+      "controller_done_step": 7184,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 0.10000000149011612,
+              "panda_finger_joint2": 0.10000000149011612
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        }
+      },
+      "source_sha256_when_recorded": "17ffa305c56118aee064434c127c58cb94d0b9f3ef32d0b5b747f0cffa943288",
+      "manifest_final_sha256": "2915aa6ce41d854bd498225c04805362c307aa51ef2e9cb2313e0cd751aeb997",
+      "trace_chain_sha256": "a8c16fc6eaee243841f30adf950572a2dab5a7b6660c78d97bb8cbdd164bba5d",
+      "environment_lock_sha256": "ae79d80a30f3f05ab197a8b0f6ce3a3747365ae77f70953cca281328e22f4859",
+      "timing": {
+        "running_wall_ns": 50265184400,
+        "startup_wall_ns": 11077175600,
+        "warmup_wall_ns": 809379600,
+        "finalization_wall_ns": 1213503800,
+        "rtf": 1.1936691512465634,
+        "supervisor_planned_to_terminal_s": 66.3182238
+      },
+      "memory": {
+        "peak_rss_bytes": 5100724224,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6185168896,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14262550,
+      "compressed_trace_bytes": 14090196,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0004313157885222226,
+        "y_offset_m": 0.0003096472987062565,
+        "yaw_rad": 0.02563691393465848
+      },
+      "run_id": "952bf293a9fbdc59e5d7cf11",
+      "attempt_id": "950e15b9-fed6-4836-ae0f-b0e45e007238",
+      "closed_utc": "2026-11-18T11:53:37+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 6641,
+      "controller_done_step": null,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        },
+        "adr_002_documented_force_limit_n": 4
+      },
+      "source_sha256_when_recorded": "8c7a78d121256797372895af79b42193867dfe2017fafece869e807820580371",
+      "manifest_final_sha256": "005e3c03eb30335d36feb71ce1fd39549d085875441db09392ff207f3e5b16dd",
+      "trace_chain_sha256": "9f806eac6da3c6760ce6490e1e246a4af983f91a2bff28d920b4634365818ef2",
+      "environment_lock_sha256": "cdca230f160a0edee06c7854c098456f2dea99bd59c56e700af2624c1c09d1cb",
+      "timing": {
+        "running_wall_ns": 50540541700,
+        "startup_wall_ns": 10697826800,
+        "warmup_wall_ns": 790810700,
+        "finalization_wall_ns": 1211842500,
+        "rtf": 1.1871657481660907,
+        "supervisor_planned_to_terminal_s": 66.1452926
+      },
+      "memory": {
+        "peak_rss_bytes": 5156671488,
+        "peak_vram_bytes": 2431905792,
+        "peak_gpu_device_used_bytes": 6097088512,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14267775,
+      "compressed_trace_bytes": 14095656,
+      "video": null,
+      "published_replay_filename": "commissioning-b-10kg-windows.json"
+    },
+    {
+      "cell": "cell_b",
+      "arm": "f1_low",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0004313157885222226,
+        "y_offset_m": 0.0003096472987062565,
+        "yaw_rad": 0.02563691393465848
+      },
+      "run_id": "ed4a6ae8f8f513165afe5ed1",
+      "attempt_id": "bbcac26a-f13c-40d1-a9e5-be9de814ccc7",
+      "closed_utc": "2026-11-18T11:54:36+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "CONTROLLED_ABORT",
+      "compliance": "PASS",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 3980,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": {
+        "family": "F1",
+        "target_id": "robot.clear_fixture",
+        "trigger_match_step": 3065,
+        "actual_start": 3065,
+        "actual_end": 4265,
+        "first_effect_step": 3270,
+        "effect_status": "REALIZED",
+        "coverage": "EXERCISED",
+        "boundary_effect_status": "REALIZED",
+        "restoration_status": "PATH_RESTORED",
+        "functional_reuse_status": "UNOBSERVED",
+        "physical_hold_verdict": "NOT_APPLICABLE"
+      },
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        }
+      },
+      "source_sha256_when_recorded": "8c7a78d121256797372895af79b42193867dfe2017fafece869e807820580371",
+      "manifest_final_sha256": "c25386b20b98d3d0cfdac0515c692effe7cf5f663da6bf4d24db0a0a7f4474f1",
+      "trace_chain_sha256": "bef05fcdf16225847f6c4a0eff8cdbde41e654c95291a032377b1d31dbbb2c24",
+      "environment_lock_sha256": "cdca230f160a0edee06c7854c098456f2dea99bd59c56e700af2624c1c09d1cb",
+      "timing": {
+        "running_wall_ns": 43060078500,
+        "startup_wall_ns": 10474439300,
+        "warmup_wall_ns": 776283900,
+        "finalization_wall_ns": 1537084500,
+        "rtf": 1.393402011563913,
+        "supervisor_planned_to_terminal_s": 58.7838178
+      },
+      "memory": {
+        "peak_rss_bytes": 5162639360,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6185168896,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14094962,
+      "compressed_trace_bytes": 13918641,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "f6",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0004313157885222226,
+        "y_offset_m": 0.0003096472987062565,
+        "yaw_rad": 0.02563691393465848
+      },
+      "run_id": "1f7496fd739afa9207f23743",
+      "attempt_id": "7b18ffeb-259d-4b1b-b2c9-e61669cc43cb",
+      "closed_utc": "2026-11-18T11:55:38+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "CONTROLLED_ABORT",
+      "compliance": "PASS",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 3984,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": {
+        "family": "F6",
+        "target_id": "actuator.clamp",
+        "trigger_match_step": 3621,
+        "actual_start": 3621,
+        "actual_end": 4221,
+        "first_effect_step": 3624,
+        "effect_status": "REALIZED",
+        "coverage": "EXERCISED",
+        "boundary_effect_status": "REALIZED",
+        "restoration_status": "PATH_RESTORED",
+        "functional_reuse_status": "UNOBSERVED",
+        "physical_hold_verdict": "PASS"
+      },
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022
+        }
+      },
+      "source_sha256_when_recorded": "8c7a78d121256797372895af79b42193867dfe2017fafece869e807820580371",
+      "manifest_final_sha256": "b5d95c3d148c30f82fbeb25a0b864b64e97c8c2490a414c9fc0f3187d4b43a41",
+      "trace_chain_sha256": "198a80d686c0dd10dfa0f0766845213b154e286a08a774c949bffc0d6ce648db",
+      "environment_lock_sha256": "cdca230f160a0edee06c7854c098456f2dea99bd59c56e700af2624c1c09d1cb",
+      "timing": {
+        "running_wall_ns": 45206060400,
+        "startup_wall_ns": 10588027600,
+        "warmup_wall_ns": 1178366000,
+        "finalization_wall_ns": 1596797400,
+        "rtf": 1.3272556703481289,
+        "supervisor_planned_to_terminal_s": 61.6581129
+      },
+      "memory": {
+        "peak_rss_bytes": 5167812608,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6185168896,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14251158,
+      "compressed_trace_bytes": 14074539,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "f1_low",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "d1d67d4cbfaf330d1593cfac",
+      "attempt_id": "5efc632a-4535-42b0-82da-666a6162b9ef",
+      "closed_utc": "2026-11-18T11:56:34+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "CONTROLLED_ABORT",
+      "compliance": "PASS",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 1276,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": {
+        "family": "F1",
+        "target_id": "belt.stopped",
+        "trigger_match_step": 917,
+        "actual_start": 917,
+        "actual_end": 1397,
+        "first_effect_step": 928,
+        "effect_status": "REALIZED",
+        "coverage": "EXERCISED",
+        "boundary_effect_status": "REALIZED",
+        "restoration_status": "PATH_RESTORED",
+        "functional_reuse_status": "UNOBSERVED",
+        "physical_hold_verdict": "NOT_APPLICABLE"
+      },
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "8c7a78d121256797372895af79b42193867dfe2017fafece869e807820580371",
+      "manifest_final_sha256": "ed455b5448874001d9bdcf805b40171998e5599b96b83fc3968435285a54b653",
+      "trace_chain_sha256": "6ea68691ae8e41fe57827249022e6fe68302eed693d131df020ddebef5c51357",
+      "environment_lock_sha256": "cdca230f160a0edee06c7854c098456f2dea99bd59c56e700af2624c1c09d1cb",
+      "timing": {
+        "running_wall_ns": 40197811700,
+        "startup_wall_ns": 11061219000,
+        "warmup_wall_ns": 781648900,
+        "finalization_wall_ns": 1097427500,
+        "rtf": 1.4926185646070877,
+        "supervisor_planned_to_terminal_s": 56.029274
+      },
+      "memory": {
+        "peak_rss_bytes": 5182791680,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6201290752,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 12667326,
+      "compressed_trace_bytes": 12491887,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "f6",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "b4524764925abfb75c044774",
+      "attempt_id": "8e1ec128-e150-45be-9997-0a1b1249949a",
+      "closed_utc": "2026-11-18T11:57:32+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "CONTROLLED_ABORT",
+      "compliance": "PASS",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": 2064,
+      "controller_abort_reason": "RESPONSE_TIMEOUT",
+      "fault": {
+        "family": "F6",
+        "target_id": "actuator.gripper",
+        "trigger_match_step": 1821,
+        "actual_start": 1821,
+        "actual_end": 2301,
+        "first_effect_step": 1824,
+        "effect_status": "REALIZED",
+        "coverage": "EXERCISED",
+        "boundary_effect_status": "REALIZED",
+        "restoration_status": "PATH_RESTORED",
+        "functional_reuse_status": "UNOBSERVED",
+        "physical_hold_verdict": "PASS"
+      },
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "8c7a78d121256797372895af79b42193867dfe2017fafece869e807820580371",
+      "manifest_final_sha256": "77be5e49c85e681cd242d1e382cba253833ab688a3d8e3155337aabb8608d777",
+      "trace_chain_sha256": "eb8384ad1f01bd6670bafe34e4cf9d976b82354955e5c38e3cc32ff585cd8193",
+      "environment_lock_sha256": "cdca230f160a0edee06c7854c098456f2dea99bd59c56e700af2624c1c09d1cb",
+      "timing": {
+        "running_wall_ns": 41750962200,
+        "startup_wall_ns": 11618360600,
+        "warmup_wall_ns": 816056000,
+        "finalization_wall_ns": 1173215900,
+        "rtf": 1.4370926282508527,
+        "supervisor_planned_to_terminal_s": 58.2439916
+      },
+      "memory": {
+        "peak_rss_bytes": 5163499520,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6201290752,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 12747176,
+      "compressed_trace_bytes": 12571848,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "78aeb668f155e6c36b6ad806",
+      "attempt_id": "03daba3b-cb5c-48e2-8e26-4601dc04c10c",
+      "closed_utc": "2026-11-18T12:00:29+00:00",
+      "headless": false,
+      "horizon_steps": 12,
+      "actual_advances": 12,
+      "end_step": 12,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "UNKNOWN",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "eee67d1bbf1e98f350ae601dc637bbb907407728f8f609ed01db8737e070ec5f",
+      "manifest_final_sha256": "54b9e93b4e24af31afda5abf93cfca10a72e6b197202919312d2a75fcffd1c25",
+      "trace_chain_sha256": "2e3aa702b27a9bad024a4732c7a669ad524ee88666012ff13eef14e87ff3f349",
+      "environment_lock_sha256": "9ed8c9175342b3ca4cefa740cbd9bc712584ab1f2c9ee38841b940e4d076a8c5",
+      "timing": {
+        "running_wall_ns": 761063100,
+        "startup_wall_ns": 14671544000,
+        "warmup_wall_ns": 902503600,
+        "finalization_wall_ns": 424988100,
+        "rtf": 0.13139514975827893,
+        "supervisor_planned_to_terminal_s": 17.9172732
+      },
+      "memory": {
+        "peak_rss_bytes": 5499736064,
+        "peak_vram_bytes": 2733109248,
+        "peak_gpu_device_used_bytes": 6406230016,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 116906,
+      "compressed_trace_bytes": 24858,
+      "video": {
+        "frame_count": 3,
+        "first_step": 4,
+        "last_step": 12,
+        "fps": 30,
+        "size": 18412,
+        "sha256": "d5f5ded2815c6e9b2c05ef105346053f24489bc2dc89b6fa8a0dfb9d5a5e6fda"
+      }
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "4bbc922f1aadbd8d956df809",
+      "attempt_id": "8c374564-9bb8-4b35-88b9-16e8ef9c8753",
+      "closed_utc": "2026-11-18T12:00:44+00:00",
+      "headless": true,
+      "horizon_steps": 12,
+      "actual_advances": 12,
+      "end_step": 12,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "UNKNOWN",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "eee67d1bbf1e98f350ae601dc637bbb907407728f8f609ed01db8737e070ec5f",
+      "manifest_final_sha256": "4cef38cdf528fa1d73b219f52886ac67fd13822ca5d7eb4d2cc51d17675020f3",
+      "trace_chain_sha256": "c6518d359ae13e92f77d6bd60b4d88504c83f511fe92c6903033856ca50ea7cd",
+      "environment_lock_sha256": "9ed8c9175342b3ca4cefa740cbd9bc712584ab1f2c9ee38841b940e4d076a8c5",
+      "timing": {
+        "running_wall_ns": 107924300,
+        "startup_wall_ns": 12904505900,
+        "warmup_wall_ns": 1001827700,
+        "finalization_wall_ns": 293830000,
+        "rtf": 0.9265753866367445,
+        "supervisor_planned_to_terminal_s": 15.5302865
+      },
+      "memory": {
+        "peak_rss_bytes": 5196734464,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6208106496,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 98066,
+      "compressed_trace_bytes": 24795,
+      "video": null
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0004313157885222226,
+        "y_offset_m": 0.0003096472987062565,
+        "yaw_rad": 0.02563691393465848
+      },
+      "run_id": "f0c4a3a810775cc9553d9022",
+      "attempt_id": "82249bfc-bb66-4807-90b8-20445e1068a6",
+      "closed_utc": "2026-11-18T12:01:54+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 6430,
+      "controller_done_step": 7044,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04
+        },
+        "adr_002_documented_force_limit_n": 4
+      },
+      "source_sha256_when_recorded": "eee67d1bbf1e98f350ae601dc637bbb907407728f8f609ed01db8737e070ec5f",
+      "manifest_final_sha256": "066f14c6e33bb2cf0e57f765ead7ffc9d478700d1fb1ed2ee309b36f7b3ea51d",
+      "trace_chain_sha256": "041ac1e81f944b75255673b105b731a9bf3444b4ab1913ab0719a62a22b3132d",
+      "environment_lock_sha256": "9ed8c9175342b3ca4cefa740cbd9bc712584ab1f2c9ee38841b940e4d076a8c5",
+      "timing": {
+        "running_wall_ns": 52954934100,
+        "startup_wall_ns": 11649443400,
+        "warmup_wall_ns": 772281200,
+        "finalization_wall_ns": 1229513100,
+        "rtf": 1.1330388946702512,
+        "supervisor_planned_to_terminal_s": 69.6481715
+      },
+      "memory": {
+        "peak_rss_bytes": 5152854016,
+        "peak_vram_bytes": 2431905792,
+        "peak_gpu_device_used_bytes": 6109278208,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14256751,
+      "compressed_trace_bytes": 14084260,
+      "video": null,
+      "published_replay_filename": "commissioning-b-directional-windows.json"
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 7,
+      "initial_state_basis": "explicit_offset_pose",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.002,
+        "y_offset_m": 0.002,
+        "yaw_rad": 0.03
+      },
+      "run_id": "14d0c0de2ce1cee6f9eb86bc",
+      "attempt_id": "b3046a90-c636-4f3c-84c5-e434eaeaae36",
+      "closed_utc": "2026-11-18T12:02:59+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 6406,
+      "controller_done_step": 7020,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04
+        }
+      },
+      "source_sha256_when_recorded": "eee67d1bbf1e98f350ae601dc637bbb907407728f8f609ed01db8737e070ec5f",
+      "manifest_final_sha256": "d7914ef278c93c0f8bda51c332f73316b3456d2aab8f57e15280daf2740e9b43",
+      "trace_chain_sha256": "27195e613edab9b833e31bf1189a7fcebe160aacff10cf22a08e702f12c3bf9c",
+      "environment_lock_sha256": "9ed8c9175342b3ca4cefa740cbd9bc712584ab1f2c9ee38841b940e4d076a8c5",
+      "timing": {
+        "running_wall_ns": 48382653400,
+        "startup_wall_ns": 11825609300,
+        "warmup_wall_ns": 749604200,
+        "finalization_wall_ns": 1192668100,
+        "rtf": 1.2401138793268416,
+        "supervisor_planned_to_terminal_s": 65.0019928
+      },
+      "memory": {
+        "peak_rss_bytes": 5191929856,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6197358592,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14192410,
+      "compressed_trace_bytes": 14019785,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 7,
+      "initial_state_basis": "explicit_offset_pose",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.001,
+        "y_offset_m": 0.004,
+        "yaw_rad": 0.03
+      },
+      "run_id": "6b7db2f0e2dcdbffd6a5ac3f",
+      "attempt_id": "81e49488-1901-48c9-ae56-63daa8269327",
+      "closed_utc": "2026-11-18T12:03:56+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 3508,
+      "controller_done_step": 4112,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "eee67d1bbf1e98f350ae601dc637bbb907407728f8f609ed01db8737e070ec5f",
+      "manifest_final_sha256": "cfd83c1c784c66ba1688a1ab46f12aafc075dad0e79b974a1b4b5a7f4aa0cd1c",
+      "trace_chain_sha256": "6472fa4ca8c226f40307848f65fd861c931757b35502f3bd45cd22ce4c18c1b0",
+      "environment_lock_sha256": "9ed8c9175342b3ca4cefa740cbd9bc712584ab1f2c9ee38841b940e4d076a8c5",
+      "timing": {
+        "running_wall_ns": 41294937400,
+        "startup_wall_ns": 10900118100,
+        "warmup_wall_ns": 775163500,
+        "finalization_wall_ns": 1151996900,
+        "rtf": 1.4529626094069341,
+        "supervisor_planned_to_terminal_s": 57.5387967
+      },
+      "memory": {
+        "peak_rss_bytes": 5166563328,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6197358592,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 12200849,
+      "compressed_trace_bytes": 12029023,
+      "video": null
+    },
+    {
+      "cell": "cell_a",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "matches_registered_seed_sampler",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0001218929027676501,
+        "y_offset_m": 0.002672870167353538,
+        "yaw_rad": -0.003117587402968875
+      },
+      "run_id": "b023a6936787d9e405c5f3a2",
+      "attempt_id": "579f9cd4-410c-4feb-9021-8e55634a490c",
+      "closed_utc": "2026-11-18T12:05:26+00:00",
+      "headless": false,
+      "horizon_steps": 12,
+      "actual_advances": 12,
+      "end_step": 12,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "FAILED",
+      "compliance": "UNKNOWN",
+      "goal_verdict": "FAIL",
+      "goal_achieved_step": null,
+      "controller_done_step": null,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "finger_tensor_readback": {
+            "armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "drive_damping_n_s_per_m": [
+              80.0
+            ],
+            "drive_effort_limits_n": {
+              "panda_finger_joint1": 4.0
+            },
+            "drive_stiffness_n_per_m": [
+              4000.0
+            ]
+          },
+          "rigid_body_masses_kg": {
+            "finger_left": 0.0140552232041955,
+            "finger_right": 0.0140552232041955,
+            "hand": 0.5583304762840271,
+            "part_000": 0.05000000074505806
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04,
+          "belt_run_speed_mps": 0.06
+        }
+      },
+      "source_sha256_when_recorded": "1cd8ee36f0bf084db66cb75d694f88a7273cefe77d8ddd3b78e6ae9cb2729cf7",
+      "manifest_final_sha256": "daa561a7db5979e2b61f7ef82e65ceccde39325d36f730fd88f202820468d9a2",
+      "trace_chain_sha256": "4b893fb78055a1e54502930c0334e35a5da2d06de15d0e5f122dd92a9c19f9a9",
+      "environment_lock_sha256": "4be02e1106314b9b759dc063421abb4d02d445ca41ba09edb00e3dfcd53c8572",
+      "timing": {
+        "running_wall_ns": 493319300,
+        "startup_wall_ns": 11949764900,
+        "warmup_wall_ns": 1156798600,
+        "finalization_wall_ns": 399189200,
+        "rtf": 0.20270846893685288,
+        "supervisor_planned_to_terminal_s": 15.3035311
+      },
+      "memory": {
+        "peak_rss_bytes": 5494145024,
+        "peak_vram_bytes": 2645028864,
+        "peak_gpu_device_used_bytes": 6302027776,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 126390,
+      "compressed_trace_bytes": 24894,
+      "video": {
+        "frame_count": 3,
+        "first_step": 4,
+        "last_step": 12,
+        "fps": 30,
+        "size": 26845,
+        "sha256": "4cb58ab84c152d3a604817e1557e4072a595d8fc786f090a66d0da53bd8ef5a9"
+      }
+    },
+    {
+      "cell": "cell_b",
+      "arm": "healthy",
+      "configured_scene_seed": 0,
+      "initial_state_basis": "explicit_center_pose",
+      "initial_state": {
+        "mass_kg": 0.05,
+        "x_offset_m": 0.0,
+        "y_offset_m": 0.0,
+        "yaw_rad": 0.0
+      },
+      "run_id": "fe8ed46b1d01db5b3d85b549",
+      "attempt_id": "fcd546ef-e26a-4bea-93a6-27c514e98f1c",
+      "closed_utc": "2026-11-18T12:06:32+00:00",
+      "headless": true,
+      "horizon_steps": 7200,
+      "actual_advances": 7200,
+      "end_step": 7200,
+      "execution_status": "COMPLETED",
+      "artifact_status": "COMPLETED",
+      "exit_reason": null,
+      "task_outcome": "SUCCESS",
+      "compliance": "PASS",
+      "goal_verdict": "PASS",
+      "goal_achieved_step": 6424,
+      "controller_done_step": 7016,
+      "controller_abort_step": null,
+      "controller_abort_reason": null,
+      "fault": null,
+      "physics_profile": {
+        "declared_runtime_profile": "isaac62_lockstep",
+        "robot_profile_overrides": {},
+        "runtime_fields": {
+          "device": "cpu",
+          "solver": "TGS",
+          "physics_hz": 120,
+          "gravity": [
+            0.0,
+            0.0,
+            -9.8100004196167
+          ],
+          "finger_drivers": [
+            "panda_finger_joint1"
+          ],
+          "articulation_solver": {
+            "contact_last": true,
+            "finger_armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "position_iterations": 32,
+            "velocity_iterations": 1
+          },
+          "finger_drive_settings": {
+            "panda_finger_joint1": {
+              "damping_n_s_per_m": 80.0,
+              "force_cap_n": 4.0,
+              "stiffness_n_per_m": 4000.0
+            }
+          },
+          "finger_tensor_readback": {
+            "armatures_kg": {
+              "panda_finger_joint1": 10.0,
+              "panda_finger_joint2": 10.0
+            },
+            "drive_damping_n_s_per_m": [
+              80.0
+            ],
+            "drive_effort_limits_n": {
+              "panda_finger_joint1": 4.0
+            },
+            "drive_stiffness_n_per_m": [
+              4000.0
+            ]
+          },
+          "rigid_body_masses_kg": {
+            "finger_left": 0.0140552232041955,
+            "finger_right": 0.0140552232041955,
+            "hand": 0.5583304762840271,
+            "moving_jaw": 0.25,
+            "part_000": 0.05000000074505806
+          },
+          "gripper_slew_mps": 0.022,
+          "gripper_open_slew_mps": 0.04
+        }
+      },
+      "source_sha256_when_recorded": "1cd8ee36f0bf084db66cb75d694f88a7273cefe77d8ddd3b78e6ae9cb2729cf7",
+      "manifest_final_sha256": "5dbac100d2e80826b2b7998d959f091858de0b37e04b89df5abea9b4a8fe96aa",
+      "trace_chain_sha256": "8b085f33c8d6ceaefb77f344071d8d0ada675fc8ad8ce825b4d4e8d341ece250",
+      "environment_lock_sha256": "4be02e1106314b9b759dc063421abb4d02d445ca41ba09edb00e3dfcd53c8572",
+      "timing": {
+        "running_wall_ns": 49115180100,
+        "startup_wall_ns": 11704869400,
+        "warmup_wall_ns": 794211300,
+        "finalization_wall_ns": 1338271400,
+        "rtf": 1.2216182426255624,
+        "supervisor_planned_to_terminal_s": 66.0901241
+      },
+      "memory": {
+        "peak_rss_bytes": 5184376832,
+        "peak_vram_bytes": 2519986176,
+        "peak_gpu_device_used_bytes": 6197358592,
+        "vram_measurement": "dxgi_process_local",
+        "device_memory_measurement": "nvml_v1_used_including_reserved"
+      },
+      "sealed_attempt_bytes": 14204497,
+      "compressed_trace_bytes": 14031096,
+      "video": null
+    }
+  ],
+  "development_capacity_estimate_for_820": {
+    "estimator": "410 planned attempts per cell multiplied by that cell's observed arithmetic mean; serial execution",
+    "source_count": 19,
+    "cell_means": {
+      "cell_a": {
+        "full_attempts": 7,
+        "mean_running_s": 41.85419497142857,
+        "mean_supervisor_s": 58.61360377142857,
+        "mean_sealed_bytes": 12028477
+      },
+      "cell_b": {
+        "full_attempts": 12,
+        "mean_running_s": 45.4369266,
+        "mean_supervisor_s": 62.77251496666666,
+        "mean_sealed_bytes": 13209600.916666666
+      }
+    },
+    "running_hours": 9.94148884563492,
+    "supervised_hours": 13.824530189616402,
+    "sealed_artifact_GiB": 9.63696459851538
+  },
+  "diagnostics": {
+    "gui_headless_timebase": {
+      "cell": "cell_a",
+      "initial_state_basis": "fixed_default_pose",
+      "passed": true,
+      "steps": 120,
+      "elapsed_engine_s": [
+        1.0,
+        1.0
+      ],
+      "headless_gui_render_count": [
+        0,
+        30
+      ],
+      "max_part_position_difference_m": 0.0,
+      "physics_hz": 120,
+      "source_sha256": {
+        "parity-1.gui.json": "ff6dece0ba3cd06166f48929827ddd167a908b72cb28a2509ce8f801ab3c47eb",
+        "parity-1.headless.json": "7f0cb87d2789c5b2751310fcbce6f664451b07412f655e09fc6211164d15aa2b",
+        "parity-1.json": "a59a3e29a8ff5114cff52d5582034a4f8bf72147d7495443cd453a91f01de330"
+      }
+    },
+    "finger_velocity_and_relative_slip": {
+      "cell": "cell_b",
+      "initial_state_basis": "fixed_default_pose",
+      "source_sha256": "13f41b611acd013622ed8b6f6fa9a9f4e1279c3d0e7b2a3bd079ea16f365f91e",
+      "sample_count": 1140,
+      "diagnostic_criteria_met": true,
+      "reduced_effort_drive_readback_n": [
+        [
+          0.05000000074505806
+        ]
+      ],
+      "phases": {
+        "free_close": {
+          "samples": 240,
+          "bilateral_samples": 0,
+          "mean_abs_qdot_minus_encoder_mps": 0.00020713904383562465,
+          "mean_abs_qdot_minus_twist_mps": 4.77978367401123e-08,
+          "max_part_tcp_offset_change_m": 0.0002093549857338288
+        },
+        "free_open": {
+          "samples": 240,
+          "bilateral_samples": 0,
+          "mean_abs_qdot_minus_encoder_mps": 0.00036771728750840303,
+          "mean_abs_qdot_minus_twist_mps": 9.09236271872295e-09,
+          "max_part_tcp_offset_change_m": 2.5219404015207933e-05
+        },
+        "contact_approach": {
+          "samples": 240,
+          "bilateral_samples": 139,
+          "mean_abs_qdot_minus_encoder_mps": 0.0006195343238990365,
+          "mean_abs_qdot_minus_twist_mps": 7.8966017664867e-06,
+          "max_part_tcp_offset_change_m": 0.0027800574786704165
+        },
+        "sustained_contact": {
+          "samples": 120,
+          "bilateral_samples": 120,
+          "mean_abs_qdot_minus_encoder_mps": 0.0007112692532246001,
+          "mean_abs_qdot_minus_twist_mps": 2.956951261468802e-06,
+          "max_part_tcp_offset_change_m": 1.90517056353872e-06
+        },
+        "lifted_grasp": {
+          "samples": 120,
+          "bilateral_samples": 120,
+          "mean_abs_qdot_minus_encoder_mps": 0.0008524135831976309,
+          "mean_abs_qdot_minus_twist_mps": 4.8274555765785144e-08,
+          "max_part_tcp_offset_change_m": 8.45246629025004e-06
+        },
+        "reduced_effort": {
+          "samples": 180,
+          "bilateral_samples": 9,
+          "mean_abs_qdot_minus_encoder_mps": 1.714124826119385e-06,
+          "mean_abs_qdot_minus_twist_mps": 1.5466907197643044e-08,
+          "max_part_tcp_offset_change_m": 0.21955457459625383
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -15,7 +16,7 @@ from cellio.io import CellIOError, digest, file_hash as file_sha256, write_json
 CATALOG_PATH = "Isaac/Robots_Multiphysics/FrankaRobotics/FrankaPanda/franka/franka.usda"
 LICENSE_URL = "https://docs.isaacsim.omniverse.nvidia.com/6.2.0/common/licenses.html"
 LOCK = "assets.lock.json"
-LAYOUT = "catalog-and-sdk-relative-v2"
+LAYOUT = "catalog-and-sdk-relative-v3-mdl"
 
 
 def _failure(reason):
@@ -80,6 +81,46 @@ def _mirror_path(root, uri):
     return _relative(root, str(name))
 
 
+def mdl_dependencies(entries, sdk):
+    """Walk the imports in the native Franka MDL profile, including NVIDIA modules.
+
+    USD lists the shader source asset but does not traverse imports within the MDL.
+    Standard-library modules are provided by the locked native MDL compiler.
+    """
+    builtin = {"anno", "base", "debug", "df", "limits", "math", "scene", "state", "tex"}
+    pending, found = list(entries), set()
+    while pending:
+        path = Path(pending.pop()).resolve()
+        if path in found:
+            continue
+        if not path.is_relative_to(sdk) or not path.is_file():
+            raise _failure(f"Missing SDK material module: {path.name}")
+        found.add(path)
+        code = re.sub(r"/\*.*?\*/|//[^\n]*", "", path.read_text(encoding="utf-8-sig"), flags=re.S)
+        modules = re.findall(r"(?m)^\s*(?:export\s+)?import\s+(\S+)::[\w*]+\s*;", code)
+        modules += re.findall(r"(?m)^\s*(?:export\s+)?using\s+(\S+)\s+import\s+", code)
+        for name in modules:
+            absolute = name.startswith("::")
+            parts = name.removeprefix("::").removeprefix(".::").split("::")
+            if absolute and len(parts) == 1 and parts[0] in builtin:
+                continue
+            directory = sdk / "kit/mdl/core/mdl" if absolute else path.parent
+            pending.append(directory.joinpath(*parts).with_suffix(".mdl"))
+    return sorted(found)
+
+
+def verify_sdk_materials(lock):
+    """Absolute MDL namespaces are resolved by Kit's installed SDK registry."""
+    sdk = _sdk_root()
+    modules = lock.get("mdl_sdk_modules")
+    if not modules:
+        raise _failure("Resolve the current cache layout with transitive MDL modules")
+    for relative, expected in modules.items():
+        path = _relative(sdk, relative)
+        if not path.is_file() or file_sha256(path) != expected:
+            raise _failure(f"Installed MDL module differs from its cached fingerprint: {relative}")
+
+
 def _mirror_dependencies(destination, source, layers, assets, sdk, local_origin):
     """Keep the catalog layout so external gripper variants retain relative references."""
     import omni.client
@@ -119,9 +160,9 @@ def _mirror_dependencies(destination, source, layers, assets, sdk, local_origin)
             # Search-path MDL names resolve through Kit's shader registry, which
             # need not expose that same search path to the generic Ar resolver.
             if target is None and Path(asset_path).name == asset_path:
-                matches = [target for uri, target in paths.items() if target.name == asset_path]
+                matches = {target for target in paths.values() if target.name == asset_path}
                 if len(matches) == 1:
-                    target = matches[0]
+                    target = next(iter(matches))
             if target is not None:
                 return "./" + Path(os.path.relpath(target, local.parent)).as_posix()
             return asset_path
@@ -143,7 +184,10 @@ def _collect(root, source):
         raise _failure(f"Unresolved source dependencies: {list(map(str, missing))!r}")
     sdk = _sdk_root()
     local_origin = Path(source).resolve().parent if "://" not in source else None
-    entry, original_hashes = _mirror_dependencies(destination, source, layers, assets, sdk, local_origin)
+    mdl = mdl_dependencies([p for p in assets if Path(str(p)).suffix.lower() == ".mdl"], sdk)
+    complete_assets = sorted({str(asset) if "://" in str(asset) else Path(str(asset)).resolve().as_posix()
+                              for asset in assets} | {p.as_posix() for p in mdl})
+    entry, original_hashes = _mirror_dependencies(destination, source, layers, complete_assets, sdk, local_origin)
     if not entry.is_file():
         raise _failure(f"Localized root layer missing: {entry}")
     local_layers, local_assets, missing = UsdUtils.ComputeAllDependencies(Sdf.AssetPath(str(entry)))
@@ -173,7 +217,8 @@ def _collect(root, source):
                 path.relative_to(motion_root).as_posix(): {"source_path": _portable_uri(str(path), sdk, local_origin), "sha256": file_sha256(path)}
                 for path in motion_paths},
             "source_layers": sorted(_portable_uri(str(layer.realPath or layer.identifier), sdk, local_origin) for layer in layers),
-            "source_assets": sorted(_portable_uri(str(asset), sdk, local_origin) for asset in assets),
+            "source_assets": sorted({_portable_uri(str(asset), sdk, local_origin) for asset in complete_assets}),
+            "mdl_sdk_modules": {path.relative_to(sdk).as_posix(): file_sha256(path) for path in mdl},
             "original_sha256": original_hashes}
 
 

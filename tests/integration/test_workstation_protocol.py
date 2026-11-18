@@ -261,3 +261,31 @@ def test_optional_reuse_phase_only_runs_its_frozen_variant(tmp_path, monkeypatch
     assert calls == [(s, False) for s in (*workstation.PREFREEZE, "freeze")] + [
         ("reuse-v1", True)
     ]
+
+
+def test_clean_phase_recovers_pretrial_download_and_audits_existing_plan(
+    tmp_path, monkeypatch
+):
+    from cellio import release
+
+    runner = workstation.Protocol(tmp_path / "suites")
+    requested = tmp_path / "external"
+    proof = runner.root / "release-evidence/clean-install/reproduction.json"
+    write_json(
+        proof,
+        {
+            "working_directory": str(requested),
+            "commands": [{"key": "isaac", "exit_code": 1}],
+        },
+    )
+    monkeypatch.setattr(workstation, "lock_context", lambda *args, **kwargs: None)
+    monkeypatch.setattr(release, "audit_clean", lambda *args: {"status": "PASS"})
+    calls = []
+    monkeypatch.setattr(
+        runner, "invoke", lambda label, args: calls.append((label, args))
+    )
+    runner.clean(None, "conda")
+    assert len(calls) == 1 and requested in calls[0][1]
+    (runner.root / "clean-install").mkdir()
+    runner.clean(None, "conda")
+    assert len(calls) == 1

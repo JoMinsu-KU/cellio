@@ -94,7 +94,42 @@ def verify_closure(inventory, *, prefix=None, marker_environment=None):
     return dict(sorted(closure.items()))
 
 
+def loaded_conda_dlls(prefix):
+    import ctypes
+    import sqlite3
+    from ctypes import wintypes
+
+    # Importing the standard extension loads the prefix's SQLite runtime.
+    if not sqlite3.sqlite_version:
+        raise ValueError("SQLite runtime unavailable")
+    system = ctypes.WinDLL("kernel32", use_last_error=True)
+    system.GetModuleHandleW.argtypes = (wintypes.LPCWSTR,)
+    system.GetModuleHandleW.restype = wintypes.HMODULE
+    system.GetModuleFileNameW.argtypes = (
+        wintypes.HMODULE,
+        wintypes.LPWSTR,
+        wintypes.DWORD,
+    )
+    paths = {}
+    for filename, expected in (
+        ("python312.dll", prefix / "python312.dll"),
+        ("sqlite3.dll", prefix / "Library" / "bin" / "sqlite3.dll"),
+    ):
+        handle = system.GetModuleHandleW(filename)
+        location = ctypes.create_unicode_buffer(32768)
+        if not handle or not system.GetModuleFileNameW(handle, location, len(location)):
+            raise ValueError(f"Cannot identify loaded {filename}")
+        path = Path(location.value).resolve()
+        if path != expected:
+            raise ValueError(
+                f"Loaded {filename} outside the clean Conda prefix: {path}"
+            )
+        paths[filename] = str(path)
+    return paths
+
+
 def probe(inventory_path, output):
+    import os
     from packaging.markers import default_environment
 
     import cellio
@@ -104,12 +139,29 @@ def probe(inventory_path, output):
     if not sys.flags.isolated or inventory["python"] != platform.python_version():
         raise ValueError("Exact Python patch level and isolated mode required")
     closure = verify_closure(inventory)
+    prefix = Path(sys.prefix).resolve()
+    dll_directory = prefix / "Library" / "bin"
+    search_paths = [
+        Path(p).resolve() for p in os.environ.get("PATH", "").split(os.pathsep) if p
+    ]
+    if (
+        Path(os.environ.get("CONDA_PREFIX", "")).resolve() != prefix
+        or dll_directory not in search_paths
+        or not dll_directory.is_dir()
+        or search_paths[0] != prefix
+    ):
+        raise ValueError(
+            "Clean Conda prefix and its native DLL search path must be active"
+        )
     value = {
         "prefix": sys.prefix,
         "executable": sys.executable,
         "python": platform.python_version(),
         "os": platform.system(),
         "isolated": True,
+        "conda_prefix": str(prefix),
+        "conda_dll_directory": str(dll_directory),
+        "loaded_conda_dlls": loaded_conda_dlls(prefix),
         "package": cellio.__file__,
         "source_hash": source_hash(),
         "runtime_roots": list(ROOTS),

@@ -42,6 +42,52 @@ def test_r3_requires_every_registered_gate(tmp_path, monkeypatch):
     assert "engineering_status" not in acceptance.assess("r0", tmp_path, report)
 
 
+def test_recommended_targets_distinguish_missing_trials_and_registered_denominators():
+    from cellio.analysis.campaign import Trial
+    from cellio.analysis.targets import target_readout
+
+    def look(rows, key, population):
+        return next(
+            row
+            for row in rows
+            if row["metric"] == key and row["population"] == population
+        )
+
+    empty = target_readout([], [], [], {}, {})
+    assert all(row["assessment"] == "NOT_MEASURED" for row in empty)
+    row = {
+        "cell": "cell_a",
+        "arm": "healthy",
+        "controller_id": "reference",
+        "initial_state_id": 1001,
+        "initial_state": {},
+        "repeat_index": 0,
+        "config": {"faults": []},
+    }
+    first = Trial(
+        row,
+        started=True,
+        status="COMPLETED",
+        attempt_id="a1",
+        eval={
+            "online_offline_equal": True,
+            "task_outcome": "SUCCESS",
+            "compliance_verdict": "PASS",
+        },
+    )
+    partial = target_readout([first, Trial({**row, "repeat_index": 1})], [], [], {}, {})
+    nominal = look(partial, "nominal_task_success", "cell_a")
+    assert (nominal["value"], nominal["sample_count"], nominal["assessment"]) == (
+        0.5,
+        2,
+        "MISSES_TARGET",
+    )
+    assert (
+        look(partial, "conditional_fault_realization", "cell_a/F1")["assessment"]
+        == "NOT_MEASURED"
+    )
+
+
 def test_check_packaged_raw_bytes(tmp_path):
     data = b"the raw data"
     raw = canonical(

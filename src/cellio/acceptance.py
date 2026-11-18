@@ -1,6 +1,7 @@
 """Evaluate release criteria against tests and verified campaign artifacts."""
 
 from collections import Counter
+from datetime import UTC, datetime
 import json
 import os
 from pathlib import Path
@@ -139,8 +140,9 @@ def assess(level, campaign_root, report_path):
     gates["G03"].update(corpus_sha256=gold["corpus_sha256"], labels=gold["labels"])
     if not gold["passed"]:
         gates["G03"]["status"] = "FAIL"
+    release_fields = {}
     if level != "r0":
-        gates.update(_campaign_gates(Path(campaign_root), level))
+        gates.update(_campaign_gates(Path(campaign_root), level, release_fields))
     if level == "r3":
         for number in range(1, 16):
             gates.setdefault(f"G{number:02d}", {"status": "NOT_RUN", "sources": []})
@@ -151,13 +153,32 @@ def assess(level, campaign_root, report_path):
         "missing": missing,
         "gates": gates,
     }
-    if level == "r3" and result["passed"]:
-        result["engineering_status"] = "R3_COMPLETE"
+    if level == "r3":
+        from cellio import __version__
+
+        result.update(
+            software_version=__version__,
+            spec_version="1.1",
+            status="PASS"
+            if result["passed"]
+            else "FAIL"
+            if any(g["status"] == "FAIL" for g in gates.values())
+            else "INCOMPLETE",
+            must_gates=[{"id": key, "status": gates[key]["status"]} for key in sorted(gates)],
+            known_limitations=[
+                "Two simulated Franka workcells on one Windows workstation.",
+                "Development included main seed 1000. The secondary analysis identifies all 68 affected rows.",
+            ],
+            review_date=datetime.now(UTC).date().isoformat(),
+            **release_fields,
+        )
+        if result["passed"]:
+            result["engineering_status"] = "R3_COMPLETE"
     write_json(Path(report_path), result)
     return result
 
 
-def _campaign_gates(folder, level):
+def _campaign_gates(folder, level, release_fields):
     from cellio.analysis.campaign import load_campaign
     from cellio.analysis.suites import fault_coverage, reset_chains, soak_evidence
     from cellio.runtime.campaign import finite_rows, suite_design
@@ -344,4 +365,18 @@ def _campaign_gates(folder, level):
         from cellio.release import release_gates
 
         result.update(release_gates(checkout(), folder))
+        from cellio.analysis.targets import target_readout
+
+        release_fields["campaign_ids"] = {
+            suite: plan["plan_hash"] for suite, plan in sorted(plans.items())
+        }
+        release_fields["should_metrics"] = target_readout(
+            main, overhead, reset, paired_overhead(overhead), info
+        )
+        sources = result["G13"].get("sources", [])
+        release_fields["evidence_manifest"] = (
+            {"path": sources[0], "sha256": file_hash(Path(sources[0]))}
+            if sources and Path(sources[0]).is_file()
+            else None
+        )
     return result

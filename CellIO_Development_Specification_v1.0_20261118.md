@@ -343,6 +343,8 @@ flowchart TD
 
 supervisor가 GUI 앱을 띄워 결과를 읽는 방식으로 자동화를 구현하지 않는다. GUI는 동일 runtime의 관찰 수단이며 UI 클릭이 시험의 필수 단계가 되지 않는다.
 
+2026년 11월 18일 워크스테이션에서 7,200 step을 끝까지 실행한 headless 개발 시험은 Cell A 7회, Cell B 12회였다. 각 셀의 평균에 본평가 예정 횟수인 410회를 곱하면, 순차 실행 820회의 RUNNING 시간은 9.94시간, supervisor의 PLANNED부터 종료 기록까지는 13.82시간, 봉인 산출물은 9.64 GiB로 추산된다. 이 계산은 실패와 제어 중단을 포함한 개발 시험을 사용했으며 재시도, 별도 캠페인, 자산 캐시, 미봉인 로그는 제외했다. 정식 pilot으로 정하는 용량과 timeout은 별도로 산정한다. 같은 워크스테이션의 120 step 시계 검증에서는 GUI와 headless 모두 물리 시간 1.0초가 경과했고, 각각 30프레임과 0프레임을 렌더링했다. [워크스테이션 커미셔닝 대장](results/workstation/commissioning-register.json)
+
 ### 5.4 모듈 목록
 
 | ID | 모듈 | 핵심 책임 |
@@ -2677,7 +2679,7 @@ python -m cellio assets verify --offline
 python -m cellio campaign plan --suite canonical-v1 --output artifacts/canonical-v1
 python -m cellio campaign run --plan artifacts/canonical-v1/campaign.plan.json
 python -m cellio report --campaign artifacts/canonical-v1 --output reports/canonical-v1
-python -m cellio acceptance --level r3 --report reports/acceptance.json
+python -m cellio acceptance --level r3 --strict --campaign-root artifacts --report reports/acceptance.json
 ~~~
 
 이 흐름은 구현할 interface다. acceptance는 아직 수행하지 않은 oracle/reset/overhead/soak/clean-install을 자동으로 PASS하지 않고 NOT_RUN으로 표시한다. 개별 suite 실행 기록을 모아야 R3 보고서가 완성된다.
@@ -2706,7 +2708,7 @@ release acceptance.json은 아래를 반드시 포함한다.
 ~~~json
 {
   "software_version": "1.0.0",
-  "spec_version": "1.0",
+  "spec_version": "1.1",
   "status": "NOT_RUN",
   "must_gates": [],
   "should_metrics": [],

@@ -8,8 +8,10 @@ import platform
 import runpy
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from time import perf_counter_ns
+from uuid import uuid4
 
 
 def hash_file(path):
@@ -18,9 +20,103 @@ def hash_file(path):
 
 
 def save(path, value):
-    path.write_text(
+    staged = path.with_name(f"{path.name}.{uuid4()}.partial")
+    staged.write_text(
         json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    os.replace(staged, path)
+
+
+def prefix_environment(prefix, data, original):
+    env = dict(original)
+    old = {Path(sys.prefix).resolve()}
+    for k, value in list(env.items()):
+        if k == "CONDA_PREFIX" or k.startswith("CONDA_PREFIX_"):
+            if value:
+                old.add(Path(value).resolve())
+            env.pop(k)
+    if env.get("CONDA_EXE"):
+        old.add(Path(env["CONDA_EXE"]).resolve().parents[1])
+    paths = [
+        str(prefix / suffix)
+        for suffix in (
+            "",
+            "Library/mingw-w64/bin",
+            "Library/usr/bin",
+            "Library/bin",
+            "Scripts",
+            "bin",
+        )
+    ]
+    for entry in env.get("PATH", "").split(os.pathsep):
+        if entry and not any(
+            Path(entry.strip('"')).resolve().is_relative_to(p) for p in old
+        ):
+            paths.append(entry)
+    for key in ("PYTHONPATH", "PYTHONHOME", "VIRTUAL_ENV"):
+        env.pop(key, None)
+    env.update(
+        PATH=os.pathsep.join(paths),
+        CONDA_PREFIX=str(prefix),
+        CONDA_SHLVL="1",
+        CONDA_DEFAULT_ENV=str(prefix),
+        PYTHONNOUSERSITE="1",
+        CELLIO_DATA_ROOT=str(data),
+    )
+    return env
+
+
+def preparation(out, work, campaign):
+    """Keep failed download logs and isolate each subsequent prefix from its predecessors."""
+    if campaign.exists():
+        raise ValueError(
+            "The clean-install campaign already exists; its first attempts are preserved"
+        )
+    existing = out / "reproduction.json"
+    if not existing.exists():
+        if work.exists() or (
+            out.exists() and any(p.name != ".campaign.lock" for p in out.iterdir())
+        ):
+            raise ValueError(
+                "Select a new external work directory with a new preparation record"
+            )
+        return work, []
+    previous = json.loads(existing.read_bytes())
+    commands = previous["commands"]
+    if (
+        not commands
+        or commands[-1]["exit_code"] == 0
+        or commands[-1]["key"] not in {"create_env", "torch", "isaac", "dependencies"}
+        or any(
+            c["key"] not in {"create_env", "torch", "isaac", "dependencies"}
+            for c in commands
+        )
+        or Path(previous["campaign"]).resolve() != campaign
+    ):
+        raise ValueError(
+            "Only a recorded dependency download failure before campaign planning is recoverable"
+        )
+    for item in commands:
+        log = (out / item["log"]).resolve()
+        if not log.is_relative_to(out) or hash_file(log) != item["log_sha256"]:
+            raise ValueError("Prior preparation log is missing or changed")
+    ident = str(uuid4())
+    if work.exists():
+        if (
+            work
+            != Path(
+                previous.get("requested_work_directory", previous["working_directory"])
+            ).resolve()
+        ):
+            raise ValueError("Select the original external work directory or a new one")
+        work = work / ("preparation-" + ident)
+    archive = out / f"reproduction.preparation-{ident}.json"
+    with archive.open("xb") as stream:
+        stream.write(existing.read_bytes())
+    return work, [
+        *previous.get("prior_preparations", []),
+        {"log": archive.name, "sha256": hash_file(archive)},
+    ]
 
 
 def main():
@@ -45,14 +141,23 @@ def main():
     )
     parser.add_argument("--conda", default="conda", help="Conda executable")
     args = parser.parse_args()
+    from cellio.runtime.campaign import exclusive
+
+    out = args.campaign_root.resolve() / "release-evidence" / "clean-install"
+    out.mkdir(parents=True, exist_ok=True)
+    with exclusive(out):
+        reproduce(args, parser, out)
+
+
+def reproduce(args, parser, out):
     root = Path(__file__).resolve().parents[1]
     work = args.work_dir.resolve()
     campaign_root = args.campaign_root.resolve()
     data = args.data_root.resolve()
     if platform.system() != "Windows":
         parser.error("Isaac 6.2 workstation profile requires Windows")
-    if work.exists() or work.is_relative_to(root) or root.is_relative_to(work):
-        parser.error("--work-dir must be a new directory outside the checkout")
+    if work.is_relative_to(root) or root.is_relative_to(work):
+        parser.error("--work-dir must be outside the checkout")
     campaign = campaign_root / "clean-install"
     if campaign.exists():
         parser.error("select a campaign root without an existing clean-install suite")
@@ -65,30 +170,25 @@ def main():
         parser.error("CellIO requirements do not match the frozen Windows lock")
     from_source = runpy.run_path(str(root / "src/cellio/release_runtime.py"))
     constraint_text = from_source["frozen_constraints"](inventory)
-    exe = shutil.which(args.conda)
+    exe = shutil.which(
+        os.environ.get("CONDA_EXE", args.conda) if args.conda == "conda" else args.conda
+    )
     if not exe:
         parser.error("Conda executable not found")
-    out = campaign_root / "release-evidence" / "clean-install"
-    out.mkdir(parents=True, exist_ok=False)
+    requested = work
+    work, archived = preparation(out, work, campaign)
     work.mkdir(parents=True)
     prefix = work / "env"
     wheel_dir = work / "wheelhouse"
     wheel_dir.mkdir()
     constraints = out / "runtime.constraints.txt"
-    constraints.write_bytes(constraint_text.encode("ascii"))
-    env = os.environ.copy()
-    env.pop("PYTHONPATH", None)
-    env["PYTHONNOUSERSITE"] = "1"
-    env["CELLIO_DATA_ROOT"] = str(data)
-    # Conda env activation is unnecessary for pip itself, but the native Windows GPU
-    # modules rely on its Library/bin DLL search path.
-    env["PATH"] = (
-        os.pathsep.join(
-            map(str, (prefix, prefix / "Scripts", prefix / "Library" / "bin"))
-        )
-        + os.pathsep
-        + env["PATH"]
-    )
+    if constraints.exists() and constraints.read_bytes() != constraint_text.encode(
+        "ascii"
+    ):
+        parser.error("Frozen constraints changed after the previous preparation")
+    if not constraints.exists():
+        constraints.write_bytes(constraint_text.encode("ascii"))
+    env = prefix_environment(prefix, data, os.environ)
     python = str(prefix / "python.exe")
     commit = subprocess.check_output(
         ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
@@ -98,6 +198,8 @@ def main():
         "checkout": str(root),
         "source_commit": commit,
         "working_directory": str(work),
+        "requested_work_directory": str(requested),
+        "prior_preparations": archived,
         "prefix": str(prefix),
         "requirements_lock": str(lock),
         "requirements_sha256": hash_file(lock),
@@ -109,13 +211,13 @@ def main():
 
     def invoke(key, command):
         stamp = perf_counter_ns()
-        started = out / (key + ".log")
+        started = out / (f"{uuid4()}-{key}.log")
         print("Running " + " ".join(map(str, command)), flush=True)
-        with started.open("w", encoding="utf-8") as stream:
+        with started.open("x", encoding="utf-8") as stream:
             proc = subprocess.run(
                 list(map(str, command)),
                 cwd=work,
-                env=env,
+                env=os.environ.copy() if key == "create_env" else env,
                 check=False,
                 stdout=stream,
                 stderr=subprocess.STDOUT,

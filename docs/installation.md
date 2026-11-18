@@ -17,7 +17,7 @@ In WSL2, create a separate Linux environment and install CellIO from the same so
 ```sh
 conda create -n cellio-audit -c conda-forge python=3.12.16 pip
 conda activate cellio-audit
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[dev,plots]'
 python -m pytest
 ```
 

@@ -2,7 +2,7 @@
 
 from itertools import product
 from math import isfinite
-from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, TABLE, Box
+from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, PART_SIZE_M, TABLE, Box
 from cellio.core.models import CellIOError
 
 BASE = "/World/Cell"
@@ -50,7 +50,7 @@ class StageBuilder:
         for zone in scene.zones:
             visual = self._shape(BASE + "/Zones/" + zone.name, zone.center, zone.size)
             UsdGeom.Imageable(visual).MakeInvisible()
-        self._box(PART, Box("Part_000", scene.part_center, (.04, .04, .04), "dynamic", .05))
+        self._box(PART, Box("Part_000", scene.part_center, PART_SIZE_M, "dynamic", .05))
         base = UsdGeom.Xform.Define(stage, ROBOT)
         base.AddTranslateOp().Set(Gf.Vec3d(*robot_base))
         if not base.GetPrim().GetReferences().AddReference(str(robot_asset)):
@@ -66,7 +66,7 @@ class StageBuilder:
         view = self.Gf.Matrix4d(1.).SetLookAt(self.Gf.Vec3d(1.58, -1.43, 1.84),
                                                self.Gf.Vec3d(.23, 0., 1.00), self.Gf.Vec3d(0., 0., 1.))
         camera.AddTransformOp().Set(view.GetInverse())
-        camera.CreateFocalLengthAttr(23.)
+        camera.CreateFocalLengthAttr(19.)
         camera.CreateClippingRangeAttr(self.Gf.Vec2f(.02, 20.))
         fill = UsdLux.DomeLight.Define(self.stage, "/World/OperatorFill")
         fill.CreateIntensityAttr(650.)

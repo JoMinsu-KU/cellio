@@ -249,7 +249,8 @@ class Protocol:
                 )
                 if family == "F6":
                     require(
-                        counts["held"], f"No verified physical hold for {suite}/{cell}/F6",
+                        counts["held"],
+                        f"No verified physical hold for {suite}/{cell}/F6",
                     )
         if suite in ("canonical-v1", "overhead-v1", "reuse-v1"):
             metrics = directory / "reports" / "metrics.json"
@@ -348,7 +349,22 @@ class Protocol:
 
         lock_context("isaac62_lockstep", measured=True)
         proof = self.root / "release-evidence" / "clean-install"
-        if not proof.exists() and not (self.root / "clean-install").exists():
+        campaign = self.root / "clean-install"
+        checkpoint = proof / "reproduction.json"
+        commands = read(checkpoint).get("commands", []) if checkpoint.is_file() else []
+        download_failed = (
+            bool(commands)
+            and commands[-1]["key"] in {"create_env", "torch", "isaac", "dependencies"}
+            and commands[-1]["exit_code"] != 0
+        )
+        if not campaign.exists() and (not checkpoint.exists() or download_failed):
+            if work is None and download_failed:
+                previous = read(checkpoint)
+                work = Path(
+                    previous.get(
+                        "requested_work_directory", previous["working_directory"]
+                    )
+                )
             require(
                 work is not None,
                 "The clean installation needs --clean-work-dir outside the checkout",

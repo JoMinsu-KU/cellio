@@ -211,13 +211,17 @@ def report(campaign_dir, output_dir):
         "deadline_to_quiescence",
     )
     figures = {"failure_timeline": None}
-    failure = next(
-        (
-            t
-            for t in trials
-            if t.eval and any(r["verdict"] == "FAIL" for r in t.eval["requirements"])
-        ),
-        None,
+    candidates = [t for t in trials if t.eval]
+
+    def timeline_priority(t):
+        realized = t.fault.get("actual_start") is not None
+        failed = any(r["verdict"] == "FAIL" for r in t.eval["requirements"])
+        return (realized, failed)
+
+    failure = max(
+        (t for t in candidates if any(timeline_priority(t))),
+        key=timeline_priority,
+        default=None,
     )
     if failure:
         figures["failure_timeline"] = timeline(failure, out)

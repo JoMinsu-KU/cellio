@@ -52,15 +52,28 @@ def suite_design(suite):
 
 
 def initial_state(cell, seed):
+    from cellio.scenes import get_scene
+
+    scene = get_scene(cell)
     key = hashlib.sha256(f"cellio/1.0/{cell}/{seed}/scene".encode()).digest()
     rng = random.Random(int.from_bytes(key[:16], "big"))
     bound_x, bound_y = (0.001, 0.004) if cell == "cell_a" else (0.002, 0.002)
-    return {
-        "x_offset_m": rng.uniform(-bound_x, bound_x),
-        "y_offset_m": rng.uniform(-bound_y, bound_y),
-        "yaw_rad": rng.uniform(-0.03, 0.03),
-        "mass_kg": 0.05,
-    }
+    proposals = []
+    for _ in range(20):
+        state = {
+            "x_offset_m": rng.uniform(-bound_x, bound_x),
+            "y_offset_m": rng.uniform(-bound_y, bound_y),
+            "yaw_rad": rng.uniform(-0.03, 0.03),
+            "mass_kg": 0.05,
+        }
+        geometry = scene.placement_geometry(state)
+        proposals.append({"state": state, "geometry": geometry})
+        if geometry["accepted"]:
+            return {**state, "placement": {"mode": "sampled", "proposals": proposals}}
+    raise CellIOError(
+        "INIT_SAMPLING_FAILED",
+        f"{cell} seed {seed} exhausted 20 geometry proposals: {json.dumps(proposals)}",
+    )
 
 
 def scenario(
@@ -151,6 +164,31 @@ def make_row(
         cfg["episode"]["reset_mode"] = "hard_reload"
     if state is None:
         state = initial_state(cell, seed)
+    else:
+        from cellio.scenes import get_scene
+
+        geometry = get_scene(cell).placement_geometry(state)
+        if not geometry["accepted"]:
+            raise CellIOError(
+                "INIT_SAMPLING_FAILED", f"Frozen {cell} placement rejected: {geometry}"
+            )
+        if "placement" not in state:
+            state = {**state, "placement": {"mode": "fixed", "geometry": geometry}}
+        else:
+            stored = state["placement"]
+            if stored.get("mode") == "sampled":
+                accepted = stored["proposals"][-1]
+                expected = {k: v for k, v in state.items() if k != "placement"}
+                consistent = (
+                    accepted["state"] == expected and accepted["geometry"] == geometry
+                )
+            else:
+                consistent = stored == {"mode": "fixed", "geometry": geometry}
+            if not consistent:
+                raise CellIOError(
+                    "INIT_SAMPLING_FAILED",
+                    "Frozen placement differs from its recorded geometry",
+                )
     row = dict(
         suite_id=suite,
         cell=cell,

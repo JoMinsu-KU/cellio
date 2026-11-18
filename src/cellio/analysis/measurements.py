@@ -50,6 +50,7 @@ class Measurements:
         self.sample_ids = {}
         self.command_lags = {}
         self.fail_seen = set()
+        self.first_detection_lag = {}
         self.abort = None
         self.abort_cause = None
         self.cause_kind = "invalid"
@@ -166,9 +167,9 @@ class Measurements:
             if r["verdict"] == "FAIL" and rid not in self.fail_seen:
                 self.fail_seen.add(rid)
                 if r["first_witness_step"] is not None:
-                    self.latencies["oracle_detection_delay"][
-                        k - r["first_witness_step"]
-                    ] += 1
+                    lag = k - r["first_witness_step"]
+                    self.first_detection_lag[rid] = lag
+                    self.latencies["oracle_detection_delay"][lag] += 1
         report = f.get("fault_audit") or {}
         if "family" in report:
             self.fault.update(report)

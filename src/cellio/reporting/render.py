@@ -140,6 +140,8 @@ def timeline(trial, destination):
         "attempt_id": trial.attempt_id,
         "trace": str(trial.path / "trace.jsonl.gz"),
         "signal": target,
+        "fault_family": trial.fault.get("family"),
+        "trace_chain_sha256": trial.eval["source_digest"],
         "csv": "tables/failure_timeline.csv",
         "figure": "figures/failure_timeline.svg",
     }

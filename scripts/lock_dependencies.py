@@ -25,6 +25,7 @@ def dependency_versions():
         "coverage",
         "ruff",
         "mypy",
+        "matplotlib",
     ]
     versions = {}
     while pending:

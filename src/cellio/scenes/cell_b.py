@@ -19,4 +19,5 @@ SCENE = Scene(
      "fixture_load_place": (.507, .12, .815), "fixture_unload_hover": (.500, .12, 1.030),
      "fixture_unload_grasp": (.500, .12, .815), "output_hover": (.35, .30, 1.030),
      "output_place": (.35, .30, .815)},
+    "Source/Base",
 )

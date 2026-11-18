@@ -35,6 +35,8 @@ Repeat the same invocation after interruption. The runner reads the existing pla
 
 The clean installation is an explicit operation. Choose a new work directory outside the checkout. The reproduction tool creates a fresh Conda prefix, uses its package sources and records each command, wheel identity, environment and both five-run quickstarts. Completed clean-install evidence is audited on repeated invocation.
 
+If a dependency download fails before the suite has a plan, repeat the same command. It archives the failed command record, retains its original logs and creates a fresh prefix in a new directory. The runtime probe checks the active Conda prefix and its Windows DLL directory. Once the clean-install plan exists, re-entry audits that campaign and preserves every first attempt.
+
 ```powershell
 python scripts/run_workstation_protocol.py --phase clean-install --campaign-root $campaignRoot --clean-work-dir C:\CellIO-reproduction\candidate-01
 ```
@@ -62,6 +64,14 @@ campaign_root="$(wslpath -u "$windows_local_appdata")/CellIO/campaigns"
 python -m cellio acceptance --level r0 --strict --report "$campaign_root/release-evidence/r0-wsl.json"
 python -m cellio report --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/canonical-wsl"
 python scripts/compare_platform_replays.py --campaign "$campaign_root/canonical-v1" --windows "$campaign_root/canonical-v1/reports/metrics.json" --wsl "$campaign_root/release-evidence/canonical-wsl/metrics.json" --output "$campaign_root/release-evidence/canonical-platform-comparison.json"
+```
+
+To reproduce the publication tables and plots from the registered rows on Ubuntu, use its `cellio-audit` environment with the `plots` extra. The drawing code uses a noninteractive renderer. It exports the measured figures as PDF and PNG.
+
+```sh
+python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/canonical-wsl"
+python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/canonical-wsl"
+python scripts/reproduce_figures.py --campaign "$campaign_root/overhead-v1" --output "$campaign_root/release-evidence/overhead-wsl"
 ```
 
 To package a completed canonical campaign for transfer, run the following from the release checkout. The ZIP64 archive carries the actual plan, ledger, attempt manifests and data streams. The packager verifies every first-attempt file against its archived bytes. The release manifest binds the archive digest to the source tag and dependency locks.

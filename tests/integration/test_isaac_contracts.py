@@ -1,3 +1,4 @@
+import gzip
 import json
 import math
 import os
@@ -115,6 +116,43 @@ def test_offline_lock_detects_tampering_and_path_escape(tmp_path):
     file.write_text(json.dumps(lock), encoding="utf-8")
     with pytest.raises(CellIOError, match="escapes"):
         verify_assets(tmp_path)
+
+
+def test_material_closure_includes_transitive_relative_and_sdk_modules(tmp_path):
+    from cellio.adapters.isaac62.assets import mdl_dependencies
+    source = tmp_path / "OmniPBR.mdl"
+    clearcoat = tmp_path / "Clearcoat.mdl"
+    module = tmp_path / "kit/mdl/core/mdl/nvidia/test_definitions.mdl"
+    module.parent.mkdir(parents=True)
+    source.write_text("import ::df::*;\nimport Clearcoat::*;\n", encoding="utf-8")
+    clearcoat.write_text("using ::nvidia::test_definitions import albedo;\n", encoding="utf-8")
+    with pytest.raises(CellIOError, match="test_definitions"):
+        mdl_dependencies([source], tmp_path)
+    module.write_text("// import Unused::*;\n", encoding="utf-8")
+    assert mdl_dependencies([source], tmp_path) == sorted((source, clearcoat, module))
+
+
+def test_still_metadata_skips_non_tick_trailer_and_links_source_hashes(tmp_path):
+    from cellio.adapters.isaac62.render_frames import SAMPLE_STEPS, metadata
+    frames, episode = tmp_path / "frames", tmp_path / "episode"
+    frames.mkdir()
+    episode.mkdir()
+    with gzip.open(episode / 'events.jsonl.gz', 'wt') as stream:
+        stream.write(json.dumps({'step': 0, 'data': {'event_type': 'controller.stage_enter', 'payload': {'stage_id': 'transfer'}}})+'\n')
+    with gzip.open(episode / 'trace.jsonl.gz', 'wt') as stream:
+        for step in SAMPLE_STEPS['cell_a']:
+            (frames / f's{step:04d}.png').write_bytes(b'test fixture')
+            record = {'record_type': 'tick', 'step': step, 'episode_id': 'demo', 'record_hash': str(step),
+                      'truth': {'joints': {}, 'contacts': [], 'bodies': {
+                          key: {'position_m': [0., 0., 1.]} for key in ('part_000', 'cell_tcp')}}}
+            stream.write(json.dumps(record)+'\n')
+        stream.write(json.dumps({'record_type': 'closure'})+'\n')
+    (episode / 'result.json').write_text(json.dumps({'task_outcome': 'SUCCESS', 'compliance_verdict': 'PASS'}))
+    (episode / 'manifest.final.json').write_text(json.dumps({'last_record_hash': 'trailer hash'}))
+    summary = metadata('cell_a', 'run', 'attempt', tmp_path)
+    assert summary['trace_chain_sha256'] == 'trailer hash'
+    assert summary['manifest_final_sha256'] == file_sha256(episode / 'manifest.final.json')
+    assert [(f['step'], f['trace_record_hash']) for f in summary['frames']] == [(s, str(s)) for s in SAMPLE_STEPS['cell_a']]
 
 
 @pytest.mark.skipif(not os.environ.get("CELLIO_RUN_ISAAC_TESTS"),
