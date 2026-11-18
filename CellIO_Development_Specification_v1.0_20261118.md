@@ -1,9 +1,9 @@
 # CellIO 개발·검증·논문 산출물 통합 명세서
 
-**문서 버전:** 1.0 / **기준일:** 2026-11-18, Asia/Seoul  
+**문서 버전:** 1.1 / **기준일:** 2026-11-18, Asia/Seoul  
 **대상 제품:** CellIO 1.0.0 / **설정 스키마:** cellio.config/1.0  
 **대상 논문:** *CellIO: Scene-bound I/O fault injection and regression testing for robotic workcells in Isaac Sim*  
-**개발 환경:** Isaac Sim 6.2.0, Ubuntu 24.04 x86_64, Python 3.12  
+**개발 환경:** Windows 11 Pro x86_64, 전용 Conda Python 3.12, NVIDIA Isaac Sim 6.2.0.0 Python 패키지. WSL2 Ubuntu는 독립적인 오프라인 검사에 사용한다.  
 **기본 실행 모드:** 시뮬레이터 단독, 고정 physics step, Python 참조 제어기  
 **문서 성격:** 구현해야 할 규범과 검증 방법을 정의한 개발 명세. 성능 측정 결과나 구현 완료 보고서가 아니다.
 
@@ -67,14 +67,14 @@
 |---|---|
 | 주제 선택 | 사용자가 CellIO 기준의 상세 개발 명세 작성을 요청함 |
 | 설계 | 이 문서에 기준 구현과 검증 계약을 명시 |
-| 소프트웨어 구현 | NOT_STARTED |
+| 소프트웨어 구현 | 진행 중. 실제 상태는 저장소의 커밋과 시험 증거에서 확인 |
 | Isaac Sim 실행·성능 측정 | NOT_STARTED |
 | 자산·환경 실제 잠금 | 개발 착수 시 manifest를 생성해야 함 |
-| 파일럿·본실험 | 수행하지 않음 |
-| 이번 작업 범위 | 명세 작성 및 문서·계약 일관성 검토 |
+| 파일럿·본실험 | 실행 증거와 검증된 결과 파일 단위로 기록 |
+| 이번 작업 범위 | 워크스테이션 환경에 맞춘 구현, 실험, 재현, 배포 |
 | 학술적 주장 상태 | 구현·실험으로 검증할 제안 |
 
-기존 대화의 RTX 4090/64GB/Ubuntu 24.04 환경을 기준 장비 후보로 삼았다. 현재 드라이버·CPU·디스크·Isaac 설치 상태는 확인한 사실로 간주하지 않는다. 코드의 물리 로봇·PLC 장치 접속은 기본 릴리스 범위에 포함하지 않는다.
+2026-11-18 확인한 워크스테이션은 Windows 11 Pro, i9-14900K, RTX 4090 24GB, RAM 64GiB다. C:는 NVMe, D:와 E:는 HDD다. 기준 실험의 쓰기 경로와 캐시는 SSD를 사용하고, 완결 결과는 검사 후 HDD에 보관할 수 있다. WSL2 Ubuntu 22.04.5는 Linux용 Python 3.12 환경에서 동일 기록을 재판정한다.
 
 ### 0.3 용어
 
@@ -215,14 +215,14 @@ B-MANUAL은 연구자가 구성한 기준선으로 표시한다. 기존 도구�
 
 ## 4. 기준 환경과 버전 정책
 
-### 4.1 지원 프로파일 P-ISAAC62
+### 4.1 지원 프로파일 P-ISAAC62-WIN-CONDA
 
 | 항목 | 기준 |
 |---|---|
-| OS | Ubuntu 24.04 LTS x86_64 |
-| Isaac Sim | **6.2.0 workstation bundle** |
-| Python | bundle의 Python 3.12; exact patch는 doctor가 기록 |
-| 실행 장비 | RTX 4090 24GB, RAM 64GB를 기준 후보로 사용 |
+| OS | Windows 11 Pro x86_64. WSL2 Ubuntu 22.04.5 x86_64는 오프라인 재판정 환경 |
+| Isaac Sim | NVIDIA Python 패키지 isaacsim[all,extscache]==6.2.0.0 |
+| Python | Windows Conda cellio-isaac62의 CPython 3.12. WSL2에는 독립적인 cellio-audit 환경을 둔다 |
+| 실행 장비 | i9-14900K, RTX 4090 24GB, RAM 64GiB, 실행 중 원시 기록은 SSD |
 | GPU worker 수 | 기본 1 |
 | 물리 엔진 | PhysX, CPU dynamics, 고정 timestep |
 | 렌더러 | benchmark에서 센서 렌더링 OFF; GUI 시연에서만 렌더링 |
@@ -230,15 +230,15 @@ B-MANUAL은 연구자가 구성한 기준선으로 표시한다. 기존 도구�
 | ROS / PLC / LLM API | 기본 프로파일 의존성 없음 |
 | 코드 기본 라이선스 | 자체 작성 코드 MIT; 제3자 코드·자산은 별도 표기 |
 
-2026-11-18 공식 다운로드 페이지는 6.2.0을 최신 릴리스로 안내한다. 6.2 문서는 Ubuntu 24.04와 Python 3.12 경로를 제공하며, 시스템 요구사항의 Linux 시험 드라이버는 595.58.03이다. 이 드라이버 번호는 NVIDIA의 시험 버전 정보이며 모든 더 높은 버전의 호환성 보장을 뜻하지 않는다. 실제 실행 환경은 compatibility check와 smoke 결과로 잠근다. [S01–S04]
+Isaac Sim 6.2의 Windows 11 시험 드라이버는 595.97이다. 이 장비에서 조회한 610.88은 compatibility check와 Kit·PhysX·cuMotion 실측 후 환경 잠금에 기록한다. Python 패키지의 6.2.0.0과 제품 버전 6.2.0을 함께 기록한다. [S01–S04]
 
 기존 5.1 예제의 import와 6.2 API를 섞지 않는다. NVIDIA의 API 변경은 adapters/isaac62 안에서 흡수하고, core 모듈에 Omniverse·USD·Warp import를 추가하지 않는다. 문서의 “latest” 링크를 설치 스크립트에서 자동 추적하지 않는다.
 
 ### 4.2 의존성 잠금
 
-런타임은 NVIDIA bundle의 numpy·torch·warp·USD를 임의 업그레이드하지 않는다. CellIO의 순수 core 의존성은 Python 표준 라이브러리와 PyYAML 6.x, jsonschema 4.x로 제한한다. 개발 의존성은 pytest 8.x, hypothesis 6.x, coverage 7.x, mypy 1.x, ruff 0.x로 제한한다. 정확한 patch·wheel hash는 최초 bootstrap의 resolver 결과와 smoke 통과 후 requirements.lock에 고정한다.
+NVIDIA가 지원하는 CUDA PyTorch와 Isaac Sim의 의존성을 별도 Conda 환경에 설치한다. CellIO core는 Python 표준 라이브러리, PyYAML 6.x, jsonschema 4.x를 사용한다. 개발 시험에는 pytest 8.x, hypothesis 6.x, coverage 7.x, mypy 1.x, ruff 0.x를 사용한다. 플랫폼별 정확한 버전과 배포물 hash는 설치 및 smoke 통과 후 고정한다.
 
-이 범위는 solver가 선택해도 되는 패치 범위이고 핵심 설계 결정의 미정 상태가 아니다. 릴리스에서는 범위형 requirements만 제공하면 안 된다. bundle 설치 후 의존성 충돌 시 bundle을 바꾸기보다 호환되는 별도 패치 버전을 선택하고 ADR에 기록한다.
+Windows 물리 실행과 WSL2 재판정은 각각 환경 식별자와 잠금 파일을 갖는다. Windows 프로세스가 한 에피소드의 물리, 제어, 기록을 소유한다. WSL2는 COMPLETE와 파일 무결성 확인 후 확정된 기록을 읽어 판정과 witness step을 비교한다. OS·설치 방식·드라이버가 다른 물리 측정은 별도 평가 그룹으로 관리한다.
 
 필수 생성 파일:
 
@@ -253,23 +253,23 @@ B-MANUAL은 연구자가 구성한 기준선으로 표시한다. 기존 도구�
 
 다음 경로를 공식 지원한다.
 
-1. 사용자가 공식 6.2.0 Linux workstation bundle을 받아 설치하고 해당 이용조건을 확인한다.
-2. CellIO 저장소를 별도 폴더에 clone한다.
-3. bundle의 python.sh로 editable install과 doctor를 실행한다.
+1. Windows에서 새 Conda Python 3.12 환경을 만들고 NVIDIA 6.2 공식 pip 절차로 CUDA PyTorch와 Isaac Sim을 설치한다. 최초 사용 시 NVIDIA 이용조건을 사용자에게 확인한다.
+2. CellIO 저장소를 clone하고 해당 환경에 editable install한다.
+3. 활성 환경의 python으로 doctor와 공식 호환성 검사를 실행한다.
 4. assets resolve로 필요한 자산만 준비하고 checksum을 기록한다.
 5. mock smoke, Isaac import smoke, 정상 장면 smoke 순서로 실행한다.
 6. confirmatory 실험 전 assets verify --offline가 성공해야 한다.
 
 아래 CellIO 명령은 **구현해야 할 CLI 계약**이다. 현재 이미 존재하는 명령이라고 가정하지 않는다.
 
-~~~bash
-export CELLIO_ISAAC_ROOT=/opt/isaac-sim-6.2.0
-"$CELLIO_ISAAC_ROOT/python.sh" -m pip install --require-hashes -r requirements.lock
-"$CELLIO_ISAAC_ROOT/python.sh" -m pip install -e . --no-deps
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio doctor --profile isaac62 --output artifacts/doctor.json
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio assets resolve --profile franka_panda
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio validate --config examples/cell_a/healthy.yaml
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio run --config examples/cell_a/healthy.yaml --headless
+~~~powershell
+conda activate cellio-isaac62
+python -m pip install --require-hashes -r requirements.lock
+python -m pip install -e . --no-deps
+python -m cellio doctor --profile isaac62 --output artifacts/doctor.json
+python -m cellio assets resolve --profile franka_panda
+python -m cellio validate --config examples/cell_a/healthy.yaml
+python -m cellio run --config examples/cell_a/healthy.yaml --headless
 ~~~
 
 설치 스크립트는 사용자 확인 없이 드라이버를 교체하거나 NVIDIA 이용조건 동의 환경변수를 설정하지 않는다. 코드가 사용자 장비에서 이미 수행됐다는 로그를 포함하지 않는다.
@@ -1172,7 +1172,7 @@ finally:
 
 ### 12.3 motion 계층
 
-CPU dynamics 선택은 물리 engine device에 대한 계약이다. SimulationManager.get_device()의 Warp Device를 str/공식 속성으로 검사한다. CumotionWorldInterface(device="cpu")의 배열·transform composition 장치와 native RMP solver의 계산 장치를 동일하게 가정하지 않는다. RmpFlowController에 문서에 없는 device 인자를 추가하지 않고, bundle의 native 설정과 확인 가능한 compute 정보를 provenance로 기록한다. [S05,S14,S25]
+CPU dynamics 선택은 물리 engine device에 대한 계약이다. SimulationManager.get_device()의 Warp Device를 str/공식 속성으로 검사한다. CumotionWorldInterface(device="cpu")의 배열·transform composition 장치와 native RMP solver의 계산 장치를 동일하게 가정하지 않는다. RmpFlowController에 문서에 없는 device 인자를 추가하지 않고, 설치된 확장의 native 설정과 확인 가능한 compute 정보를 provenance로 기록한다. [S05,S14,S25]
 
 하위 pick-and-place 제작은 공식 6.2 Franka 예제를 commissioning 기준으로 삼는다. 공식 standalone 예제 경로는 standalone_examples/api/isaacsim.robot_motion.examples/manipulation/pick_place.py이며 --robot franka 옵션을 사용한다. CellIO는 이 예제의 물체 위치 읽기를 시험 제어기의 숨은 truth 입력으로 재사용하지 않는다. [S15]
 
@@ -2157,7 +2157,7 @@ ArgParser는 문자열 인수를 typed request로만 변환한다. CommandUseCas
 
 ### 20.1 명령 표
 
-모든 명령은 bundle Python의 -m cellio로 실행한다. backend가 필요 없는 validate/evaluate/report는 일반 Python 3.12에서도 동작한다.
+Windows 전용 Conda 환경의 python -m cellio로 실행한다. validate/evaluate/report 등 오프라인 명령은 WSL2의 Python 3.12 환경에서도 실행한다.
 
 | 명령 | 필수 입력 | 출력·효과 |
 |---|---|---|
@@ -2666,14 +2666,14 @@ SoftwareX는 소프트웨어 설명과 공개 코드·재사용 가능성을 중
 
 ### 25.3 필수 재현 명령 흐름
 
-~~~bash
-export CELLIO_ISAAC_ROOT=/opt/isaac-sim-6.2.0
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio doctor --profile isaac62 --output artifacts/doctor.json
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio assets verify --offline
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio campaign plan --suite canonical-v1 --output artifacts/canonical-v1
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio campaign run --plan artifacts/canonical-v1/campaign.plan.json
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio report --campaign artifacts/canonical-v1 --output reports/canonical-v1
-"$CELLIO_ISAAC_ROOT/python.sh" -m cellio acceptance --level r3 --report reports/acceptance.json
+~~~powershell
+conda activate cellio-isaac62
+python -m cellio doctor --profile isaac62 --output artifacts/doctor.json
+python -m cellio assets verify --offline
+python -m cellio campaign plan --suite canonical-v1 --output artifacts/canonical-v1
+python -m cellio campaign run --plan artifacts/canonical-v1/campaign.plan.json
+python -m cellio report --campaign artifacts/canonical-v1 --output reports/canonical-v1
+python -m cellio acceptance --level r3 --report reports/acceptance.json
 ~~~
 
 이 흐름은 구현할 interface다. acceptance는 아직 수행하지 않은 oracle/reset/overhead/soak/clean-install을 자동으로 PASS하지 않고 NOT_RUN으로 표시한다. 개별 suite 실행 기록을 모아야 R3 보고서가 완성된다.
@@ -2725,7 +2725,7 @@ release acceptance.json은 아래를 반드시 포함한다.
 
 | ADR | 결정 | 이유 |
 |---|---|---|
-|ADR001|Isaac6.2.0bundle·CPUphysics|현행공식API와버전격리,단일지원경로|
+|ADR001 개정|Windows 11 Conda·Isaac Sim 6.2.0.0·CPU PhysX, WSL2 오프라인 재판정|장비의 실제 설치 경로와 교차 환경 판정 검증|
 |ADR002|120Hzphysics/servo/sensor,30HzFSM|물리동작과상위I/O의분리|
 |ADR003|한episode한fault|6family의의미와근거를먼저검증|
 |ADR004|fresh_process본평가|실험격리,reset기능은별도스트레스검사|
