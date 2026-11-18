@@ -3,4 +3,6 @@
 *.png binary
 *.pdf binary
 results/publication/tables/*.csv -text whitespace=trailing-space,space-before-tab,cr-at-eol
+# The original WSL commissioning record includes the checksum of this exact script.
+results/qualification/commission-v1/audit.py -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 *.usdc binary

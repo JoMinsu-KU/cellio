@@ -14,6 +14,10 @@ The publication materials include the actual Cell A transfer and Cell B clamping
 
 The [campaign guide](docs/run_campaigns.md) explains how to collect the repeated nominal trials, check the boundary states, freeze the candidate, and resume the registered physical campaigns. The [experiment protocols](protocols) specify their cells, seeds and repeat counts.
 
+The formal fixed-state commissioning suite completed 20 first attempts per cell on the workstation. All 40 reached 7,200 steps with task SUCCESS and compliance PASS. WSL2 independently reproduced every verdict and first witness across the 680 requirement records. The 20 repeats in each cell share one nominal physical state. [Frozen plan](results/qualification/commission-v1/campaign.plan.json) · [Replay summary and per-attempt checksums](results/qualification/commission-v1/summary.json)
+
+Candidate `a6f3f9d` then completed 8 of 16 planned boundary attempts. All eight reached the placement goal. Seven passed compliance. On Cell A boundary 3, the measured part-to-tool displacement reached 18.942 mm at step 2,043, exceeding the 18 mm carry limit. The coordinator stopped before the pilot. WSL2 reproduced all 136 boundary requirement verdicts and first witnesses. [Candidate history, denominators and source hashes](results/qualification/candidate-a6f3f9d/README.md)
+
 A small Windows-generated [mock attempt](examples/traces/mock-36) is available for offline replay. It contains 36 physics decisions. The final placement goal expires at this short horizon. The [Windows verdicts](results/r0/replay-windows.json) and [WSL verdicts](results/r0/replay-linux.json) record the same source digest, rule digest and witness steps.
 
 ```sh
