@@ -1,0 +1,3202 @@
+[
+  {
+    "id": "ora.cell_a.O1.c01",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c02",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          4,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c03",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          6,
+          1,
+          1
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ],
+        [
+          8,
+          6,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 2,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c04",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          1,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          12,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c05",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          5,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c06",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c07",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          4,
+          7,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c08",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c09",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "missing_before": [
+        2,
+        3
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.c10",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "observed_end": 3
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.n01",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O1.n02",
+    "cell": "cell_a",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c01",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          5,
+          "cancelled_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c02",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "cancelled_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c03",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "apply_hold_new"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c04",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c05",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          5,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c06",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c07",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset"
+        ],
+        [
+          7,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 7,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c08",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "apply_old"
+        ],
+        [
+          5,
+          "apply_conflict"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c09",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "missing_receipt"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.c10",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "observed_end": 8
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.n01",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O2.n02",
+    "cell": "cell_a",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c01",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          20,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c02",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          8,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c03",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          16,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c04",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          12,
+          true
+        ],
+        [
+          "GOOD",
+          8,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c05",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          7,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c06",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "BAD",
+          16,
+          null
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c07",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "MISSING",
+          null,
+          null
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c08",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          21,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c09",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        null
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.c10",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          16,
+          true
+        ],
+        null
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.n01",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O3.n02",
+    "cell": "cell_a",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c01",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          5,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c02",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          9,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c03",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "dwell": 2,
+      "true": [
+        [
+          7,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          9,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c04",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          2,
+          0
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "true": [
+        [
+          6,
+          0
+        ],
+        [
+          8,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c05",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c06",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          10,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c07",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c08",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "dwell": 2,
+      "true": [
+        [
+          8,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c09",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "observed_end": 8
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.c10",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "unknown": [
+        [
+          7,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.n01",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O4.n02",
+    "cell": "cell_a",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c01",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c02",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c03",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "yaw": 0.02
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c04",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "horizontal_m": 0.015,
+      "linear_mps": 0.01
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c05",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "placed_body": "Part_001"
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c06",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "horizontal_m": 0.015001
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c07",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "linear_mps": 0.010001
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c08",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "finger_q": 0.02,
+      "done": true,
+      "destination_signal": true
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c09",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180,
+      "observed_end": 239
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.c10",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180,
+      "invalid_part_steps": [
+        210
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.n01",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O5.n02",
+    "cell": "cell_a",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c01",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "fresh_sample"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c02",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "old_due_purged"
+        ],
+        [
+          6,
+          "router_hold_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c03",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "override_removed"
+        ],
+        [
+          6,
+          "normal_target_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c04",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_clean"
+        ],
+        [
+          7,
+          "old_packet_rejected"
+        ],
+        [
+          7,
+          "new_packet_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c05",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "fresh_sample"
+        ],
+        [
+          7,
+          "old_packet_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 7,
+      "obligation_count": 2,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c06",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "old_override_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c07",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_dirty_cache"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c08",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_clean"
+        ]
+      ],
+      "post_reset_position_delta_m": 0.00011
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c09",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "observed_end": 5
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.c10",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "unknown_target_receipt"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 2,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.n01",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_a.O6.n02",
+    "cell": "cell_a",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c01",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c02",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          4,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c03",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          6,
+          1,
+          1
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ],
+        [
+          8,
+          6,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 4,
+      "obligation_count": 2,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c04",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          1,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          12,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "ORDER_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c05",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          5,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c06",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c07",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          4,
+          7,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c08",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "before": [
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "after": [
+        [
+          4,
+          6,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "ORDER_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c09",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "missing_before": [
+        2,
+        3
+      ],
+      "after": [
+        [
+          4,
+          6,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.c10",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "observed_end": 3
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.n01",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O1.n02",
+    "cell": "cell_b",
+    "family": "O1",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c01",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          5,
+          "cancelled_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c02",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "cancelled_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c03",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "apply_hold_new"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c04",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c05",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          5,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c06",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "cancel"
+        ],
+        [
+          4,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 4,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c07",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset"
+        ],
+        [
+          7,
+          "apply_old"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 7,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c08",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "apply_old"
+        ],
+        [
+          5,
+          "apply_conflict"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c09",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          4,
+          "missing_receipt"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.c10",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "observed_end": 8
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.n01",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O2.n02",
+    "cell": "cell_b",
+    "family": "O2",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c01",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          20,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c02",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          8,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c03",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          16,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c04",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          12,
+          true
+        ],
+        [
+          "GOOD",
+          8,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c05",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          7,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c06",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "BAD",
+          16,
+          null
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c07",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "MISSING",
+          null,
+          null
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c08",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          21,
+          true
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 20,
+      "obligation_count": 1,
+      "reason": "ADMISSION_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c09",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        null
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.c10",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "samples": [
+        [
+          "GOOD",
+          16,
+          true
+        ],
+        null
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.n01",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O3.n02",
+    "cell": "cell_b",
+    "family": "O3",
+    "horizon": 24,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c01",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          5,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 5,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c02",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          9,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c03",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "dwell": 2,
+      "true": [
+        [
+          7,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          9,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c04",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          2,
+          0
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "true": [
+        [
+          6,
+          0
+        ],
+        [
+          8,
+          1
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c05",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c06",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "true": [
+        [
+          10,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c07",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c08",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "dwell": 2,
+      "true": [
+        [
+          8,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 9,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c09",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "observed_end": 8
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.c10",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "triggers": [
+        [
+          4,
+          0
+        ]
+      ],
+      "unknown": [
+        [
+          7,
+          0
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.n01",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O4.n02",
+    "cell": "cell_b",
+    "family": "O4",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c01",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c02",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c03",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "yaw": 0.02
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c04",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "horizontal_m": 0.015,
+      "linear_mps": 0.01
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 200,
+      "obligation_count": 1,
+      "reason": "RESPONSE_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c05",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "placed_body": "Part_001"
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c06",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "horizontal_m": 0.015001
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c07",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "linear_mps": 0.010001
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c08",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 140,
+      "finger_q": 0.02,
+      "done": true,
+      "destination_signal": true
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 240,
+      "obligation_count": 1,
+      "reason": "DEADLINE_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c09",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180,
+      "observed_end": 239
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.c10",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "placed_from": 180,
+      "invalid_part_steps": [
+        210
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 1,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.n01",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O5.n02",
+    "cell": "cell_b",
+    "family": "O5",
+    "horizon": 240,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c01",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "fresh_sample"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c02",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "old_due_purged"
+        ],
+        [
+          6,
+          "router_hold_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c03",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "override_removed"
+        ],
+        [
+          6,
+          "normal_target_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "RESTORED_NO_TAIL",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c04",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_clean"
+        ],
+        [
+          7,
+          "old_packet_rejected"
+        ],
+        [
+          7,
+          "new_packet_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "PASS",
+      "first_witness_step": 12,
+      "obligation_count": 1,
+      "reason": "INVARIANT_SATISFIED",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c05",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "fresh_sample"
+        ],
+        [
+          7,
+          "old_packet_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 7,
+      "obligation_count": 2,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c06",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "old_override_applied"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 2,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c07",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_dirty_cache"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c08",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "reset_clean"
+        ]
+      ],
+      "post_reset_position_delta_m": 0.00011
+    },
+    "expected": {
+      "verdict": "FAIL",
+      "first_witness_step": 6,
+      "obligation_count": 1,
+      "reason": "INVARIANT_VIOLATION",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c09",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "observed_end": 5
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "HORIZON_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.c10",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "events": [
+        [
+          6,
+          "unknown_target_receipt"
+        ]
+      ]
+    },
+    "expected": {
+      "verdict": "UNKNOWN",
+      "first_witness_step": null,
+      "obligation_count": 2,
+      "reason": "EVIDENCE_INCOMPLETE",
+      "coverage_missed": false
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.n01",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "wrapper": "absent_scope_event"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  },
+  {
+    "id": "ora.cell_b.O6.n02",
+    "cell": "cell_b",
+    "family": "O6",
+    "horizon": 12,
+    "input": {
+      "wrapper": "disabled"
+    },
+    "expected": {
+      "verdict": "NOT_APPLICABLE",
+      "first_witness_step": null,
+      "obligation_count": 0,
+      "reason": "NOT_TRIGGERED",
+      "coverage_missed": true
+    }
+  }
+]
