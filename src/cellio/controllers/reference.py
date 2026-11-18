@@ -42,6 +42,7 @@ class ReferenceController:
         self.started = False
         self.terminal = self.reason = self.dwell_start = None
         self.robot_sequence = self.clear_start = None
+        self.motion_applied_step = None
         self.endpoint_commands = {}
         self.applied = set()
         self.last_input = self.last_output = None
@@ -65,6 +66,7 @@ class ReferenceController:
             is self.dwell_start
             is self.clear_start
             is self.robot_sequence
+            is self.motion_applied_step
             is None
             and self.entered == self.ready_step == self.response_start == 0
         )
@@ -104,6 +106,7 @@ class ReferenceController:
         self.endpoint_commands[endpoint] = command
         if command.kind == CommandKind.POSE:
             self.robot_sequence = sequence
+            self.motion_applied_step = None
 
     def _stop(self, cancel):
         if cancel:
@@ -238,6 +241,12 @@ class ReferenceController:
             or self.pending
         ):
             return self.entered + stage.timeout
+        if stage.poses:
+            return (
+                self.motion_applied_step + stage.timeout
+                if self.motion_applied_step is not None
+                else None
+            )
         return self.response_start + stage.timeout
 
     def _advance(self):
@@ -277,7 +286,8 @@ class ReferenceController:
             self._next()
         elif (
             not self.pending
-            and self.now.step >= self._deadline(stage)
+            and (deadline := self._deadline(stage)) is not None
+            and self.now.step >= deadline
             and self.variant != "C_M2"
         ):
             self._abort("RESPONSE_TIMEOUT")
@@ -301,6 +311,20 @@ class ReferenceController:
             for r in view.previous_command_receipts
             if r.status == "APPLIED" and r.operation_epoch == self.epoch
         )
+        robot = self.endpoint_commands.get("robot")
+        if (
+            robot
+            and robot.kind == CommandKind.POSE
+            and self.motion_applied_step is None
+        ):
+            for receipt in view.previous_command_receipts:
+                if (
+                    receipt.command_id == robot.command_id
+                    and receipt.status == "APPLIED"
+                    and receipt.operation_epoch == self.epoch
+                ):
+                    self.motion_applied_step = receipt.receipt_step
+                    break
         try:
             self._advance()
         except ValueError as error:

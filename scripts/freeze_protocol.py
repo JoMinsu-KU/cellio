@@ -3,15 +3,21 @@
 import argparse
 from pathlib import Path
 from cellio.analysis.campaign import load_campaign
+from cellio.analysis.suites import fault_coverage
 from cellio.environment import data_root, lock_context
 from cellio.io import digest, file_hash, write_json
-from cellio.runtime.campaign import ARMS, FINITE, suite_design
+from cellio.runtime.campaign import ARMS, FINITE, finite_rows, suite_design
 
 
 def freeze(root, calibration):
     ctx, identity = lock_context("isaac62_lockstep")
     if not calibration.is_file():
         raise ValueError("Missing measured robot frame calibration")
+    calibration_hash = file_hash(calibration)
+    if ctx["environment"].get("robot_profile_sha256") != calibration_hash:
+        raise ValueError(
+            "The supplied calibration differs from the active robot profile"
+        )
     evidence = {}
     for suite, per_cell in (
         ("commission-v1", 20),
@@ -19,6 +25,15 @@ def freeze(root, calibration):
         ("pilot-v1", 5 * len(ARMS)),
     ):
         plan, rows, _ = load_campaign(root / suite)
+        design = suite_design(suite)
+        if (
+            plan["suite_id"] != suite
+            or plan.get("suite_design") != design
+            or plan["runs"] != finite_rows(suite, plan["provenance"], design)
+        ):
+            raise ValueError(
+                f"{suite} does not match the registered rows and conditions"
+            )
         for key in (
             "environment_hash",
             "assets_hash",
@@ -31,6 +46,9 @@ def freeze(root, calibration):
             block = [t for t in rows if t.row["cell"] == cell]
             if len(block) != per_cell or any(
                 t.status != "COMPLETED"
+                or not t.started
+                or t.error is not None
+                or t.eval.get("end_step") != t.row["config"]["episode"]["horizon_steps"]
                 or t.eval.get("online_offline_equal") is not True
                 for t in block
             ):
@@ -42,6 +60,16 @@ def freeze(root, calibration):
                 for t in block
             ):
                 raise ValueError(f"Healthy commissioning failed: {suite}/{cell}")
+        if suite == "pilot-v1":
+            for (cell, family), counts in fault_coverage(rows).items():
+                if (
+                    not counts["realized"]
+                    or not counts["restored"]
+                    or (family == "F6" and not counts["held"])
+                ):
+                    raise ValueError(
+                        f"Missing pilot fault evidence: {cell}/{family} {counts}"
+                    )
         evidence[suite] = {
             "plan_hash": plan["plan_hash"],
             "attempts": [
@@ -66,7 +94,7 @@ def freeze(root, calibration):
         "main_seeds": list(range(1000, 1020)),
         "pilot_bytes_per_step": stored / nsteps,
         "pilot_attempt_ids": [t.attempt_id for t in pilots],
-        "robot_profile_sha256": file_hash(calibration),
+        "robot_profile_sha256": calibration_hash,
         "candidate": {k: v for k, v in identity.items() if k != "protocol_hash"},
         "suite_design_hashes": {
             s: digest(suite_design(s))

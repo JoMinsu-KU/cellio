@@ -17,6 +17,26 @@ from cellio.runtime import supervisor
 from cellio.runtime.campaign import initial_state, scenario
 
 
+def test_commissioning_identity_captures_applied_robot_profile(monkeypatch):
+    from cellio import environment
+    from cellio.adapters.isaac62 import assets
+
+    static = {"profile": "isaac62", "packages": {}, "problems": []}
+    folder = environment.data_root() / "locks"
+    write_json(folder / "doctor.json", {**static, "passed": True, "level": "smoke", "kit": {}})
+    monkeypatch.setattr(environment, "probe_static", lambda name: dict(static))
+    monkeypatch.setattr(assets, "verify_assets", lambda path: {"entry": "robot.usd"})
+    profile = folder / "robot_profile.lock.json"
+    write_json(profile, {"finger_force_limit_n": 4})
+    first, before = environment.lock_context("isaac62_lockstep")
+    assert first["environment"]["robot_profile_sha256"] == file_hash(profile)
+    write_json(profile, {"finger_force_limit_n": 5})
+    second, after = environment.lock_context("isaac62_lockstep")
+    assert before["environment_hash"] != after["environment_hash"]
+    assert supervisor.physical_options(first)["robot_profile"]["finger_force_limit_n"] == 4
+    assert supervisor.physical_options(second)["robot_profile"]["finger_force_limit_n"] == 5
+
+
 @pytest.fixture(autouse=True)
 def isolated_data(tmp_path, monkeypatch):
     source = str(Path(__file__).resolve().parents[2] / "src")
@@ -476,19 +496,28 @@ worker.execute_job(job,process_boundary=True)
         assert (lease / ".campaign.lock").is_file()
 
 
-def test_supervisor_keeps_progress_deadline_when_heartbeat_replacement_denies_read(monkeypatch):
+def test_supervisor_keeps_progress_deadline_when_heartbeat_replacement_denies_read(
+    monkeypatch,
+):
     from cellio.io import CellIOError
-    w=supervisor.WorkerProcess.__new__(supervisor.WorkerProcess)
-    w.proc=Mock()
-    w.proc.poll.return_value=None
-    w.heartbeat=Mock()
-    beat={"state":"RUNNING","step":3,"attempt_id":"live"}
-    w.heartbeat.read_text.side_effect=[json.dumps(beat),PermissionError(13,"fixture sharing violation"),FileNotFoundError()]
-    w.started=w.last_progress=w.state_at=0
-    w.last_state=w.last_seen=w.running_at=None
-    w.last_beat={}
-    monkeypatch.setattr(supervisor.time,"monotonic",Mock(side_effect=(30.,35.,91.)))
-    assert w.poll()==beat and w.poll()==beat
-    assert w.running_at==w.last_progress==30.
-    with pytest.raises(CellIOError,match="No physics progress"):
+
+    w = supervisor.WorkerProcess.__new__(supervisor.WorkerProcess)
+    w.proc = Mock()
+    w.proc.poll.return_value = None
+    w.heartbeat = Mock()
+    beat = {"state": "RUNNING", "step": 3, "attempt_id": "live"}
+    w.heartbeat.read_text.side_effect = [
+        json.dumps(beat),
+        PermissionError(13, "fixture sharing violation"),
+        FileNotFoundError(),
+    ]
+    w.started = w.last_progress = w.state_at = 0
+    w.last_state = w.last_seen = w.running_at = None
+    w.last_beat = {}
+    monkeypatch.setattr(
+        supervisor.time, "monotonic", Mock(side_effect=(30.0, 35.0, 91.0))
+    )
+    assert w.poll() == beat and w.poll() == beat
+    assert w.running_at == w.last_progress == 30.0
+    with pytest.raises(CellIOError, match="No physics progress"):
         w.poll()

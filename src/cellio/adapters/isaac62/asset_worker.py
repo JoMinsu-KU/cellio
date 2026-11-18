@@ -2,7 +2,7 @@
 
 import argparse
 
-from .application import worker_main
+from .application import standalone_main
 from .assets import collect_assets
 
 
@@ -16,4 +16,4 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(worker_main(main))
+    raise SystemExit(standalone_main(main))

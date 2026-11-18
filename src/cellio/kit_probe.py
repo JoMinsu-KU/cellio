@@ -19,7 +19,7 @@ def probe(level):
         import isaacsim.robot_motion.cumotion as motion
         import warp as wp
         from isaacsim.core.simulation_manager import SimulationManager, PhysxScene
-        from isaacsim.core.experimental.prims import RigidPrim, Articulation
+        from isaacsim.core.experimental.prims import RigidPrim
         from pxr import Gf, UsdGeom, UsdPhysics
         import omni.usd
         names=("isaacsim.robot_motion.cumotion","omni.physx","isaacsim.core.simulation_manager")
@@ -112,5 +112,5 @@ def main():
 
 
 if __name__=="__main__":
-    from cellio.adapters.isaac62.application import worker_main
-    sys.exit(worker_main(main))
+    from cellio.adapters.isaac62.application import standalone_main
+    sys.exit(standalone_main(main))

@@ -153,6 +153,12 @@ class FaultEngine:
     def last_inspected_step(self):
         return self._inspected_step
 
+    @property
+    def observation_pending_count(self):
+        if self.spec is None or self.spec.family != "F3":
+            return None
+        return len(self._observation_queue.items)
+
     def reset_evidence(self):
         return {
             "observation_queue_empty": not self._observation_queue.items
@@ -465,9 +471,12 @@ class FaultEngine:
         applied_targets,
     ):
         # S_k is evidence about the *previous* command interval. Only bridge adjacent samples.
-        measured=actual_positions or {}
-        valid_sample=bool(self._hold) and set(measured)==set(self._hold) and all(
-            type(v) in (int,float) and isfinite(v) for v in measured.values())
+        measured = actual_positions or {}
+        valid_sample = (
+            bool(self._hold)
+            and set(measured) == set(self._hold)
+            and all(type(v) in (int, float) and isfinite(v) for v in measured.values())
+        )
         if self._previous_conflict:
             if not valid_sample:
                 self._conflict_start = self._last_hold_step = None

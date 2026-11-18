@@ -326,3 +326,144 @@ def test_unverified_scoring_does_not_count_success_except_frozen_b0_offline_eval
     assert trial.outcome == "SUCCESS" and trial.evaluable
     evaluation["online_offline_equal"] = False
     assert trial.outcome == "UNKNOWN" and not trial.evaluable
+
+
+def test_reset_chain_requires_the_actual_predecessor_and_matching_control_verdicts(
+    tmp_path,
+):
+    from cellio.analysis.campaign import Trial
+    from cellio.analysis.measurements import Measurements
+    from cellio.analysis.suites import reset_chains
+    from cellio.io import file_hash
+
+    body = {
+        "valid": True,
+        "position_m": [0, 0, 0],
+        "orientation_wxyz": [1, 0, 0, 0],
+        "linear_velocity_mps": [0, 0, 0],
+        "angular_velocity_rps": [0, 0, 0],
+    }
+    snap = {
+        "complete": True,
+        "bodies": {"part": body},
+        "joints": {"j": {"valid": True, "position": 0, "kind": "revolute"}},
+    }
+    items = []
+    for slot in ("control", "predecessor", "post_reset"):
+        directory = tmp_path / slot
+        row = {
+            "chain_id": "chain",
+            "chain_slot": slot,
+            "test_control": {"kind": "full_h"},
+            "initial_state": {"x": 0},
+            "config": {"episode": {"horizon_steps": 12}, "faults": []},
+        }
+        ev = {
+            "requirements": [
+                {"requirement_id": "cell_a.r14.goal", "verdict": "PASS"},
+                {
+                    "requirement_id": "cell_a.r16.reset",
+                    "verdict": "PASS" if slot == "post_reset" else "NOT_APPLICABLE",
+                },
+            ],
+            "online_offline_equal": True,
+            "task_outcome": "SUCCESS",
+            "compliance_verdict": "PASS",
+            "end_step": 12,
+            "source_digest": digest(slot),
+        }
+        generation = int(slot == "post_reset")
+        write_json(directory / "manifest.start.json", {"generation": generation})
+        write_json(directory / "manifest.final.json", {"attempt_id": slot})
+        write_json(directory / "initial_snapshot.json", snap)
+        items.append(
+            Trial(
+                row, True, "COMPLETED", slot, directory, ev, measurement=Measurements()
+            )
+        )
+    control, prior, post = items
+    ref = {
+        "attempt_id": "predecessor",
+        "generation": 0,
+        "manifest_sha256": file_hash(prior.path / "manifest.final.json"),
+        "artifact_digest": prior.eval["source_digest"],
+    }
+    link = {
+        "predecessor": ref,
+        "attempt_id": "post_reset",
+        "generation": 1,
+        "initial_state_hash": digest(control.row["initial_state"]),
+    }
+    post.measurement.reset_events = [(0, link)]
+    assert reset_chains(items)["chains"][0]["status"] == "PASS"
+    ref["manifest_sha256"] = digest("other")
+    assert reset_chains(items)["chains"][0]["status"] == "FAIL"
+    ref["manifest_sha256"] = file_hash(prior.path / "manifest.final.json")
+    post.eval["requirements"][0]["verdict"] = "FAIL"
+    assert reset_chains(items)["chains"][0]["status"] == "FAIL"
+
+
+def test_abort_reaction_uses_first_observable_packet_and_independent_deadline():
+    from cellio.analysis.measurements import Measurements
+
+    def frame(step, events=(), bad=False):
+        return {
+            "step": step,
+            "controller_called": True,
+            "observed_signals": {
+                "gripper.closed": {
+                    "quality": "BAD" if bad else "GOOD",
+                    "dtype": "bool",
+                    "value": None if bad else False,
+                    "source_step": None if bad else step,
+                }
+            },
+            "intents": [],
+            "applied": [],
+            "deliveries": [],
+            "events": events,
+            "final_snapshot": False,
+        }
+
+    def stage(name):
+        return {"event_type": "controller.stage_enter", "payload": {"stage_id": name}}
+
+    def abort(reason):
+        return {"event_type": "controller.abort", "payload": {"reason": reason}}
+
+    meter = Measurements("cell_a")
+    meter.observe(frame(0, [stage("grasp")]), [])
+    meter.observe(frame(4, bad=True), [])
+    meter.observe(
+        frame(8, [abort("INVALID_INPUT:gripper.closed"), stage("aborted")], bad=True),
+        [],
+    )
+    meter.finish(12, {"requirements": []})
+    assert meter.latencies["invalid_to_abort"] == {4: 1}
+    meter = Measurements("cell_a")
+    meter.observe(frame(0, [stage("descend")]), [])
+    command = frame(4)
+    command["intents"] = [
+        {
+            "kind": "POSE",
+            "command_id": "pose",
+            "actuator_id": "actuator.robot",
+            "sequence": 1,
+            "issued_step": 4,
+            "value": [0, 0, 0],
+        }
+    ]
+    meter.observe(command, [])
+    receipt = frame(10)
+    receipt["applied"] = [
+        {
+            "status": "APPLIED",
+            "applied_step": 10,
+            "issued_step": 4,
+            "command_id": "pose",
+        }
+    ]
+    meter.observe(receipt, [])
+    meter.observe(frame(972, [abort("RESPONSE_TIMEOUT"), stage("aborted")]), [])
+    meter.finish(976, {"requirements": []})
+    assert meter.latencies["deadline_to_abort"] == {2: 1}

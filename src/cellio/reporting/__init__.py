@@ -1,5 +1,6 @@
 """Generate a report from the frozen run plan and independently replayed artifacts."""
 
+import platform
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -8,8 +9,10 @@ from cellio.analysis.campaign import group_metrics, load_campaign
 from cellio.analysis.comparisons import confusion, mutant_pairs, overhead
 from cellio.analysis.measurements import histogram_summary
 from cellio.analysis.replay import read
+from cellio.analysis.seed_sensitivity import canonical_seed_sensitivity
 from cellio.analysis.suites import performance, reset_chains, soak_evidence
-from cellio.io import file_hash, write_json
+from cellio.environment import source_hash
+from cellio.io import digest, file_hash, write_json
 
 from .render import render_report, table, timeline
 
@@ -126,6 +129,28 @@ def oracle_report(plan, source, out):
     }
 
 
+def attempt_replay(t):
+    return {
+        "run_id": t.row["run_id"],
+        "attempt_id": t.attempt_id,
+        "outcome": t.outcome,
+        "status": t.status,
+        "error": t.error,
+        "online_offline_equal": t.eval.get("online_offline_equal"),
+        "source_digest": t.eval.get("source_digest"),
+        "rules_digest": t.eval.get("rules_digest"),
+        "end_step": t.eval.get("end_step"),
+        "witness_digest": digest(
+            {
+                r["requirement_id"]: [r["verdict"], r.get("first_witness_step")]
+                for r in t.eval["requirements"]
+            }
+        )
+        if t.eval.get("requirements")
+        else None,
+    }
+
+
 def report(campaign_dir, output_dir):
     source, out = Path(campaign_dir).resolve(), Path(output_dir).resolve()
     plan, trials, extra = load_campaign(source)
@@ -181,6 +206,9 @@ def report(campaign_dir, output_dir):
         "invalid_to_abort",
         "invalid_to_hold",
         "invalid_to_quiescence",
+        "deadline_to_abort",
+        "deadline_to_hold",
+        "deadline_to_quiescence",
     )
     figures = {"failure_timeline": None}
     failure = next(
@@ -195,12 +223,7 @@ def report(campaign_dir, output_dir):
         figures["failure_timeline"] = timeline(failure, out)
     attempts = [
         {
-            "run_id": t.row["run_id"],
-            "attempt_id": t.attempt_id,
-            "outcome": t.outcome,
-            "status": t.status,
-            "error": t.error,
-            "online_offline_equal": t.eval.get("online_offline_equal"),
+            **attempt_replay(t),
             "path": str(t.path) if t.eval else None,
             "replay_command": f'cellio evaluate --artifact "{t.path}"'
             if t.eval
@@ -244,6 +267,8 @@ def report(campaign_dir, output_dir):
         },
     }
     completed = measurements["delays"]["task_completion"]
+    if plan["suite_id"] == "canonical-v1":
+        measurements["seed_sensitivity"] = canonical_seed_sensitivity(plan, trials)
     measurements["delays"]["task_completion_seconds"] = {
         **completed,
         "unit": "sim s",
@@ -262,6 +287,12 @@ def report(campaign_dir, output_dir):
         "cells": cell_json,
         "equal_weight_cell_mean": equal,
         "groups": groups_json,
+        "replay_environment": {
+            "os": platform.system(),
+            "kernel": platform.release(),
+            "python": platform.python_version(),
+            "source_hash": source_hash(),
+        },
         "attempts": attempts,
         "retries": extra,
         **measurements,

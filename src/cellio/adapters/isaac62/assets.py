@@ -8,13 +8,14 @@ import subprocess
 import sys
 import tempfile
 from urllib.parse import unquote, urlsplit
+from xml.etree import ElementTree
 
 from cellio.io import CellIOError, digest, file_hash as file_sha256, write_json
 
 CATALOG_PATH = "Isaac/Robots_Multiphysics/FrankaRobotics/FrankaPanda/franka/franka.usda"
 LICENSE_URL = "https://docs.isaacsim.omniverse.nvidia.com/6.2.0/common/licenses.html"
 LOCK = "assets.lock.json"
-LAYOUT = "catalog-and-sdk-relative-v1"
+LAYOUT = "catalog-and-sdk-relative-v2"
 
 
 def _failure(reason):
@@ -41,6 +42,9 @@ def verify_assets(root):
         raise _failure("Incomplete dependency lock")
     for name, expected in files.items():
         path = _relative(root, name)
+        if (not isinstance(expected, dict) or type(expected.get("bytes")) is not int
+                or expected["bytes"] < 0 or not isinstance(expected.get("sha256"), str)):
+            raise _failure(f"Malformed dependency record: {name}")
         if not path.is_file() or path.stat().st_size != expected["bytes"] or file_sha256(path) != expected["sha256"]:
             raise _failure(f"Missing or modified dependency: {name}")
     return lock
@@ -156,7 +160,9 @@ def _collect(root, source):
     frozen_motion = destination / ".cellio-motion"
     frozen_motion.mkdir()
     for path in motion_paths:
-        shutil.copyfile(path, frozen_motion / path.name)
+        target = frozen_motion / path.relative_to(motion_root)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(path, target)
     files = {
         path.relative_to(root).as_posix(): {"sha256": file_sha256(path), "bytes": path.stat().st_size}
         for path in sorted(destination.rglob("*")) if path.is_file()
@@ -164,7 +170,7 @@ def _collect(root, source):
     return {"schema": "cellio.assets/1.0", "layout": LAYOUT, "source": _portable_uri(source, sdk, local_origin),
             "entry": entry.relative_to(root).as_posix(),
             "terms": LICENSE_URL, "files": files, "motion_config": {
-                path.name: {"source_path": _portable_uri(str(path), sdk, local_origin), "sha256": file_sha256(path)}
+                path.relative_to(motion_root).as_posix(): {"source_path": _portable_uri(str(path), sdk, local_origin), "sha256": file_sha256(path)}
                 for path in motion_paths},
             "source_layers": sorted(_portable_uri(str(layer.realPath or layer.identifier), sdk, local_origin) for layer in layers),
             "source_assets": sorted(_portable_uri(str(asset), sdk, local_origin) for asset in assets),
@@ -172,13 +178,24 @@ def _collect(root, source):
 
 
 def motion_files(directory):
-    """Discover the official Franka kinematic descriptions and its tuned RMPflow file."""
+    """Discover motion descriptors and actual geometry references (ignoring XML comments)."""
+    directory = directory.resolve()
     urdf = sorted(directory.glob("*.urdf"))
     xrdf = sorted(directory.glob("*.xrdf"))
     rmp = directory / "rmp_flow.yaml"
     if not urdf or not xrdf or not rmp.is_file():
         raise _failure(f"Incomplete cuMotion configuration directory: {directory}")
-    return (*urdf, *xrdf, rmp)
+    meshes = set()
+    for config in urdf:
+        for mesh in ElementTree.parse(config).iter("mesh"):
+            filename = mesh.get("filename")
+            if not filename:
+                raise _failure(f"URDF mesh has no filename in {config.name}")
+            path = _relative(directory, filename)
+            if not path.is_file():
+                raise _failure(f"URDF mesh missing: {filename}")
+            meshes.add(path)
+    return (*urdf, *xrdf, rmp, *sorted(meshes))
 
 
 def resolve_assets(root, *, source=None):

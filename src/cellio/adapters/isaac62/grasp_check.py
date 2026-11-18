@@ -8,7 +8,7 @@ from cellio.core.models import CommandIntent, CommandKind, DeliveryDecision, Tic
 from cellio.io import write_json
 from cellio.scenes import CELL_B
 from cellio.scenes.definition import DOWNWARD
-from .application import worker_main
+from .application import standalone_main
 from .plant import IsaacPlant
 
 
@@ -44,6 +44,11 @@ class FixtureCheck:
         first_ok = None
         truth = self.advance(endpoint, kind, value)
         while True:
+            if name == "friction_grasp":
+                self.report.setdefault("grasp_samples", []).append({"step": truth.tick.step,
+                    "bilateral": self.contacts(truth), "gap_m": truth.plant_state["gripper.gap_m"],
+                    "speed_mps": truth.plant_state["gripper.max_speed_mps"],
+                    "driver_positions": self.plant.driver_positions("actuator.gripper", truth)})
             if test(truth):
                 first_ok = truth.tick.step if first_ok is None else first_ok
                 if truth.tick.step-first_ok >= dwell:
@@ -101,6 +106,7 @@ class FixtureCheck:
                 reference = relative
             samples.append({"step": origin+i, "part_m": part, "tcp_m": tcp,
                             "gap_m": truth.plant_state["gripper.gap_m"],
+                            "speed_mps": truth.plant_state["gripper.max_speed_mps"],
                             "bilateral_contacts": self.contacts(truth), "offset_change_m": dist(relative, reference)})
         self.report["initial_part_z_m"] = base_z
         self.report["passed"] = all(s["bilateral_contacts"] and s["part_m"][2]-base_z >= .080
@@ -127,4 +133,4 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(worker_main(main))
+    raise SystemExit(standalone_main(main))

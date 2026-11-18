@@ -6,6 +6,7 @@ from pathlib import Path
 import platform
 import subprocess
 import sys
+import sysconfig
 import tempfile
 
 from packaging.requirements import Requirement
@@ -75,9 +76,12 @@ def main():
     payload = ("\n".join(sorted(lines)) + "\n").encode()
     atomic_write(env_dir / "requirements.lock", payload)
     atomic_write(data_root() / "locks" / "requirements.lock", payload)
+    # An editable checkout may also contain old build-time .egg-info. Inventory
+    # the active prefix's installed distributions, as pip checks them.
+    locations = sorted({sysconfig.get_path("purelib"), sysconfig.get_path("platlib")})
     all_packages = {
         canonicalize_name(d.metadata["Name"]): d.version
-        for d in metadata.distributions()
+        for d in metadata.distributions(path=locations)
         if d.metadata["Name"]
     }
     records = {

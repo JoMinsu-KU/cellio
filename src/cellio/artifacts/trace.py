@@ -274,6 +274,10 @@ class AttemptWriter:
             }
             for f in sorted(FILES - {"performance.json"})
         }
+        if result.get("video") is not None:
+            name = "videos/viewport.mp4"
+            video = self.path / name
+            listing[name] = {"size": video.stat().st_size, "sha256": file_hash(video)}
         # Hash the data streams before sampling closure time. The last metadata
         # write and completion marker necessarily follow this measurement.
         performance["finalization_wall_ns"] = (
@@ -362,16 +366,52 @@ def _verify(path):
     ):
         raise trace_error("Manifest digest differs from COMPLETE")
     manifest = read_json(manifest_path)
-    if set(manifest["files"]) != FILES:
+    video_path = "videos/viewport.mp4"
+    names = set(manifest["files"])
+    if names not in (FILES, FILES | {video_path}):
         raise trace_error("Manifest file inventory is incomplete or unknown")
     for name, meta in manifest["files"].items():
         f = path / name
-        if f.resolve().parent != path.resolve() or f.is_symlink():
+        if f.resolve() != path.resolve() / name or f.is_symlink():
             raise trace_error(f"Artifact path escapes attempt: {name}")
         if f.stat().st_size != meta["size"] or file_hash(f) != meta["sha256"]:
             raise trace_error(f"File checksum mismatch: {name}")
     result = read_json(path / "result.json")
-    horizon = read_json(path / "config.resolved.json")["episode"]["horizon_steps"]
+    config = read_json(path / "config.resolved.json")
+    horizon = config["episode"]["horizon_steps"]
+    video = result.get("video")
+    if bool(video) != (video_path in names):
+        raise trace_error("Viewport metadata differs from the sealed video inventory")
+    if video is not None:
+        count, first, last = (
+            video.get(k) for k in ("frame_count", "first_step", "last_step")
+        )
+        meta = manifest["files"][video_path]
+        if (
+            config.get("artifacts", {}).get("video") is not True
+            or result.get("backend") != "isaac62"
+            or video.get("relative_path") != video_path
+            or video.get("source") != "isaac_gui_viewport"
+            or video.get("fps") != 30
+            or video.get("physics_hz") != 120
+            or any(type(v) is not int for v in (count, first, last))
+            or count < 1
+            or first != min(4, horizon)
+            or last != first + 4 * (count - 1)
+            or last > result["last_successful_advance"]
+            or (
+                result["completion_status"] == "COMPLETED"
+                and count != max(1, horizon // 4)
+            )
+            or any(video.get(key) != meta[key] for key in ("sha256", "size"))
+        ):
+            raise trace_error("Invalid simulator video provenance or frame boundaries")
+    elif (
+        "video" in result
+        and config.get("artifacts", {}).get("video")
+        and result["completion_status"] == "COMPLETED"
+    ):
+        raise trace_error("GUI video requested but absent from the completed attempt")
     ids = read_json(path / "manifest.start.json")
     if any(manifest.get(key) != value for key, value in ids.items()):
         raise trace_error("Final manifest belongs to a different attempt")

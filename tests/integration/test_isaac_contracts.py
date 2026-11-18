@@ -122,8 +122,8 @@ def test_offline_lock_detects_tampering_and_path_escape(tmp_path):
 def test_isaac_real_one_step_and_hard_reload():
     # Let the executable use the vendor's supported native fast shutdown after
     # assertions complete; a loaded Kit must never terminate the pytest host.
-    script = ("import runpy,sys; from cellio.adapters.isaac62.application import worker_main; "
-              "native=runpy.run_path(sys.argv[1]); raise SystemExit(worker_main(native['_check_physics']))")
+    script = ("import runpy,sys; from cellio.adapters.isaac62.application import standalone_main; "
+              "native=runpy.run_path(sys.argv[1]); raise SystemExit(standalone_main(native['_check_physics']))")
     subprocess.run([sys.executable, "-c", script, __file__], check=True)
 
 

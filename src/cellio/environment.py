@@ -12,7 +12,7 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-from cellio.io import CellIOError, canonical, digest, file_hash, write_json
+from cellio.io import CellIOError, canonical, digest, write_json
 
 
 def data_root():
@@ -22,6 +22,15 @@ def data_root():
     if os.name == "nt":
         return Path(os.environ["LOCALAPPDATA"]) / "CellIO"
     return Path.home() / ".local" / "share" / "cellio"
+
+
+def lease_directory(name):
+    base = data_root()
+    if os.name == "nt" and name in {"gpu-worker", "gpu-process"}:
+        base = Path(os.environ["LOCALAPPDATA"]) / "CellIO"
+    directory = base / name
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory
 
 
 def version(name):
@@ -144,7 +153,17 @@ def source_hash():
     for p in sorted(
         package.rglob("*.py"), key=lambda p: p.relative_to(package).as_posix()
     ):
-        h.update(canonical([p.relative_to(package).as_posix(), file_hash(p)]))
+        # Python reads source with universal newlines. Use the repository's LF
+        # representation so a Windows checkout and a Linux checkout share the ID.
+        source_bytes = p.read_bytes().replace(b"\r\n", b"\n")
+        h.update(
+            canonical(
+                [
+                    p.relative_to(package).as_posix(),
+                    hashlib.sha256(source_bytes).hexdigest(),
+                ]
+            )
+        )
     return h.hexdigest()
 
 
@@ -202,6 +221,11 @@ def lock_context(profile, *, measured=False):
         from cellio.adapters.isaac62.assets import verify_assets
 
         assets = verify_assets(data_root() / "assets")
+        robot = folder / "robot_profile.lock.json"
+        if robot.is_file():
+            raw_profile = robot.read_bytes()
+            env["robot_profile_sha256"] = hashlib.sha256(raw_profile).hexdigest()
+            env["robot_profile"] = json.loads(raw_profile)
         frozen = folder / "protocol.lock.json"
         if measured and not frozen.exists():
             raise CellIOError(
@@ -226,8 +250,10 @@ def lock_context(profile, *, measured=False):
             f"{name}=={v}\n" for name, v in sorted(env["packages"].items()) if v
         )
     )
+    code_hash = source_hash()
+    env["cellio_source_sha256"] = code_hash
     provenance = {
-        "code_hash": source_hash(),
+        "code_hash": code_hash,
         "environment_hash": digest(env),
         "assets_hash": digest(assets),
         "protocol_hash": digest(protocol),
@@ -235,11 +261,10 @@ def lock_context(profile, *, measured=False):
     }
     if measured and profile == "isaac62_lockstep":
         expected = {k: v for k, v in provenance.items() if k != "protocol_hash"}
-        robot = folder / "robot_profile.lock.json"
         if (
             protocol.get("candidate") != expected
-            or not robot.is_file()
-            or file_hash(robot) != protocol.get("robot_profile_sha256")
+            or "robot_profile_sha256" not in env
+            or env["robot_profile_sha256"] != protocol.get("robot_profile_sha256")
         ):
             raise CellIOError(
                 "ENV_PROTOCOL_CHANGED",

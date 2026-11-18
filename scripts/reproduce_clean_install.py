@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import platform
+import runpy
 import shutil
 import subprocess
 from pathlib import Path
@@ -58,6 +59,12 @@ def main():
     lock = data / "locks" / "requirements.lock"
     if not lock.is_file():
         parser.error("missing hashed CellIO package lock")
+    inventory_path = root / "locks/windows-isaac62/python-environment.json"
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    if inventory.get("requirements_sha256") != hash_file(lock):
+        parser.error("CellIO requirements do not match the frozen Windows lock")
+    from_source = runpy.run_path(str(root / "src/cellio/release_runtime.py"))
+    constraint_text = from_source["frozen_constraints"](inventory)
     exe = shutil.which(args.conda)
     if not exe:
         parser.error("Conda executable not found")
@@ -67,6 +74,8 @@ def main():
     prefix = work / "env"
     wheel_dir = work / "wheelhouse"
     wheel_dir.mkdir()
+    constraints = out / "runtime.constraints.txt"
+    constraints.write_bytes(constraint_text.encode("ascii"))
     env = os.environ.copy()
     env.pop("PYTHONPATH", None)
     env["PYTHONNOUSERSITE"] = "1"
@@ -92,6 +101,8 @@ def main():
         "prefix": str(prefix),
         "requirements_lock": str(lock),
         "requirements_sha256": hash_file(lock),
+        "runtime_inventory_sha256": hash_file(inventory_path),
+        "runtime_constraints_sha256": hash_file(constraints),
         "campaign": str(campaign),
         "commands": [],
     }
@@ -133,8 +144,10 @@ def main():
             prefix,
             "-c",
             "conda-forge",
-            "python=3.12",
+            "python=" + inventory["python"],
             "pip",
+            "setuptools=" + inventory["packages"]["setuptools"],
+            "wheel",
             "-y",
         ],
     )
@@ -145,9 +158,13 @@ def main():
             "-m",
             "pip",
             "install",
-            "torch==2.11.0",
+            "-c",
+            constraints,
+            "torch==" + inventory["packages"]["torch"],
             "--index-url",
             "https://download.pytorch.org/whl/cu130",
+            "--extra-index-url",
+            "https://pypi.org/simple",
         ],
     )
     invoke(
@@ -157,7 +174,9 @@ def main():
             "-m",
             "pip",
             "install",
-            "isaacsim[all,extscache]==6.2.0.0",
+            "-c",
+            constraints,
+            "isaacsim[all,extscache]==" + inventory["packages"]["isaacsim"],
             "--extra-index-url",
             "https://pypi.nvidia.com",
         ],
@@ -167,7 +186,17 @@ def main():
     )
     invoke(
         "build",
-        [python, "-m", "pip", "wheel", "--no-deps", "--wheel-dir", wheel_dir, root],
+        [
+            python,
+            "-m",
+            "pip",
+            "wheel",
+            "--no-deps",
+            "--no-build-isolation",
+            "--wheel-dir",
+            wheel_dir,
+            root,
+        ],
     )
     built = list(wheel_dir.glob("cellio-*.whl"))
     if len(built) != 1:
@@ -175,14 +204,20 @@ def main():
     proof.update(wheel=str(built[0]), wheel_sha256=hash_file(built[0]))
     invoke("install", [python, "-m", "pip", "install", "--no-deps", built[0]])
     identity = out / "runtime.json"
-    probe = (
-        "import json,platform,sys,cellio; from importlib import metadata as m; from pathlib import Path; "
-        "from cellio.environment import source_hash; "
-        "Path(sys.argv[1]).write_text(json.dumps(dict(prefix=sys.prefix,executable=sys.executable,"
-        "python=platform.python_version(),os=platform.system(),package=cellio.__file__,source_hash=source_hash(),"
-        "versions={n:m.version(n) for n in ('cellio','isaacsim','torch','PyYAML','jsonschema')})),encoding='utf-8')"
+    invoke(
+        "runtime_identity",
+        [
+            python,
+            "-I",
+            "-m",
+            "cellio.release_runtime",
+            "--inventory",
+            inventory_path,
+            "--output",
+            identity,
+        ],
     )
-    invoke("runtime_identity", [python, "-I", "-c", probe, identity])
+    proof["runtime_identity_sha256"] = hash_file(identity)
     invoke(
         "doctor",
         [

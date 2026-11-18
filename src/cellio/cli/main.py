@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 
 from cellio.config import load
-from cellio.environment import data_root, doctor, lock_context
+from cellio.environment import data_root, doctor, lease_directory, lock_context
 from cellio.io import CellIOError, digest, json_value, write_json
 
 
@@ -56,6 +56,11 @@ def parser():
     for action in ("run", "resume"):
         sub = c.add_parser(action)
         sub.add_argument("--plan", type=Path, required=True)
+        sub.add_argument(
+            "--max-groups",
+            type=int,
+            help="Run up to this many new groups in a finite simulation plan",
+        )
         if action == "resume":
             sub.add_argument("--retry-failed", action="store_true")
     cmds.add_parser("verify-artifact").add_argument(
@@ -93,6 +98,14 @@ def single(a):
     from cellio.runtime.supervisor import attempt, run_group, transition
 
     cfg = load(a.config)
+    if cfg["artifacts"]["video"] and (
+        a.headless or cfg["profile"] != "isaac62_lockstep"
+    ):
+        raise CellIOError(
+            "CFG_VIDEO_GUI",
+            "Viewport video requires the Isaac profile and --gui",
+            path="artifacts.video",
+        )
     ctx, identity = lock_context(cfg["profile"])
     cell = cfg["scene"]["cell_id"]
     state = scene_plugin(cell).initial_state_sampler(cfg["seeds"]["scene"])
@@ -104,10 +117,9 @@ def single(a):
     }
     root = (a.output or (data_root() / cfg["artifacts"]["output_root"])).resolve()
     root.mkdir(parents=True, exist_ok=True)
-    machine = data_root() / (
+    machine = lease_directory(
         "gpu-worker" if cfg["profile"] == "isaac62_lockstep" else "mock-worker"
     )
-    machine.mkdir(parents=True, exist_ok=True)
     with exclusive(machine), exclusive(root):
         from cellio.runtime.supervisor import history
 
@@ -194,6 +206,7 @@ def perform(a):
             a.plan,
             resume=a.action == "resume",
             retry_failed=getattr(a, "retry_failed", False),
+            max_groups=a.max_groups,
         ), 0
     if a.command == "verify-artifact":
         from cellio.artifacts import verify_artifact

@@ -12,7 +12,9 @@ from cellio.io import digest, file_hash, write_json
 def export(root, geometry, output):
     assets = verify_assets(root / "assets")
     measurement = json.loads(geometry.read_bytes())
-    asset = Path(measurement["provenance"]["robot_asset"])
+    asset = Path(measurement["provenance"]["robot_asset"].removeprefix("cache://"))
+    if not asset.is_absolute():
+        asset = root / "assets" / asset
     if asset.resolve() != (root / "assets" / assets["entry"]).resolve():
         raise ValueError("The measured geometry refers to a different asset generation")
     measurement["provenance"]["robot_asset"] = assets["entry"]

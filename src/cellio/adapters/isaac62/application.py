@@ -48,3 +48,11 @@ def worker_main(main, *args):
             app.close(wait_for_replicator=False, exit_code=status)
         _worker = False
     return status
+
+
+def standalone_main(main):
+    from cellio.environment import lease_directory
+    from cellio.runtime.campaign import exclusive
+
+    with exclusive(lease_directory("gpu-worker")), exclusive(lease_directory("gpu-process")):
+        return worker_main(main)

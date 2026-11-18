@@ -9,10 +9,41 @@ from uuid import uuid4
 from cellio.analysis.manual import ManualObservationFault
 from cellio.analysis.manual_comparison import compare
 from cellio.analysis.replay import read
-from cellio.environment import data_root, lock_context
+from cellio.environment import lease_directory, lock_context
 from cellio.io import digest, file_hash, write_json
 from cellio.runtime.campaign import exclusive, initial_state, scenario
 from cellio.runtime.episode import run_episode
+from cellio.runtime.supervisor import physical_options
+
+
+def run_slot(args, out, profile):
+    ctx, identity = lock_context(profile)
+    cfg = scenario(args.cell, args.arm, args.seed, profile=profile)
+    instance = str(uuid4())
+    path = out / args.slot / instance
+    result = run_episode(
+        cfg,
+        path,
+        run_id=digest([identity, args.cell, args.arm, args.seed, args.slot])[:24],
+        attempt_id=instance,
+        initial_state=initial_state(args.cell, args.seed),
+        **ctx,
+        backend=args.backend,
+        plant_options=physical_options(ctx)
+        if args.backend == "isaac62"
+        else {},
+        fault_factory=ManualObservationFault if args.slot == "manual" else None,
+    )
+    write_json(
+        out / (args.slot + ".json"),
+        {
+            "directory": str(path),
+            "completion_status": result["completion_status"],
+            "provenance": identity,
+            "script_sha256": file_hash(Path(__file__)),
+        },
+    )
+    return 0 if result["completion_status"] == "COMPLETED" else 4
 
 
 def main():
@@ -21,7 +52,7 @@ def main():
     parser.add_argument(
         "--arm", required=True, choices=("f1_low", "f1_high", "f2", "f3", "f5")
     )
-    parser.add_argument("--seed", type=int, default=1000)
+    parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--backend", choices=("mock", "isaac62"), default="isaac62")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--slot", choices=("manual", "modular"), help=argparse.SUPPRESS)
@@ -29,35 +60,16 @@ def main():
     out = args.output.resolve()
     profile = "mock_lockstep" if args.backend == "mock" else "isaac62_lockstep"
     if args.slot:
-        ctx, identity = lock_context(profile)
-        cfg = scenario(args.cell, args.arm, args.seed, profile=profile)
-        instance = str(uuid4())
-        path = out / args.slot / instance
-        result = run_episode(
-            cfg,
-            path,
-            run_id=digest([identity, args.cell, args.arm, args.seed, args.slot])[:24],
-            attempt_id=instance,
-            initial_state=initial_state(args.cell, args.seed),
-            **ctx,
-            backend=args.backend,
-            fault_factory=ManualObservationFault if args.slot == "manual" else None,
-        )
-        write_json(
-            out / (args.slot + ".json"),
-            {
-                "directory": str(path),
-                "completion_status": result["completion_status"],
-                "provenance": identity,
-                "script_sha256": file_hash(Path(__file__)),
-            },
-        )
-        return 0 if result["completion_status"] == "COMPLETED" else 4
+        if args.backend == "isaac62":
+            from cellio.adapters.isaac62.application import worker_main
+
+            with exclusive(lease_directory("gpu-process")):
+                return worker_main(run_slot, args, out, profile)
+        return run_slot(args, out, profile)
     out.mkdir(parents=True, exist_ok=False)
-    worker = data_root() / (
+    worker = lease_directory(
         "gpu-worker" if args.backend == "isaac62" else "mock-worker"
     )
-    worker.mkdir(parents=True, exist_ok=True)
     with exclusive(worker):
         for slot in ("modular", "manual"):
             command = [

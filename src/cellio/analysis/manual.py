@@ -13,6 +13,10 @@ from cellio.core.models import CellIOError, Quality, SignalSample, freeze
 
 
 class ManualObservationFault(FaultEngine):
+    @property
+    def observation_pending_count(self):
+        return len(self.manual_queue)
+
     def __init__(self, spec, horizon, cell):
         if not spec or spec["family"] not in ("F1", "F2", "F3", "F5"):
             raise CellIOError(

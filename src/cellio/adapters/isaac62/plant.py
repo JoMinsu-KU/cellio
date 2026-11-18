@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import gc
 import json
-from math import isclose
+from math import isclose, isfinite
 from pathlib import Path
 
 from cellio.core.models import (
@@ -39,6 +39,11 @@ class IsaacPlant:
         if isinstance(robot_profile, (str, Path)):
             robot_profile = json.loads(Path(robot_profile).read_text(encoding="utf-8"))
         self.profile = dict(robot_profile or {})
+        self.gripper_slew_mps = self.profile.get("gripper_slew_mps", .022)
+        self.gripper_open_slew_mps = self.profile.get("gripper_open_slew_mps", .040)
+        if any(type(speed) not in (int, float) or not isfinite(speed) or speed <= 0
+               for speed in (self.gripper_slew_mps, self.gripper_open_slew_mps)):
+            raise CellIOError("ASSET_PHYSICS_PROFILE", "Finger slew must be finite and positive")
         self.hand_T_tcp = tuple(self.profile.get("hand_T_tcp", (0., 0., .1034, 1., 0., 0., 0.)))
         self.scene = self.app = self.builder = self.contact = self.motion = None
         self.views = {}
@@ -46,6 +51,7 @@ class IsaacPlant:
         self.generation = None
         self.provenance = {}
         self.geometry_manifest = {}
+        self._video = None
         self._stage_epoch = 0
         self._previous_handles_invalidated = True
 
@@ -131,19 +137,48 @@ class IsaacPlant:
         self.physics_scene.set_solver_type("TGS")
         self.physics_scene.set_enabled_gpu_dynamics(False)
         self.physics_scene.set_gravity((0., 0., -9.81))
+        from pxr import PhysxSchema
+        scene_api = PhysxSchema.PhysxSceneAPI.Apply(stage.GetPrimAtPath("/World/PhysicsScene"))
+        contact_last = self.profile.get("solve_articulation_contact_last", True)
+        if type(contact_last) is not bool:
+            raise CellIOError("ASSET_PHYSICS_PROFILE", "Expected Boolean articulation constraint ordering")
+        # Resolve pad contacts after applying the articulation's force drive.
+        # This scene-level flag is immutable once the native scene is created.
+        order_attr = scene_api.CreateSolveArticulationContactLastAttr(contact_last)
         self.builder = StageBuilder(stage, self.scene, self.robot_asset, self.profile, robot_base=robot_base)
+        self.builder.solver_settings["contact_last"] = order_attr.Get()
+        if not self.headless:
+            self.builder.show_operator_view()
         self.manager.setup_simulation(dt=DT, device="cpu")
         self.manager.enable_fabric(True)
         self.timeline.play()
         self.manager.initialize_physics()
         if (self.manager.get_physics_simulation_view() is None or str(self.manager.get_device()) != "cpu"
             or self.physics_scene.get_steps_per_second() != 120 or self.physics_scene.get_enabled_gpu_dynamics()
-            or self.physics_scene.get_solver_type() != "TGS"):
+            or self.physics_scene.get_solver_type() != "TGS" or order_attr.Get() != contact_last):
             raise CellIOError("ENV_PHYSICS_MISMATCH", "PhysX CPU/TGS/120 Hz readback failed")
         self.robot = Articulation(ROBOT)
         self.names = list(self.robot.dof_names)
         if tuple(n for n in self.names if n in ARM_NAMES) != ARM_NAMES or not set(FINGER_NAMES) <= set(self.names):
             raise CellIOError("ASSET_BINDING_MISMATCH", f"Unexpected robot joints: {self.names!r}")
+        if not self.robot.is_physics_tensor_entity_valid():
+            raise CellIOError("SIM_STATE_INVALID", "Franka tensor view unavailable during commissioning readback")
+        finger_indices = [self.names.index(n) for n in FINGER_NAMES]
+        armatures = _floats(self.robot.get_dof_armatures(dof_indices=finger_indices))
+        for name, value in zip(FINGER_NAMES, armatures, strict=True):
+            if not isclose(self.builder.solver_settings["finger_armatures_kg"][name], value, abs_tol=1e-6):
+                raise CellIOError("ASSET_PHYSICS_PROFILE", f"Live armature mismatch for {name}: {value}")
+        driven_indices = [self.names.index(n) for n in self.builder.finger_drivers]
+        kp, kd = self.robot.get_dof_gains(dof_indices=driven_indices)
+        forces = _floats(self.robot.get_dof_max_efforts(dof_indices=driven_indices))
+        for name, force, stiffness, damping in zip(self.builder.finger_drivers, forces, _floats(kp), _floats(kd), strict=True):
+            expected = self.builder.finger_drive_settings[name]
+            actual = {"force_cap_n": force, "stiffness_n_per_m": stiffness, "damping_n_s_per_m": damping}
+            if any(not isclose(value, expected[key], rel_tol=1e-5) for key, value in actual.items()):
+                raise CellIOError("ASSET_PHYSICS_PROFILE", f"Live drive mismatch for {name}: {actual}")
+        live_fingers = {"armatures_kg": dict(zip(FINGER_NAMES, armatures, strict=True)),
+                        "drive_effort_limits_n": dict(zip(self.builder.finger_drivers, forces, strict=True)),
+                        "drive_stiffness_n_per_m": _floats(kp), "drive_damping_n_s_per_m": _floats(kd)}
         indices = self.robot.get_dof_indices(list(ARM_NAMES + FINGER_NAMES)).numpy().tolist()
         self.robot.set_dof_positions([[*home, .040, .040]], dof_indices=indices)
         self.robot.set_dof_velocities([[0.] * len(indices)], dof_indices=indices)
@@ -156,13 +191,22 @@ class IsaacPlant:
             raise CellIOError("ASSET_BINDING_MISMATCH", f"Resolved rigid bodies: {bodies.paths}")
         self.body_order = tuple(by_path[path] for path in bodies.paths)
         self.views = {"bodies": bodies}
+        masses = bodies.get_masses().numpy().reshape(-1).tolist()
+        measured_masses = dict(zip(self.body_order, map(float, masses), strict=True))
+        expected_masses = {"part_000": .05}
+        if self.builder.clamp is not None:
+            expected_masses["moving_jaw"] = .25
+        for body, expected_mass in expected_masses.items():
+            if not isclose(measured_masses[body], expected_mass, abs_tol=1e-6):
+                raise CellIOError("ASSET_PHYSICS_PROFILE", f"Unexpected live mass for {body}: {measured_masses[body]}")
         part_index = [self.body_order.index("part_000")]
         pos, rotation = self.scene.initial_pose(initial_state)
         bodies.set_world_poses(positions=[pos], orientations=[rotation], indices=part_index)
         bodies.set_velocities(linear_velocities=[[0., 0., 0.]], angular_velocities=[[0., 0., 0.]], indices=part_index)
         self.contact = ContactPairs(self.builder.collider_ids)
         self.motion = FrankaMotion(self.robot, self.builder, self.profile, self.hand_T_tcp)
-        motion_hashes = {path.name: file_sha256(path) for path in motion_files(Path(self.motion.config.directory))}
+        motion_dir = Path(self.motion.config.directory).resolve()
+        motion_hashes = {path.relative_to(motion_dir).as_posix(): file_sha256(path) for path in motion_files(motion_dir)}
         if self.asset_root is not None:
             frozen = json.loads((Path(self.asset_root) / LOCK).read_text(encoding="utf-8"))["motion_config"]
             if motion_hashes != {name: record["sha256"] for name, record in frozen.items()}:
@@ -181,6 +225,10 @@ class IsaacPlant:
         for _ in range(240):
             self.manager.step(steps=1, update_fabric=True)
         self._offset = self.manager.get_simulation_time()
+        if not self.headless:
+            self.rendering.render()
+            if self.manager.get_simulation_time() != self._offset:
+                raise CellIOError("CLOCK_ADVANCE_MISMATCH", "Initial viewport render advanced PhysX")
         self.geometry_manifest = {"part_dimensions_m": (.04, .04, .04),
                                   "collider_local_corners": self.builder.local_corners,
                                   "pad_collider_paths": self.builder.pad_paths,
@@ -197,6 +245,10 @@ class IsaacPlant:
                            "robot_asset": asset_id, "tool_site": self.motion.site,
                            "motion_config_hashes": motion_hashes,
                            "finger_drive_settings": self.builder.finger_drive_settings,
+                           "finger_tensor_readback": live_fingers,
+                           "rigid_body_masses_kg": measured_masses,
+                           "gripper_slew_mps": self.gripper_slew_mps,
+                           "gripper_open_slew_mps": self.gripper_open_slew_mps,
                            "articulation_solver": self.builder.solver_settings,
                            "dof_names": self.names, "finger_drivers": list(self.builder.finger_drivers)}
         if self.builder.belt is not None:
@@ -276,6 +328,26 @@ class IsaacPlant:
     def actuation_evidence(self, target):
         return self._evidence.get(target, {})
 
+    def start_video(self, directory):
+        if self.headless or self._video is not None:
+            raise CellIOError("VIDEO_CAPTURE_FAILED", "Video requires an idle GUI recorder")
+        from .video import ViewportVideo
+        self._video = ViewportVideo(directory, self.rendering.render)
+
+    def capture_video_frame(self, step):
+        if self._video is None or step != self.step:
+            raise CellIOError("VIDEO_CAPTURE_FAILED", "Unexpected capture boundary")
+        before = self.manager.get_simulation_time()
+        self._video.capture(step)
+        if self.manager.get_simulation_time() != before:
+            raise CellIOError("CLOCK_ADVANCE_MISMATCH", "Video capture advanced PhysX")
+
+    def close_video(self):
+        if self._video is None:
+            return None
+        recorder, self._video = self._video, None
+        return recorder.close()
+
     def reset_evidence(self, truth):
         return {"new_generation": truth.tick.generation == self.generation and self.step == 0,
                 "stage_is_current": self.builder.stage == self.context.get_stage() and self._stage_epoch > 0,
@@ -325,7 +397,8 @@ class IsaacPlant:
         nominal = {}
         for n in drivers:
             desired = self._held_drivers.get(target, {}).get(n, coordinate/2)
-            nominal[n] = _slew(self._slewed[n], desired, .040 * DT)
+            speed = self.gripper_open_slew_mps if desired > self._slewed[n] else self.gripper_slew_mps
+            nominal[n] = _slew(self._slewed[n], desired, speed * DT)
         values = override["driver_positions"] if override is not None else nominal
         indices = [self.names.index(n) for n in drivers]
         self.robot.set_dof_position_targets([[values[n] for n in drivers]], dof_indices=indices)
@@ -405,6 +478,9 @@ class IsaacPlant:
     def close(self):
         if self.app is not None:
             try:
+                if self._video is not None:
+                    recorder, self._video = self._video, None
+                    recorder.abort()
                 self._release_stage()
             finally:
                 release_application(self.app)

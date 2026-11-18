@@ -1,6 +1,7 @@
 """Build CellIO stages after SimulationApp starts. Lengths and masses are SI."""
 
 from itertools import product
+from math import isfinite
 from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, TABLE, Box
 from cellio.core.models import CellIOError
 
@@ -57,6 +58,26 @@ class StageBuilder:
         stage.Load()
         self._bind_robot()
 
+    def show_operator_view(self):
+        from omni.kit.viewport.utility import get_active_viewport
+        from pxr import UsdLux
+
+        camera = self.Geom.Camera.Define(self.stage, "/World/OperatorCamera")
+        view = self.Gf.Matrix4d(1.).SetLookAt(self.Gf.Vec3d(1.58, -1.43, 1.84),
+                                               self.Gf.Vec3d(.23, 0., 1.00), self.Gf.Vec3d(0., 0., 1.))
+        camera.AddTransformOp().Set(view.GetInverse())
+        camera.CreateFocalLengthAttr(23.)
+        camera.CreateClippingRangeAttr(self.Gf.Vec2f(.02, 20.))
+        fill = UsdLux.DomeLight.Define(self.stage, "/World/OperatorFill")
+        fill.CreateIntensityAttr(650.)
+        key = UsdLux.DistantLight.Define(self.stage, "/World/OperatorKey")
+        key.CreateIntensityAttr(1800.)
+        key.AddRotateXYZOp().Set(self.Gf.Vec3f(27., -35., -20.))
+        viewer = get_active_viewport()
+        if viewer is None:
+            raise CellIOError("VIDEO_VIEWPORT", "No live viewport for the operator camera")
+        viewer.camera_path = camera.GetPath()
+
     def _material(self, name, static, dynamic):
         material = self.Shade.Material.Define(self.stage, BASE + "/Materials/" + name)
         physics = self.Physics.MaterialAPI.Apply(material.GetPrim())
@@ -73,6 +94,10 @@ class StageBuilder:
         cube.CreateSizeAttr(1.)
         cube.AddTranslateOp().Set(_vec(self.Gf, center))
         cube.AddScaleOp().Set(self.Gf.Vec3f(*size))
+        if path == PART + "/Geometry":
+            cube.CreateDisplayColorAttr([self.Gf.Vec3f(.92, .35, .035)])
+        elif path == BASE + "/Table/Geometry":
+            cube.CreateDisplayColorAttr([self.Gf.Vec3f(.18, .22, .25)])
         return cube.GetPrim()
 
     def _bind_material(self, prim, material):
@@ -164,14 +189,24 @@ class StageBuilder:
         for joint_name in ARM_NAMES + FINGER_NAMES:
             joint = unique(joint_name, lambda p: p.IsA(P.Joint))
             if joint_name in FINGER_NAMES:
+                armature = self.profile.get("finger_armature_kg", 10.)
+                if type(armature) not in (int, float) or not isfinite(armature) or armature < 0:
+                    raise CellIOError("ASSET_PHYSICS_PROFILE", "Invalid finger reflected inertia")
+                joint_api = self.Physx.PhysxJointAPI.Apply(joint)
+                joint_api.CreateArmatureAttr(float(armature))
+                self.solver_settings.setdefault("finger_armatures_kg", {})[joint_name] = joint_api.GetArmatureAttr().Get()
                 if not any("MimicJointAPI" in s for s in joint.GetAppliedSchemas()):
                     drive = P.DriveAPI.Apply(joint, "linear")
                     drive.CreateTypeAttr("force")
-                    drive.CreateStiffnessAttr(4000.)
-                    drive.CreateDampingAttr(80.)
+                    stiffness = float(self.profile.get("finger_stiffness_n_per_m", 4000.))
+                    damping = float(self.profile.get("finger_damping_n_s_per_m", 80.))
+                    if not isfinite(stiffness) or not isfinite(damping) or stiffness <= 0 or damping < 0:
+                        raise CellIOError("ASSET_PHYSICS_PROFILE", "Invalid finite finger drive gains")
+                    drive.CreateStiffnessAttr(stiffness)
+                    drive.CreateDampingAttr(damping)
                     cap = self.profile.get("finger_force_limit_n", FINGER_FORCE_LIMIT_N)
-                    if type(cap) not in (int, float) or not 0 < cap <= 20.:
-                        raise CellIOError("ASSET_PHYSICS_PROFILE", "Finger force cap must be within (0,20] N")
+                    if type(cap) not in (int, float) or not isfinite(cap) or cap <= 0:
+                        raise CellIOError("ASSET_PHYSICS_PROFILE", "Finger force cap must be finite and positive")
                     drive.CreateMaxForceAttr(float(cap))
                     self.finger_drivers.append(joint_name)
                     self.finger_drive_settings[joint_name] = {
@@ -202,7 +237,11 @@ class StageBuilder:
                 self.pad_corners[entity] = self._geometry(link, pads)
             self.local_corners[entity] = self._geometry(link, colliders)
             for collider in colliders:
-                self.collider_ids[str(collider.GetPath())] = entity
+                path = str(collider.GetPath())
+                if entity in self.pad_paths and path not in self.pad_paths[entity]:
+                    self.collider_ids[path] = entity + ".nonpad"
+                else:
+                    self.collider_ids[path] = entity
         tcp = G.Xform.Define(self.stage, self.paths["hand"] + "/CellTCP")
         local = self.profile.get("hand_T_tcp", (0., 0., .1034, 1., 0., 0., 0.))
         tcp.AddTranslateOp().Set(_vec(self.Gf, local[:3]))

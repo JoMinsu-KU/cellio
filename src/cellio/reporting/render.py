@@ -145,6 +145,66 @@ def timeline(trial, destination):
     }
 
 
+def seed_section(data):
+    title = "Secondary sensitivity by development exposure"
+    headers = (
+        "Scene seed",
+        "Cell",
+        "Cell states",
+        "Planned",
+        "First attempts",
+        "Started",
+        "Evaluable",
+        "Task success / planned",
+        "Task success / evaluable",
+    )
+    rows = []
+    for seeds, cohort in data["cohorts"].items():
+        for cell_name, summary in (("All cells", cohort), *cohort["by_cell"].items()):
+            counts = summary["counts"]
+            per_plan = summary["task_success_per_plan"]
+            per_eval = summary["task_success_per_evaluable"]
+            rows.append(
+                (
+                    seeds,
+                    cell_name,
+                    counts["N_distinct_cell_states"],
+                    counts["N_plan"],
+                    counts["N_first_attempt"],
+                    counts["N_start"],
+                    counts["N_eval"],
+                    f"{per_plan['numerator']}/{per_plan['denominator']}",
+                    f"{per_eval['numerator']}/{per_eval['denominator']}"
+                    if per_eval["denominator"]
+                    else "Undefined (0 evaluable)",
+                )
+            )
+    target = "tables/seed_sensitivity.json"
+    label = "Counts by cell, controller and arm, with run and first-attempt provenance"
+    markdown = [
+        "",
+        f"## {title}",
+        "",
+        data["interpretation"],
+        "",
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join("---" for _ in headers) + " |",
+        *["| " + " | ".join(map(str, row)) + " |" for row in rows],
+        "",
+        f"[{label}]({target})",
+    ]
+    html_rows = "".join(
+        "<tr>" + "".join(f"<td>{html.escape(str(v))}</td>" for v in row) + "</tr>"
+        for row in rows
+    )
+    html_section = (
+        f"<h2>{title}</h2><p>{html.escape(data['interpretation'])}</p><table><thead><tr>"
+        + "".join(f"<th>{col}</th>" for col in headers)
+        + f'</tr></thead><tbody>{html_rows}</tbody></table><p><a href="{target}">{label}</a></p>'
+    )
+    return markdown, html_section
+
+
 def render_report(metrics, out):
     fields = (
         "cell",
@@ -196,6 +256,10 @@ def render_report(metrics, out):
             for row in entries
         ],
     ]
+    sensitivity_html = ""
+    if "seed_sensitivity" in metrics:
+        sensitivity_md, sensitivity_html = seed_section(metrics["seed_sensitivity"])
+        markdown.extend(sensitivity_md)
     for section in sections:
         label = section.replace("_", " ").title()
         blocks.append(f'<li><a href="tables/{section}.json">{cell(label)}</a></li>')
@@ -229,6 +293,6 @@ def render_report(metrics, out):
                 f'<li><a href="{cell(url)}">{cell(ident)}</a> · {cell(r["outcome"])}</li>'
             )
     md = "\n\n".join(markdown[:3]) + "\n\n" + "\n".join(markdown[3:]) + "\n"
-    html_text = f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{cell(title)}</title><style>body{{font:15px system-ui;color:#182c37;max-width:1080px;margin:40px auto}}table{{border-collapse:collapse}}td,th{{text-align:left;padding:5px 8px;border-bottom:1px solid #ddd}}img{{max-width:100%}}</style><h1>{cell(title)}</h1><p>{cell(text)}</p><h2>Campaign flow</h2><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>{chart}<h2>Analyses</h2><ul>{"".join(blocks)}</ul><p><a href="metrics.json">Complete metrics and eligibility reasons</a></p><details><summary>Verified attempt traces</summary><ul>{"".join(links)}</ul></details></html>'
+    html_text = f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{cell(title)}</title><style>body{{font:15px system-ui;color:#182c37;max-width:1080px;margin:40px auto}}table{{border-collapse:collapse}}td,th{{text-align:left;padding:5px 8px;border-bottom:1px solid #ddd}}img{{max-width:100%}}</style><h1>{cell(title)}</h1><p>{cell(text)}</p><h2>Campaign flow</h2><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>{sensitivity_html}{chart}<h2>Analyses</h2><ul>{"".join(blocks)}</ul><p><a href="metrics.json">Complete metrics and eligibility reasons</a></p><details><summary>Verified attempt traces</summary><ul>{"".join(links)}</ul></details></html>'
     atomic_write(out / "report.md", md.encode("utf-8"))
     atomic_write(out / "report.html", html_text.encode("utf-8"))

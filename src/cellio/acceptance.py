@@ -141,6 +141,9 @@ def assess(level, campaign_root, report_path):
         gates["G03"]["status"] = "FAIL"
     if level != "r0":
         gates.update(_campaign_gates(Path(campaign_root), level))
+    if level == "r3":
+        for number in range(1, 16):
+            gates.setdefault(f"G{number:02d}", {"status": "NOT_RUN", "sources": []})
     missing = [g for g, v in gates.items() if v["status"] == "NOT_RUN"]
     result = {
         "level": level,
@@ -148,13 +151,15 @@ def assess(level, campaign_root, report_path):
         "missing": missing,
         "gates": gates,
     }
+    if level == "r3" and result["passed"]:
+        result["engineering_status"] = "R3_COMPLETE"
     write_json(Path(report_path), result)
     return result
 
 
 def _campaign_gates(folder, level):
     from cellio.analysis.campaign import load_campaign
-    from cellio.analysis.suites import reset_chains, soak_evidence
+    from cellio.analysis.suites import fault_coverage, reset_chains, soak_evidence
     from cellio.runtime.campaign import finite_rows, suite_design
 
     result = {}
@@ -225,30 +230,16 @@ def _campaign_gates(folder, level):
         )
         return result
     main = trials("canonical-v1") if level == "r3" else pilot
-    evidence = {
-        (c, f): [t for t in main if t.row["cell"] == c and applies(t, f)]
-        for c in ("cell_a", "cell_b")
-        for f in (f"F{i}" for i in range(1, 7))
-    }
+    coverage = fault_coverage(main)
     record(
         "G04",
         main,
-        all(
-            any(t.flags()["N_realized"] for t in group)
-            and any(t.flags()["N_clear"] for t in group)
-            for group in evidence.values()
-        ),
+        all(group["realized"] and group["restored"] for group in coverage.values()),
     )
     record(
         "G05",
         main,
-        all(
-            any(
-                t.fault.get("physical_hold_verdict") == "PASS"
-                for t in evidence[c, "F6"]
-            )
-            for c in ("cell_a", "cell_b")
-        ),
+        all(coverage[c, "F6"]["held"] for c in ("cell_a", "cell_b")),
     )
     boundaries = trials("boundaries-v1")
     installs = trials("clean-install")
@@ -302,7 +293,12 @@ def _campaign_gates(folder, level):
             )
             and all(
                 len({p["provenance"][k] for p in plans.values()}) == 1
-                for k in ("assets_hash", "code_hash", "requirements_hash")
+                for k in (
+                    "assets_hash",
+                    "code_hash",
+                    "environment_hash",
+                    "requirements_hash",
+                )
             ),
             {"retry_ids": [r["attempt_id"] for r in reruns]},
         )

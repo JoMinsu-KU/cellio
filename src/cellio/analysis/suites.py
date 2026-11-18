@@ -4,9 +4,27 @@ from collections import defaultdict
 from math import acos, dist
 from pathlib import Path
 
+from cellio.io import digest, file_hash
+
 from .campaign import lines
 from .replay import read
 from .statistics import distribution, plateau, ratio
+
+
+def fault_coverage(trials):
+    counts = {
+        (cell, f"F{n}"): {"realized": 0, "restored": 0, "held": 0}
+        for cell in ("cell_a", "cell_b")
+        for n in range(1, 7)
+    }
+    for trial in trials:
+        for fault in trial.row["config"]["faults"]:
+            cell = counts[trial.row["cell"], fault["family"]]
+            flags = trial.flags()
+            cell["realized"] += flags["N_realized"]
+            cell["restored"] += flags["N_clear"]
+            cell["held"] += trial.fault.get("physical_hold_verdict") == "PASS"
+    return counts
 
 
 def performance(trials):
@@ -43,8 +61,12 @@ def performance(trials):
             for timing in values.values():
                 timing["p99_target_ms"] = 3.33
                 timing["p99_target_assessment"] = (
-                    "INSUFFICIENT_EVIDENCE" if timing["p99"] is None or len(timing["source_artifact_ids"]) != len(items)
-                    else "MEETS_TARGET" if timing["p99"] <= 3.33 else "ABOVE_TARGET"
+                    "INSUFFICIENT_EVIDENCE"
+                    if timing["p99"] is None
+                    or len(timing["source_artifact_ids"]) != len(items)
+                    else "MEETS_TARGET"
+                    if timing["p99"] <= 3.33
+                    else "ABOVE_TARGET"
                 )
         for key, unit, factor in (
             ("startup_wall_ns", "s", 1e-9),
@@ -149,6 +171,19 @@ def reset_chains(trials):
         if not all(t.eval for t in (control, prior, post)):
             continue
         kind = prior.row["test_control"]["kind"]
+        if prior.error or (
+            kind == "full_h"
+            and (
+                prior.status != "COMPLETED"
+                or prior.eval["end_step"]
+                != prior.row["config"]["episode"]["horizon_steps"]
+            )
+        ):
+            row.update(
+                status="FAIL",
+                reason="predecessor did not complete its scheduled lifecycle",
+            )
+            continue
         if kind != "full_h" and (
             prior.fault.get("actual_start") is None
             or kind == "fault_end_offset"
@@ -164,11 +199,49 @@ def reset_chains(trials):
             )
             if (
                 prior.status != "CANCELLED"
+                or prior.eval.get("completion_reason") != "TEST_RESET_CANCEL"
                 or prior.eval["end_step"] != origin + prior.row["test_control"]["steps"]
             ):
                 row["status"] = "FAIL"
                 row["reason"] = "predecessor did not stop at the frozen reset boundary"
                 continue
+            if kind == "fault_start_offset" and prior.row["test_control"]["steps"] == 4:
+                outstanding = (
+                    prior.measurement.outstanding_fault if prior.measurement else None
+                )
+                if outstanding is not True:
+                    row.update(
+                        status="UNKNOWN"
+                        if outstanding is None
+                        else "SKIPPED_PRECONDITION",
+                        reason="no confirmed outstanding fault state at the reset boundary",
+                    )
+                    continue
+        events = post.measurement.reset_events if post.measurement else []
+        if len(events) != 1 or events[0][0] != 0:
+            row.update(
+                status="UNKNOWN",
+                reason="post-reset S0 predecessor evidence missing or ambiguous",
+            )
+            continue
+        link = events[0][1]
+        previous = link.get("predecessor") or {}
+        generation = read(prior.path / "manifest.start.json")["generation"]
+        if (
+            previous.get("attempt_id") != prior.attempt_id
+            or previous.get("generation") != generation
+            or previous.get("artifact_digest") != prior.eval["source_digest"]
+            or previous.get("manifest_sha256")
+            != file_hash(prior.path / "manifest.final.json")
+            or link.get("attempt_id") != post.attempt_id
+            or link.get("generation") != generation + 1
+            or link.get("initial_state_hash") != digest(control.row["initial_state"])
+        ):
+            row.update(
+                status="FAIL",
+                reason="post-reset snapshot references a different predecessor or state",
+            )
+            continue
         s0 = compare_s0(
             read(control.path / "initial_snapshot.json"),
             read(post.path / "initial_snapshot.json"),
@@ -187,6 +260,17 @@ def reset_chains(trials):
             post_reset_goal=post.outcome,
             control_goal=control.outcome,
         )
+
+        def shared_verdicts(t):
+            return {
+                r["requirement_id"]: r["verdict"]
+                for r in t.eval["requirements"]
+                if ".r16." not in r["requirement_id"]
+            }
+
+        row["control_post_verdicts_equal"] = shared_verdicts(
+            control
+        ) == shared_verdicts(post)
         if (
             software in (None, "UNKNOWN", "NOT_APPLICABLE")
             or s0["verdict"] == "UNKNOWN"
@@ -198,6 +282,10 @@ def reset_chains(trials):
                 if (
                     s0["verdict"] == software == "PASS"
                     and control.outcome == post.outcome == "SUCCESS"
+                    and row["control_post_verdicts_equal"]
+                    and control.eval["compliance_verdict"]
+                    == post.eval["compliance_verdict"]
+                    == "PASS"
                     and prior.status in ("COMPLETED", "CANCELLED")
                 )
                 else "FAIL"

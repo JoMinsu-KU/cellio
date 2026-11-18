@@ -187,3 +187,24 @@ def test_cell_b_completes_each_stage_in_order_with_fresh_matching_public_inputs(
             break
     assert transitions == [s.name for s in CELL_B] + ["done"]
     assert (0.507, 0.12, 0.815) in poses and (0.500, 0.12, 0.815) in poses
+
+
+def test_pose_response_timeout_starts_at_matching_backend_ack():
+    from dataclasses import replace
+
+    from cellio.core.models import PublicCommandReceipt
+
+    c = new()
+    run(c, 0)
+    c.index = 4  # descend uses a single motion response window
+    issued = run(c, 4).new_commands[0]
+    for k in range(8, 972, 4):
+        inputs = view(k)
+        if k == 12:
+            receipt = PublicCommandReceipt(
+                issued.command_id, 0, "actuator.robot", "APPLIED", 10, None
+            )
+            inputs = replace(inputs, previous_command_receipts=(receipt,))
+        assert c.tick(inputs, inputs.tick).mission_status == "RUNNING"
+    result = run(c, 972)
+    assert result.stage_id == "aborted" and result.reason == "RESPONSE_TIMEOUT"

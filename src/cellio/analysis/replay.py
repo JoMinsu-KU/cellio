@@ -97,6 +97,7 @@ def read_attempt(artifact, requirements=None, *, on_frame=None):
         "rules_digest": digest(rules),
         "end_step": last,
         "completion_status": verified["completion_status"],
+        "completion_reason": result.get("reason"),
         "requirements": json_value(final),
         "task_outcome": task_outcome(final, complete),
         "compliance_verdict": reduce_category(

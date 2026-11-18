@@ -133,6 +133,8 @@ class _Run:
         self.last_truth = self.previous = self.last_snapshot_advance = None
         self.recorded_step = self.observed_step = None
         self.running_start = None
+        self.video_started = False
+        self.video = None
         self._resource_start = None
         self.errors = []
         self.fault_reports, self.requirement_results = [], []
@@ -202,6 +204,14 @@ class _Run:
         expected = "mock_lockstep" if self.backend == "mock" else "isaac62_lockstep"
         if cfg["profile"] != expected:
             raise CellIOError("CFG_PROFILE", f"{self.backend} requires {expected}")
+        if cfg["artifacts"]["video"] and (
+            self.backend != "isaac62"
+            or (self.plant_options or {}).get("headless", True)
+            or self.mode is not None
+        ):
+            raise CellIOError(
+                "CFG_VIDEO_GUI", "Viewport video requires an Isaac GUI demonstration"
+            )
         if self.mode not in (None, "B0", "B1", "B2"):
             raise CellIOError("CFG_PROFILE", "unknown benchmark mode")
         if self.mode in ("B0", "B1") and cfg["faults"]:
@@ -322,6 +332,9 @@ class _Run:
         ):
             self.reset_comparison = self.reset_evidence(first)
         self.writer.start(self.last_truth)
+        if cfg["artifacts"]["video"]:
+            self.plant.start_video(self.directory / "videos")
+            self.video_started = True
         if self.resources:
             self._resource_start = self.resources.read()
         self.notify("RUNNING")
@@ -497,14 +510,15 @@ class _Run:
         observed = self.fault.transform_observations(raw, tick)
         self._enter(tick, Phase.CONTROL)
         output = view = None
-        ctl_start = perf_counter_ns()
+        ctl_time = 0
         if self.clock.control_due:
             view = for_controller(
                 observed, tick, self.router.public_receipts(tick), self.router.epoch
             )
+            ctl_start = perf_counter_ns()
             output = self.controller.tick(view, tick)
+            ctl_time = perf_counter_ns() - ctl_start
             self.current_mission = output.mission_status
-        ctl_time = perf_counter_ns() - ctl_start
         emitted = self.bus.commit_controller(
             tick, output.emitted_events if output else ()
         )
@@ -514,8 +528,9 @@ class _Run:
         deliveries = self.router.resolve(intents, self.fault, tick)
         after = {a: i.command_id for a, i in self.router.effective.items()}
         self._enter(tick, Phase.ACTUATE)
+        overrides = self.fault.actuator_overrides()
         act_start = perf_counter_ns()
-        receipt = self.plant.apply(deliveries, self.fault.actuator_overrides(), tick)
+        receipt = self.plant.apply(deliveries, overrides, tick)
         details = (
             self.plant.actuation_evidence(self.fault.spec.target_id)
             if positions is not None
@@ -548,6 +563,10 @@ class _Run:
             **details,
         )
         audit = {**probe, "pending_command_count": self.router.pending_count}
+        if self.fault.spec and self.fault.spec.family == "F3":
+            audit["observation_pending_count"] = getattr(
+                self.fault, "observation_pending_count", None
+            )
         if positions is not None:
             audit.update(
                 driver_positions=positions, actuator_coordinate=coordinate, **details
@@ -562,14 +581,15 @@ class _Run:
             "controller_ns": ctl_time,
             "previous_tick": self._prior_tick_perf,
         }
-        before_enqueue = perf_counter_ns()
         metadata = dict(
             fault_audit=audit,
             oracle_updates=_changed(updates, self._verdict_signature),
             performance=perf,
         )
         self.pending_record = (frame, metadata)
+        before_enqueue = perf_counter_ns()
         self.writer.record(frame, **metadata)
+        enqueue_ns = perf_counter_ns() - before_enqueue
         self.recorded_step = k
         self.pending_record = None
         self.router.acknowledge(receipt)
@@ -582,14 +602,22 @@ class _Run:
         advance = self.plant.advance_one_step(
             render=not (self.plant_options or {}).get("headless", True) and k % 4 == 3
         )
+        physics_ns = perf_counter_ns() - physics_start
+        clock_start = perf_counter_ns()
         self.clock.commit(advance)
         self.previous = advance
+        critical += perf_counter_ns() - clock_start
+        if self.video_started and (
+            self.clock.step % 4 == 0 or self.clock.step == self.horizon < 4
+        ):
+            self.plant.capture_video_frame(self.clock.step)
+        self._perf["critical_path_ns_by_step"][-1] = critical
         self._prior_tick_perf = {
             "step": k,
             "critical_path_ns": critical,
             "controller_active": active,
-            "physics_advance_ns": perf_counter_ns() - physics_start,
-            "record_enqueue_ns": physics_start - before_enqueue,
+            "physics_advance_ns": physics_ns,
+            "record_enqueue_ns": enqueue_ns,
         }
         if self.heartbeat:
             self.heartbeat("RUNNING", self.clock.step)
@@ -711,6 +739,11 @@ class _Run:
                 self.controller.close()
             except Exception as exc:
                 self.error(exc)
+        if self.video_started:
+            try:
+                self.video = self.plant.close_video()
+            except Exception as exc:
+                self.error(exc)
         if self.plant is not None and self.owns_plant:
             try:
                 self.plant.close()
@@ -728,6 +761,7 @@ class _Run:
             "episode_id": self.episode_id,
             "backend": self.backend,
             "benchmark_mode": self.mode,
+            "video": self.video,
             "completion_status": self.status,
             "task_outcome": task_outcome(
                 self.requirement_results, self.status == "COMPLETED"

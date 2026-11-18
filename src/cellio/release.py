@@ -253,6 +253,10 @@ def raw_index(campaign, enforce_physics=True):
     return {
         "suite_id": plan["suite_id"],
         "plan_hash": plan["plan_hash"],
+        "campaign_files": {
+            name: file_hash(campaign / name)
+            for name in ("campaign.plan.json", "ledger.jsonl")
+        },
         "attempts": rows,
     }
 
@@ -386,6 +390,12 @@ def check_archived_index(path, index):
         names = archive.namelist()
         if len(names) != len(set(names)):
             return False
+        for name, expected_hash in index.get("campaign_files", {}).items():
+            if name not in names:
+                return False
+            with archive.open(name) as stream:
+                if hashlib.file_digest(stream, "sha256").hexdigest() != expected_hash:
+                    return False
         for attempt in index["attempts"]:
             prefix = attempt["run_id"] + "/" + attempt["attempt_id"] + "/"
             manifest = archive.read(prefix + "manifest.final.json")
@@ -438,6 +448,7 @@ def wheel_sources(wheel, package, checkout):
 
 def audit_clean(root, folder):
     from cellio.analysis.campaign import load_campaign
+    from cellio.release_runtime import ROOTS, frozen_constraints, verify_closure
 
     directory = Path(folder).resolve() / "release-evidence" / "clean-install"
     proof_file = directory / "reproduction.json"
@@ -499,6 +510,20 @@ def audit_clean(root, folder):
             completed=keys,
         )
     identity = read(directory / "runtime.json")
+    inventory_path = root / "locks/windows-isaac62/python-environment.json"
+    inventory = read(inventory_path)
+    constraints = directory / "runtime.constraints.txt"
+    if (
+        file_hash(inventory_path) != proof.get("runtime_inventory_sha256")
+        or constraints.read_bytes() != frozen_constraints(inventory).encode("ascii")
+        or file_hash(constraints) != proof.get("runtime_constraints_sha256")
+        or file_hash(directory / "runtime.json") != proof.get("runtime_identity_sha256")
+    ):
+        return gate(
+            "FAIL",
+            (proof_file,),
+            reason="frozen Windows inventory, applied constraints or isolated probe was changed",
+        )
     exe = Path(identity["executable"]).resolve()
     pkg = Path(identity["package"]).resolve().parent
     if (
@@ -506,8 +531,13 @@ def audit_clean(root, folder):
         or not exe.is_relative_to(prefix)
         or not pkg.is_relative_to(prefix)
         or identity["os"] != "Windows"
-        or not identity["python"].startswith("3.12.")
-        or identity["versions"].get("isaacsim") != "6.2.0.0"
+        or identity["python"] != inventory["python"]
+        or identity.get("isolated") is not True
+        or identity.get("runtime_roots") != list(ROOTS)
+        or any(
+            identity["versions"].get(n) != inventory["packages"][n]
+            for n in ("isaacsim", "torch")
+        )
     ):
         return gate(
             "FAIL",
@@ -519,9 +549,38 @@ def audit_clean(root, folder):
             "FAIL", (proof_file,), reason="a recorded command used another interpreter"
         )
     check_arguments = {
-        "create_env": ("create", "--prefix", str(prefix)),
+        "create_env": (
+            "create",
+            "--prefix",
+            str(prefix),
+            "python=" + inventory["python"],
+        ),
+        "torch": (
+            "pip",
+            "install",
+            "-c",
+            str(constraints),
+            "torch==" + inventory["packages"]["torch"],
+        ),
+        "isaac": (
+            "pip",
+            "install",
+            "-c",
+            str(constraints),
+            "isaacsim[all,extscache]==" + inventory["packages"]["isaacsim"],
+        ),
         "dependencies": ("--require-hashes", "-r"),
+        "build": ("pip", "wheel", "--no-build-isolation", "--no-deps"),
         "install": ("pip", "install", "--no-deps"),
+        "runtime_identity": (
+            "-I",
+            "-m",
+            "cellio.release_runtime",
+            "--inventory",
+            str(inventory_path),
+            "--output",
+            str(directory / "runtime.json"),
+        ),
         "assets": ("assets", "verify", "--offline"),
         "doctor": ("doctor", "--profile", "isaac62", "smoke"),
         "plan": ("plan", "--suite", "clean-install"),
@@ -535,9 +594,46 @@ def audit_clean(root, folder):
                 reason="recorded command does not match its operation",
                 command=c["key"],
             )
+        if c["key"] in ("torch", "isaac") and c["argv"][
+            c["argv"].index("-c") + 1
+        ] != str(constraints):
+            return gate(
+                "FAIL",
+                (proof_file,),
+                reason="pip did not apply the verified constraints",
+                command=c["key"],
+            )
     lock = Path(proof["requirements_lock"])
-    if file_hash(lock) != proof["requirements_sha256"]:
+    if (
+        file_hash(lock) != proof["requirements_sha256"]
+        or file_hash(lock) != inventory["requirements_sha256"]
+    ):
         return gate("FAIL", (proof_file,), reason="requirements lock changed")
+    markers = identity.get("marker_environment") or {}
+    if any(
+        markers.get(k) != v
+        for k, v in {
+            "python_full_version": inventory["python"],
+            "python_version": "3.12",
+            "os_name": "nt",
+            "sys_platform": "win32",
+            "platform_system": "Windows",
+            "implementation_name": "cpython",
+            "platform_machine": inventory["architecture"],
+        }.items()
+    ):
+        return gate(
+            "FAIL",
+            (proof_file,),
+            reason="runtime dependency markers differ from the locked Windows interpreter",
+        )
+    closure = verify_closure(inventory, prefix=prefix, marker_environment=markers)
+    if closure != identity.get("runtime_closure"):
+        return gate(
+            "FAIL",
+            (proof_file,),
+            reason="installed runtime dependency closure differs from the isolated probe",
+        )
     wheel = Path(proof["wheel"])
     if (
         not wheel.resolve().is_relative_to(work)
@@ -595,6 +691,7 @@ def audit_clean(root, folder):
         (proof_file, campaign / "campaign.plan.json", wheel),
         cells=dict(cells),
         wheel_source_files=len(ids),
+        verified_runtime_dependencies=len(closure),
         working_directory=str(work),
         source_commit=proof["source_commit"],
         attempt_ids=[t.attempt_id for t in trials],
@@ -621,7 +718,7 @@ def release_gates(checkout_root, campaign_root):
     return gates
 
 
-def build_release_manifest(root, folder, tag, raw_directory, output):
+def build_release_manifest(root, folder, tag, raw_directory, output, *, archive=None):
     from cellio.adapters.isaac62.assets import verify_assets
     from cellio.environment import data_root
 
@@ -662,6 +759,12 @@ def build_release_manifest(root, folder, tag, raw_directory, output):
         "raw_directory": str(raw),
         "raw_index_sha256": digest(index),
     }
+    if archive is not None:
+        archive = Path(archive).resolve()
+        if not check_archived_index(archive, index):
+            raise ValueError("Archive content differs from the verified raw evidence")
+        manifest.pop("raw_directory")
+        manifest.update(raw_archive=str(archive), raw_archive_sha256=file_hash(archive))
     write_json(Path(output).with_name("raw_index.json"), index)
     write_json(Path(output), manifest)
     return manifest
@@ -676,6 +779,9 @@ def main():
     parser.add_argument("--campaign-root", required=True, type=Path)
     parser.add_argument("--tag")
     parser.add_argument("--raw-directory", type=Path)
+    parser.add_argument(
+        "--raw-archive", type=Path, help="Verified ZIP64 copy of the canonical campaign"
+    )
     args = parser.parse_args()
     if args.operation == "manifest":
         if not args.tag:
@@ -687,6 +793,7 @@ def main():
             args.tag,
             args.raw_directory or args.campaign_root / "canonical-v1",
             out,
+            archive=args.raw_archive,
         )
         print(out)
     elif args.operation == "reuse":

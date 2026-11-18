@@ -55,6 +55,18 @@ def test_lock_required(tmp_path):
         create_plan("canonical-v1", {}, tmp_path)
 
 
+def test_boundaries_publish_the_registered_corner_coordinates(tmp_path):
+    import json
+
+    plan = create_plan("boundaries-v1", PROVENANCE, tmp_path)
+    corners = json.loads((tmp_path / "initial_boundaries.json").read_bytes())
+    assert corners["plan_hash"] == plan["plan_hash"]
+    assert len(corners["cases"]) == 16
+    for case, row in zip(corners["cases"], plan["runs"], strict=True):
+        assert case == {key: row[key] for key in case}
+        assert abs(case["initial_state"]["yaw_rad"]) == 0.03
+
+
 def test_pinned_oracle_and_soak_design(tmp_path):
     for suite in ("oracle-v1", "soak-v1"):
         plan = create_plan(suite, PROVENANCE, tmp_path / suite)

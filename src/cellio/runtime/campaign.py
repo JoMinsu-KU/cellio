@@ -403,6 +403,25 @@ def create_plan(suite, provenance, output):
             raise CellIOError(
                 "RUN_PLAN_EXISTS", "A different frozen plan occupies this directory"
             )
+        if suite == "boundaries-v1":
+            write_json(
+                output / "initial_boundaries.json",
+                {
+                    "plan_hash": plan["plan_hash"],
+                    "cases": [
+                        {
+                            k: row[k]
+                            for k in (
+                                "cell",
+                                "run_id",
+                                "initial_state_id",
+                                "initial_state",
+                            )
+                        }
+                        for row in plan["runs"]
+                    ],
+                },
+            )
         write_json(dest, plan)
     return plan
 

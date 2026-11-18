@@ -12,7 +12,7 @@ def main():
         folder.mkdir(parents=True, exist_ok=True)
         for arm in ARMS:
             (folder / f"{arm}.yaml").write_text(
-                yaml.safe_dump(scenario(cell, arm), sort_keys=False),
+                yaml.safe_dump(scenario(cell, arm, seed=0), sort_keys=False),
                 encoding="utf-8",
                 newline="\n",
             )

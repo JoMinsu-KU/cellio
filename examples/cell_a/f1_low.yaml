@@ -15,7 +15,7 @@ controller:
     terminal_mode: hold
   id: reference
 seeds:
-  scene: 1000
+  scene: 0
   controller: 0
   fault: 0
 requirements:

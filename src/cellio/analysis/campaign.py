@@ -205,6 +205,11 @@ def attempt_histories(entries, planned):
 
 
 def verify_plan_inputs(path, row, provenance):
+    source = read(path / "environment.lock.json").get("cellio_source_sha256")
+    if source is not None and source != provenance.get("code_hash"):
+        raise CellIOError(
+            "RUN_PLAN_HASH", "Installed CellIO source differs from campaign provenance"
+        )
     if digest(read(path / "config.resolved.json")) != row["config_hash"]:
         raise CellIOError(
             "RUN_PLAN_HASH", "artifact configuration differs from frozen row"
@@ -257,7 +262,7 @@ def read_trial(directory, row, records, provenance):
         elif ledger_status not in ("RUNNING", "SKIPPED_PRECONDITION"):
             trial.status = "PARTIAL"
         return trial
-    trial.measurement = Measurements()
+    trial.measurement = Measurements(row.get("cell"))
     try:
         trial.eval = read_attempt(path, on_frame=trial.measurement.observe)
         if trial.eval["run_id"] != row["run_id"] or trial.eval["attempt_id"] != ident:

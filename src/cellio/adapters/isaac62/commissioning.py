@@ -75,10 +75,19 @@ def measure_geometry(plant, output, lock_path):
         report["geometry_manifest"] = plant.geometry_manifest
         report["provenance"] = plant.provenance
         if report["passed"]:
+            drive = next(iter(plant.builder.finger_drive_settings.values()))
             write_json(Path(lock_path), {"schema": "cellio.robot_profile/1.0",
                        "hand_T_tcp": plant.hand_T_tcp, "tool_frame": plant.motion.site,
                        "site_T_tcp": plant.motion.site_T_tcp, "pad_collider_paths": plant.builder.pad_paths,
-                       "dof_names": plant.names, "finger_drivers": plant.builder.finger_drivers})
+                       "dof_names": plant.names, "finger_drivers": plant.builder.finger_drivers,
+                       "finger_force_limit_n": drive["force_cap_n"],
+                       "finger_armature_kg": plant.builder.solver_settings["finger_armatures_kg"][plant.builder.finger_drivers[0]],
+                       "finger_stiffness_n_per_m": drive["stiffness_n_per_m"],
+                       "finger_damping_n_s_per_m": drive["damping_n_s_per_m"],
+                       "gripper_slew_mps": plant.gripper_slew_mps,
+                       "gripper_open_slew_mps": plant.gripper_open_slew_mps,
+                       "articulation_velocity_iterations": plant.builder.solver_settings["velocity_iterations"],
+                       "solve_articulation_contact_last": plant.builder.solver_settings["contact_last"]})
         return report
     except Exception as exc:
         report["error"] = {"type": type(exc).__name__, "message": str(exc)}
@@ -104,5 +113,5 @@ def main():
 
 
 if __name__ == "__main__":
-    from .application import worker_main
-    raise SystemExit(worker_main(main))
+    from .application import standalone_main
+    raise SystemExit(standalone_main(main))

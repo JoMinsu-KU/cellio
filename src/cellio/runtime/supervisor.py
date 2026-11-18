@@ -3,17 +3,17 @@
 import json
 import os
 import shutil
-from pathlib import Path
 import subprocess
 import sys
 import time
+from pathlib import Path
 from uuid import uuid4
 
 from cellio.artifacts import verify_artifact
-from cellio.environment import data_root, lock_context
+from cellio.environment import data_root, lease_directory, lock_context
 from cellio.io import CellIOError, digest, write_json
-from .campaign import append_line, exclusive, read_plan, soak_row
 
+from .campaign import append_line, exclusive, read_plan, soak_row
 
 TERMINAL = {"COMPLETED", "CANCELLED", "INFRA_ERROR", "SKIPPED_PRECONDITION"}
 
@@ -52,22 +52,26 @@ def transition(directory, attempt, state, **fields):
     )
 
 
+def physical_options(ctx, *, headless=True):
+    root = data_root() / "assets"
+    options = {
+        "headless": headless,
+        "asset_root": str(root),
+        "robot_asset": str(root / ctx["assets"]["entry"]),
+    }
+    if "robot_profile" in ctx["environment"]:
+        options["robot_profile"] = ctx["environment"]["robot_profile"]
+    return options
+
+
 def job(directory, row, entry, ctx):
     cfg = row["config"]
     backend = "mock" if cfg["profile"] == "mock_lockstep" else "isaac62"
-    options = {}
-    if backend == "isaac62":
-        root = data_root() / "assets"
-        options = {
-            "headless": not row.get("gui", False),
-            "asset_root": str(root),
-            "robot_asset": str(root / ctx["assets"]["entry"]),
-        }
-        calibration = data_root() / "locks" / "robot_profile.lock.json"
-        if calibration.exists():
-            options["robot_profile"] = json.loads(
-                calibration.read_text(encoding="utf-8")
-            )
+    options = (
+        physical_options(ctx, headless=not row.get("gui", False))
+        if backend == "isaac62"
+        else {}
+    )
     return {
         **ctx,
         "config": cfg,
@@ -85,8 +89,7 @@ def job(directory, row, entry, ctx):
 def _physical_worker(descriptor):
     # The supervisor serializes launches. A separate lease owned by the native
     # process also survives termination of the supervisor that spawned it.
-    directory = data_root() / "gpu-process"
-    directory.mkdir(parents=True, exist_ok=True)
+    directory = lease_directory("gpu-process")
     with exclusive(directory):
         return {**descriptor, "plant_lease_directory": str(directory.resolve())}
 
@@ -357,12 +360,38 @@ def reconcile(directory):
             )
 
 
-def execute_plan(path, *, resume=False, retry_failed=False):
+def check_storage(directory, ctx, steps):
+    if steps == 0:
+        return
+    estimate = ctx["protocol"].get("pilot_bytes_per_step")
+    if type(estimate) not in (int, float) or not 0 < estimate < float("inf"):
+        raise CellIOError(
+            "ENV_DISK_BUDGET", "Missing ten-pilot storage measurement", exit_code=3
+        )
+    needed = 1.5 * estimate * steps + 10 * 1024**3
+    if shutil.disk_usage(directory).free < needed:
+        raise CellIOError(
+            "ENV_DISK_SPACE",
+            f"Remaining plan requires at least {needed / 1024**3:.1f} GiB free",
+            exit_code=3,
+        )
+
+
+def execute_plan(path, *, resume=False, retry_failed=False, max_groups=None):
     path = Path(path).resolve()
     directory = path.parent
     plan = read_plan(path)
+    if max_groups is not None and (
+        type(max_groups) is not int
+        or max_groups < 1
+        or plan["suite_id"] in {"oracle-v1", "soak-v1"}
+    ):
+        raise CellIOError(
+            "CFG_PLAN_LIMIT",
+            "--max-groups must be positive and applies to finite simulation plans",
+        )
     if plan["suite_id"] == "oracle-v1":
-        from cellio.acceptance import gold_directory, evaluate_gold
+        from cellio.acceptance import evaluate_gold, gold_directory
 
         cases = json.loads((gold_directory() / "gold.json").read_text(encoding="utf-8"))
         if [digest(c) for c in cases] != [row["case_hash"] for row in plan["runs"]]:
@@ -389,26 +418,9 @@ def execute_plan(path, *, resume=False, retry_failed=False):
         raise CellIOError(
             "RUN_PLAN_CHANGED", "Current locks differ from the frozen plan", exit_code=3
         )
-    if plan["suite_id"] in {"canonical-v1", "overhead-v1", "reset-v1", "soak-v1"}:
-        estimate = ctx["protocol"].get("pilot_bytes_per_step")
-        if not isinstance(estimate, (int, float)) or estimate <= 0:
-            raise CellIOError(
-                "ENV_DISK_BUDGET", "Missing ten-pilot storage measurement", exit_code=3
-            )
-        horizon_sum = sum(r["config"]["episode"]["horizon_steps"] for r in plan["runs"])
-        if plan["plan_mode"] == "soak_generator":
-            horizon_sum = (
-                plan["generator"]["minimum_completed"] + plan["generator"]["warmup"]
-            ) * 7200
-        needed = 1.5 * estimate * horizon_sum + 10 * 1024**3
-        if shutil.disk_usage(directory).free < needed:
-            raise CellIOError(
-                "ENV_DISK_SPACE",
-                f"Plan requires at least {needed / 1024**3:.1f} GiB free",
-                exit_code=3,
-            )
-    gpu_lock = data_root() / "gpu-worker"
-    gpu_lock.mkdir(parents=True, exist_ok=True)
+    gpu_lock = lease_directory(
+        "mock-worker" if ctx["environment"].get("profile") == "mock" else "gpu-worker"
+    )
     with exclusive(gpu_lock), exclusive(directory):
         if (directory / "ledger.jsonl").exists() and not resume:
             raise CellIOError(
@@ -416,6 +428,12 @@ def execute_plan(path, *, resume=False, retry_failed=False):
             )
         reconcile(directory)
         if plan["plan_mode"] == "soak_generator":
+            generator = plan["generator"]
+            check_storage(
+                directory,
+                ctx,
+                7200 * (generator["warmup"] + generator["minimum_completed"]),
+            )
             return execute_soak(directory, plan, ctx)
         seen = history(directory)
         groups = []
@@ -424,14 +442,28 @@ def execute_plan(path, *, resume=False, retry_failed=False):
                 groups[-1].append(row)
             else:
                 groups.append([row])
+        pending = []
         for rows in groups:
             prior = [seen.get(r["run_id"], []) for r in rows]
-            if any(prior):
-                if not retry_failed or all(
+            if any(prior) and (
+                not retry_failed
+                or all(
                     p and _fulfilled(row, p[-1])
                     for row, p in zip(rows, prior, strict=True)
-                ):
-                    continue
+                )
+            ):
+                continue
+            pending.append((rows, prior))
+        if plan["suite_id"] in {"canonical-v1", "overhead-v1", "reset-v1", "reuse-v1"}:
+            steps_left = sum(
+                row["config"]["episode"]["horizon_steps"]
+                for rows, _ in pending
+                for row in rows
+            )
+            check_storage(directory, ctx, steps_left)
+        selected = pending[:max_groups]
+        executed = []
+        for rows, prior in selected:
             entries = []
             for r, p in zip(rows, prior, strict=True):
                 e = attempt(
@@ -451,6 +483,7 @@ def execute_plan(path, *, resume=False, retry_failed=False):
                 transition(directory, e, "PLANNED")
                 entries.append(e)
             outcome = run_group(directory, rows, entries, ctx)
+            executed.extend(r["run_id"] for r in rows)
             if any(p["completion_status"] == "INFRA_ERROR" for p in outcome):
                 raise CellIOError(
                     "RUN_ATTEMPT_FAILED",
@@ -460,6 +493,9 @@ def execute_plan(path, *, resume=False, retry_failed=False):
     return {
         "suite_id": plan["suite_id"],
         "runs": len(plan["runs"]),
+        "groups_executed": len(selected),
+        "groups_remaining": len(pending) - len(selected),
+        "executed_run_ids": executed,
         "directory": str(directory),
     }
 

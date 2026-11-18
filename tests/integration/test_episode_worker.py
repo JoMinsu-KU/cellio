@@ -280,6 +280,9 @@ def test_T_RESET_01_12_committed_dirty_predecessor_and_clean_successor(
     assert plan["queue_limit"] == {"F3": 14, "F4": 256, "F6": 0}[family]
     if family == "F6":
         assert plan["resolved_resource"]["driver_ids"] == ["panda_finger_joint1"]
+    if family == "F3":
+        recorded = list(frames(tmp_path / "abnormal"))
+        assert recorded[-2]["fault_audit"]["observation_pending_count"] == 8
     assert (
         first_result["completion_status"] == "CANCELLED"
         and first_result["end_step"] == 8
