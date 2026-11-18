@@ -1,0 +1,6 @@
+schema_version: cellio.suite/1.0
+suite_id: oracle-v1
+mode: finite
+planned_runs: 144
+corpus_sha256: 669116257c211fd9b406a19bab93cf71dabe1106ef544f44358cc460850b015f
+labels: {PASS: 48, FAIL: 48, UNKNOWN: 24, NOT_APPLICABLE: 24}

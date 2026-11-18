@@ -42,7 +42,13 @@ def attempt(directory, row, ctx, index=0, parent=None, reason=None):
 def transition(directory, attempt, state, **fields):
     append_line(
         directory / "ledger.jsonl",
-        {**attempt, "state": state, "unix_ns": time.time_ns(), **fields},
+        {
+            **attempt,
+            "state": state,
+            "unix_ns": time.time_ns(),
+            "monotonic_ns": time.monotonic_ns(),
+            **fields,
+        },
     )
 
 
@@ -76,6 +82,15 @@ def job(directory, row, entry, ctx):
     }
 
 
+def _physical_worker(descriptor):
+    # The supervisor serializes launches. A separate lease owned by the native
+    # process also survives termination of the supervisor that spawned it.
+    directory = data_root() / "gpu-process"
+    directory.mkdir(parents=True, exist_ok=True)
+    with exclusive(directory):
+        return {**descriptor, "plant_lease_directory": str(directory.resolve())}
+
+
 class WorkerProcess:
     def __init__(self, directory, descriptor):
         self.directory = directory
@@ -102,6 +117,7 @@ class WorkerProcess:
         self.last_seen = None
         self.running_at = None
         self.last_state = None
+        self.last_beat = {}
         self.state_at = self.started
         with (directory / "worker.log").open("wb") as log:
             self.proc = subprocess.Popen(
@@ -119,9 +135,14 @@ class WorkerProcess:
         if self.proc.poll() is not None:
             return None
         now = time.monotonic()
-        beat = {}
-        if self.heartbeat.is_file():
+        try:
             beat = json.loads(self.heartbeat.read_text(encoding="utf-8"))
+        except (FileNotFoundError, PermissionError):
+            # A Windows rename can temporarily deny an open by name. A missed poll
+            # is not a phase transition and does not reset the progress watchdog.
+            beat = self.last_beat
+        else:
+            self.last_beat = beat
         state = beat.get("state", "BOOTING")
         key = (beat.get("attempt_id"), state, beat.get("step"))
         if self.last_seen != key:
@@ -161,6 +182,8 @@ class WorkerProcess:
 def run_group(directory, rows, entries, ctx):
     jobs = [job(directory, r, e, ctx) for r, e in zip(rows, entries, strict=True)]
     descriptor = {"episode": jobs[0]} if len(jobs) == 1 else {"episodes": jobs}
+    if any(j["backend"] == "isaac62" for j in jobs):
+        descriptor = _physical_worker(descriptor)
     worker = WorkerProcess(
         directory / ".workers" / entries[0]["attempt_id"], descriptor
     )
@@ -194,33 +217,61 @@ def run_group(directory, rows, entries, ctx):
         if len(jobs) == 1 and worker.result_path.is_file():
             summaries.append(json.loads(worker.result_path.read_text(encoding="utf-8")))
         by_attempt = {s.get("attempt_id"): s for s in summaries}
-        for j, e in zip(jobs, entries, strict=True):
+        exit_error = error or (
+            "WORKER_EXIT_ERROR"
+            if worker.proc.returncode not in (0, None, 130)
+            else None
+        )
+        # A later episode can fail after earlier outputs in the shared process were committed.
+        # If all episodes returned, any teardown failure belongs to its last attempt.
+        failed_from = next(
+            (
+                i
+                for i, e in enumerate(entries)
+                if by_attempt.get(e["attempt_id"], {}).get("completion_status")
+                not in {"COMPLETED", "CANCELLED"}
+            ),
+            len(entries) - 1,
+        )
+        for i, (j, e) in enumerate(zip(jobs, entries, strict=True)):
             status = by_attempt.get(e["attempt_id"], {})
+            failure = exit_error if i >= failed_from else None
             try:
                 proof = verify_artifact(j["directory"])
                 state = proof["completion_status"]
-                if state == "COMPLETED" and (
-                    error or worker.proc.returncode not in (0, None)
-                ):
+                if state == "COMPLETED" and failure:
                     state = "INFRA_ERROR"
                     proof = {
                         **proof,
                         "completion_status": state,
-                        "error": error or "WORKER_EXIT_ERROR",
+                        "error": failure,
                     }
                 results.append(proof)
             except (CellIOError, OSError) as exc:
                 state = "INFRA_ERROR"
-                results.append({"completion_status": state, "error": status.get("reason") or str(exc),
-                                "artifact_error": str(exc)})
+                results.append(
+                    {
+                        "completion_status": state,
+                        "error": status.get("reason") or str(exc),
+                        "artifact_error": str(exc),
+                    }
+                )
             transition(
                 directory,
                 e,
                 state,
                 worker_exit=worker.proc.returncode,
-                error=error or results[-1].get("error"),
-                **{key: status[key] for key in ("end_step", "last_valid_snapshot",
-                                                "last_successful_advance", "reason") if key in status},
+                error=failure or results[-1].get("error"),
+                **{
+                    key: status[key]
+                    for key in (
+                        "end_step",
+                        "last_valid_snapshot",
+                        "last_successful_advance",
+                        "reason",
+                    )
+                    if key in status
+                },
             )
     return results
 
@@ -233,6 +284,14 @@ def history(directory):
     for e in attempts.values():
         by_run.setdefault(e["run_id"], []).append(e)
     return by_run
+
+
+def _fulfilled(row, record):
+    return record["state"] == "COMPLETED" or (
+        record["state"] == "CANCELLED"
+        and record.get("reason") == "TEST_RESET_CANCEL"
+        and row.get("chain_slot") == "predecessor"
+    )
 
 
 def _orphan_alive(pid):
@@ -303,11 +362,9 @@ def execute_plan(path, *, resume=False, retry_failed=False):
     directory = path.parent
     plan = read_plan(path)
     if plan["suite_id"] == "oracle-v1":
-        from cellio.acceptance import checkout, evaluate_gold
+        from cellio.acceptance import gold_directory, evaluate_gold
 
-        cases = json.loads(
-            (checkout() / "fixtures/oracle/gold.json").read_text(encoding="utf-8")
-        )
+        cases = json.loads((gold_directory() / "gold.json").read_text(encoding="utf-8"))
         if [digest(c) for c in cases] != [row["case_hash"] for row in plan["runs"]]:
             raise CellIOError(
                 "RUN_PLAN_CHANGED", "Frozen oracle cases have changed", exit_code=4
@@ -371,7 +428,8 @@ def execute_plan(path, *, resume=False, retry_failed=False):
             prior = [seen.get(r["run_id"], []) for r in rows]
             if any(prior):
                 if not retry_failed or all(
-                    p and p[-1]["state"] == "COMPLETED" for p in prior
+                    p and _fulfilled(row, p[-1])
+                    for row, p in zip(rows, prior, strict=True)
                 ):
                     continue
             entries = []
@@ -382,7 +440,13 @@ def execute_plan(path, *, resume=False, retry_failed=False):
                     ctx,
                     len(p),
                     p[-1]["attempt_id"] if p else None,
-                    "requested" if p else None,
+                    (
+                        "paired hard-reload replay"
+                        if _fulfilled(r, p[-1])
+                        else "requested"
+                    )
+                    if p
+                    else None,
                 )
                 transition(directory, e, "PLANNED")
                 entries.append(e)
@@ -408,20 +472,23 @@ def execute_soak(directory, plan, ctx):
             "An interrupted soak requires a fresh campaign directory",
             exit_code=4,
         )
-    worker = WorkerProcess(directory / ".workers" / str(uuid4()), {"inbox_path": True})
+    worker = WorkerProcess(
+        directory / ".workers" / str(uuid4()), _physical_worker({"inbox_path": True})
+    )
     n = 0
     start = None
+    stop = None
     completed = 0
     rule = plan["generator"]
     try:
         while (
             completed < rule["minimum_completed"]
             or start is None
-            or time.monotonic() - start < rule["minimum_seconds"]
+            or time.monotonic_ns() - start < rule["minimum_seconds"] * 1_000_000_000
         ):
             if n == rule["warmup"]:
-                start = time.monotonic()
-            row = soak_row(plan["provenance"], n)
+                start = time.monotonic_ns()
+            row = soak_row(plan["provenance"], n, plan.get("suite_design"))
             append_line(
                 directory / "generator.rows.jsonl", {**row, "row_hash": digest(row)}
             )
@@ -439,7 +506,8 @@ def execute_soak(directory, plan, ctx):
                     )
                 if (
                     start is not None
-                    and time.monotonic() - start >= rule["limit_seconds"]
+                    and time.monotonic_ns() - start
+                    >= rule["limit_seconds"] * 1_000_000_000
                 ):
                     raise CellIOError(
                         "SOAK_INCOMPLETE", "Soak exceeded protection limit", exit_code=4
@@ -453,6 +521,7 @@ def execute_soak(directory, plan, ctx):
             if start is not None:
                 completed += 1
             n += 1
+        stop = time.monotonic_ns()
         append_line(worker.inbox, {"stop": True})
         worker.proc.wait(timeout=60)
         if worker.proc.returncode:
@@ -462,7 +531,10 @@ def execute_soak(directory, plan, ctx):
     summary = {
         "completed": completed,
         "warmup": rule["warmup"],
-        "wall_seconds": time.monotonic() - start,
+        "worker_pid": worker.proc.pid,
+        "measurement_start_ns": start,
+        "measurement_end_ns": stop,
+        "wall_seconds": (stop - start) / 1_000_000_000,
     }
     write_json(directory / "soak.result.json", summary)
     return summary

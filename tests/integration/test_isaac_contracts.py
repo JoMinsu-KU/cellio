@@ -120,6 +120,14 @@ def test_offline_lock_detects_tampering_and_path_escape(tmp_path):
 @pytest.mark.skipif(not os.environ.get("CELLIO_RUN_ISAAC_TESTS"),
                     reason="Set CELLIO_RUN_ISAAC_TESTS and CELLIO_ASSET_CACHE on a 6.2 runtime")
 def test_isaac_real_one_step_and_hard_reload():
+    # Let the executable use the vendor's supported native fast shutdown after
+    # assertions complete; a loaded Kit must never terminate the pytest host.
+    script = ("import runpy,sys; from cellio.adapters.isaac62.application import worker_main; "
+              "native=runpy.run_path(sys.argv[1]); raise SystemExit(worker_main(native['_check_physics']))")
+    subprocess.run([sys.executable, "-c", script, __file__], check=True)
+
+
+def _check_physics():
     from cellio.adapters.isaac62 import IsaacPlant
     from cellio.core.models import Tick
     plant = IsaacPlant(asset_root=os.environ["CELLIO_ASSET_CACHE"],
@@ -133,8 +141,9 @@ def test_isaac_real_one_step_and_hard_reload():
             assert truth.complete and truth.bodies["cell_tcp"].valid
             assert all(plant.reset_evidence(truth).values())
             assert plant.apply((), {}, tick).accepted
-            receipt = plant.advance_one_step()
+            receipt = plant.advance_one_step(render=generation == 2)
             assert receipt.success and receipt.engine_time_after_s - receipt.engine_time_before_s == pytest.approx(1/120)
             assert plant.snapshot(Tick(cell, generation, 1)).tick.step == 1
     finally:
         plant.close()
+    return 0

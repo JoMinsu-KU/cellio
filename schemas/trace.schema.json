@@ -79,8 +79,7 @@
     "episode_id",
     "generation",
     "previous_hash",
-    "record_hash",
-    "step"
+    "record_hash"
   ],
   "additionalProperties": false,
   "allOf": [
@@ -98,6 +97,7 @@
       },
       "then": {
         "required": [
+          "step",
           "truth",
           "raw_signals",
           "observed_signals",
@@ -112,6 +112,10 @@
           "tick_kind"
         ],
         "properties": {
+          "step": {
+            "type": "integer",
+            "minimum": 0
+          },
           "truth": {
             "type": "object"
           },
@@ -134,6 +138,57 @@
             "type": "array"
           },
           "events": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "episode_start"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "step"
+        ],
+        "properties": {
+          "step": {
+            "enum": [
+              0,
+              null
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "episode_end"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "end_step",
+          "completion_status",
+          "task_outcome",
+          "errors"
+        ],
+        "properties": {
+          "end_step": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "errors": {
             "type": "array"
           }
         }

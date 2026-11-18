@@ -271,6 +271,15 @@ def test_T_RESET_01_12_committed_dirty_predecessor_and_clean_successor(
     assert execute_job(path) == 0
     first_result = json.loads((tmp_path / "abnormal" / "result.json").read_bytes())
     second_result = json.loads((tmp_path / "successor" / "result.json").read_bytes())
+    plan = first_result["compiled_fault_plan"]
+    assert plan["resolved_resource"]["id"] == target and plan["fault_id"] == "fault"
+    assert (
+        len(plan["realization_rule_sha256"]) == 64
+        and plan["recovery_window_steps"] == 12
+    )
+    assert plan["queue_limit"] == {"F3": 14, "F4": 256, "F6": 0}[family]
+    if family == "F6":
+        assert plan["resolved_resource"]["driver_ids"] == ["panda_finger_joint1"]
     assert (
         first_result["completion_status"] == "CANCELLED"
         and first_result["end_step"] == 8
@@ -395,3 +404,26 @@ def test_reset_control_hits_deterministic_P0_and_B0_is_offline(tmp_path):
     baseline = run_episode(**job(dest), benchmark_mode="B0")
     assert baseline["requirements"] == [] and baseline["task_outcome"] == "UNKNOWN"
     assert read_attempt(dest)["online_comparable"] is False
+
+
+def test_reuse_variant_changes_cell_a_belt_setpoint_and_rejects_cell_b(tmp_path):
+    from cellio.config import resolve
+    from cellio.io import CellIOError as ConfigError
+
+    for variant, expected in (
+        ("canonical", 0.060),
+        ("conveyor_speed_plus_10pct", 0.066),
+    ):
+        dest = tmp_path / variant
+        experiment = job(dest, horizon=64, attempt=variant)
+        experiment["config"]["scene"]["variant_id"] = variant
+        result = run_episode(**experiment)
+        assert result["plant_provenance"]["scene_variant"] == variant
+        recorded = [
+            f["truth"]["plant_state"]["belt.surface_speed_mps"] for f in frames(dest)
+        ]
+        assert max(recorded) == pytest.approx(expected)
+    cfg = scenario("cell_b", profile="mock_lockstep")
+    cfg["scene"]["variant_id"] = "conveyor_speed_plus_10pct"
+    with pytest.raises(ConfigError):
+        resolve(cfg)

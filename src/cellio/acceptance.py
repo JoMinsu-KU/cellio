@@ -2,13 +2,15 @@
 
 from collections import Counter
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
+import sysconfig
 import tempfile
 import xml.etree.ElementTree as ET
 
-from cellio.io import file_hash, write_json
+from cellio.io import digest, file_hash, write_json
 
 
 def checkout():
@@ -22,10 +24,17 @@ def checkout():
     )
 
 
+def gold_directory():
+    from_source = Path(__file__).resolve().parents[2] / "fixtures/oracle"
+    if (from_source / "gold.json").is_file():
+        return from_source
+    return Path(sysconfig.get_path("data")) / "share/cellio/fixtures/oracle"
+
+
 def evaluate_gold():
     from cellio.core.oracle.fixtures import evaluate_fixture
 
-    folder = checkout() / "fixtures" / "oracle"
+    folder = gold_directory()
     source = folder / "gold.json"
     checks = []
     cases = json.loads(source.read_text(encoding="utf-8"))
@@ -61,6 +70,11 @@ def evaluate_gold():
 
 
 def _tests(root, files):
+    if os.environ.get("CELLIO_ACCEPTANCE_TEST_CHILD") == "1":
+        return {
+            "status": "FAIL",
+            "diagnostic": "An acceptance test attempted to recursively run the acceptance suite",
+        }
     paths = [root / "tests" / name for name in files]
     if any(not p.is_file() for p in paths):
         return {
@@ -82,6 +96,7 @@ def _tests(root, files):
                 str(xml),
             ],
             cwd=root,
+            env={**os.environ, "CELLIO_ACCEPTANCE_TEST_CHILD": "1"},
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -110,7 +125,7 @@ def _tests(root, files):
 def assess(level, campaign_root, report_path):
     root = checkout()
     suites = {
-        "G01": ["unit/test_config.py"],
+        "G01": ["unit/test_config.py", "integration/test_cli_supervisor.py"],
         "G02": ["unit/test_core_contracts.py", "unit/test_fault_contracts.py"],
         "G03": [
             "unit/test_oracle_gold.py",
@@ -139,21 +154,38 @@ def assess(level, campaign_root, report_path):
 
 def _campaign_gates(folder, level):
     from cellio.analysis.campaign import load_campaign
-    from cellio.analysis.suites import reset_chains
+    from cellio.analysis.suites import reset_chains, soak_evidence
+    from cellio.runtime.campaign import finite_rows, suite_design
 
     result = {}
     cache = {}
+    plans, retries = {}, {}
 
     def trials(suite):
         if suite not in cache:
             path = folder / suite
             if not (path / "campaign.plan.json").is_file():
                 return []
-            plan, items, _ = load_campaign(path)
+            plan, items, extra = load_campaign(path)
             if plan["suite_id"] != suite or any(
                 t.row["config"]["profile"] != "isaac62_lockstep" for t in items
             ):
                 raise ValueError(f"Unexpected campaign/profile in {path}")
+            design = suite_design(suite)
+            if (
+                plan.get("suite_design") != design
+                or plan["plan_mode"] != design["mode"]
+            ):
+                raise ValueError(
+                    f"{suite} has a different design than the release protocol"
+                )
+            if design["mode"] == "finite" and plan["runs"] != finite_rows(
+                suite, plan["provenance"], design
+            ):
+                raise ValueError(
+                    f"Rows or order differ from the predeclared {suite} protocol"
+                )
+            plans[suite], retries[suite] = plan, extra
             cache[suite] = items
         return cache[suite]
 
@@ -167,6 +199,8 @@ def _campaign_gates(folder, level):
     def clean(t):
         return (
             t.status == "COMPLETED"
+            and t.error is None
+            and t.eval.get("online_offline_equal") is True
             and t.outcome == "SUCCESS"
             and t.eval.get("compliance_verdict") == "PASS"
         )
@@ -239,8 +273,16 @@ def _campaign_gates(folder, level):
         overhead = trials("overhead-v1")
         soak = trials("soak-v1")
         all_runs = (
-            commissioning + boundaries + installs + reset + main + overhead + soak
+            commissioning
+            + boundaries
+            + pilot
+            + installs
+            + reset
+            + main
+            + overhead
+            + soak
         )
+        reruns = [r for suite in retries.values() for r in suite]
         record(
             "G07",
             all_runs,
@@ -251,27 +293,47 @@ def _campaign_gates(folder, level):
                 for t in all_runs
             )
             and bool(main)
-            and bool(soak),
+            and bool(soak)
+            and all(
+                r["integrity"]
+                and r["error"] is None
+                and r["status"] in {"COMPLETED", "CANCELLED"}
+                for r in reruns
+            )
+            and all(
+                len({p["provenance"][k] for p in plans.values()}) == 1
+                for k in ("assets_hash", "code_hash", "requirements_hash")
+            ),
+            {"retry_ids": [r["attempt_id"] for r in reruns]},
         )
         record(
             "G10",
             main,
             len(main) == 820
             and all(
-                t.started and t.status == "COMPLETED" and t.eval.get("end_step") == 7200
+                t.started
+                and t.status == "COMPLETED"
+                and t.eval.get("end_step") == 7200
+                and t.error is None
+                and t.eval.get("online_offline_equal") is True
                 for t in main
             ),
         )
-        sp = folder / "soak-v1" / "soak.result.json"
-        info = json.loads(sp.read_text(encoding="utf-8")) if sp.is_file() else {}
+        info = soak_evidence(folder / "soak-v1", soak) if soak else {}
         record(
             "G11",
             soak,
-            info.get("wall_seconds", 0) >= 7200
-            and info.get("completed", 0) >= 200
-            and all(t.status == "COMPLETED" for t in soak),
+            info.get("status") == "PASS",
             info,
         )
+        metrics_path = folder / "overhead-v1" / "reports" / "metrics.json"
+        metrics = (
+            json.loads(metrics_path.read_text(encoding="utf-8"))
+            if metrics_path.is_file()
+            else {}
+        )
+        from cellio.analysis.comparisons import overhead as paired_overhead
+
         record(
             "G15",
             overhead,
@@ -280,8 +342,10 @@ def _campaign_gates(folder, level):
                 t.status == "COMPLETED" and t.performance.get("running_wall_ns", 0) > 0
                 for t in overhead
             )
-            and (folder / "overhead-v1" / "reports" / "metrics.json").is_file(),
+            and metrics.get("plan_hash") == plans["overhead-v1"]["plan_hash"]
+            and digest(metrics.get("overhead")) == digest(paired_overhead(overhead)),
         )
         from cellio.release import release_gates
+
         result.update(release_gates(checkout(), folder))
     return result

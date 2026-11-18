@@ -38,6 +38,14 @@ class MockPlant:
         self.cell = scene_config.get("cell_id", scene_config.get("scene_id"))
         if self.cell not in {"cell_a", "cell_b"}:
             raise CellIOError("CFG_SCENE", str(self.cell))
+        variant = scene_config.get("variant_id", "canonical")
+        if variant == "conveyor_speed_plus_10pct" and self.cell == "cell_a":
+            self.belt_setpoint = 0.066
+        elif variant == "canonical":
+            self.belt_setpoint = 0.060
+        else:
+            raise CellIOError("CFG_SCENE", f"Unsupported {self.cell} variant {variant}")
+        self.provenance["scene_variant"] = variant
         self.warmup_steps = scene_config.get("warmup_steps", 240)
         self.loaded = True
 
@@ -273,7 +281,9 @@ class MockPlant:
             self.clamp = clamp
             self.process_counter += int(self.process)
         else:
-            self.belt = slew(self.belt, 0.06 if self.belt_run else 0.0, 1.0 / 120)
+            self.belt = slew(
+                self.belt, self.belt_setpoint if self.belt_run else 0.0, 1.0 / 120
+            )
             self.part_velocity = (0.0, self.belt, 0.0)
             self.part = (self.part[0], self.part[1] + self.belt / 120, self.part[2])
         distance = dist(self.tcp, self.tcp_goal)

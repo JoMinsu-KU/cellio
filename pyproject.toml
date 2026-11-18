@@ -27,6 +27,7 @@ where = ["src"]
 [tool.setuptools.data-files]
 "share/cellio/fixtures/oracle" = ["fixtures/oracle/gold.json", "fixtures/oracle/gold.sha256"]
 "share/cellio/schemas" = ["schemas/*.json"]
+"share/cellio/protocols" = ["protocols/*.yaml"]
 "share/cellio/examples/cell_a" = ["examples/cell_a/*.yaml"]
 "share/cellio/examples/cell_b" = ["examples/cell_b/*.yaml"]
 

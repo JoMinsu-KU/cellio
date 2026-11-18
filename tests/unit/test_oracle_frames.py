@@ -145,3 +145,48 @@ def test_abort_declaration_requires_backend_and_actual_stop():
     ) == ("FAIL", 12)
     assert indexed["cell_a.r06.abort_stopped"].verdict == "PASS"
     assert task_outcome(result, True) == "FAILED"
+
+
+def test_f6_restoration_requires_the_measured_bounded_target():
+    from cellio.core.oracle.projector import Projector
+
+    projector = Projector({}, 0)
+    receipt = {
+        "accepted": True,
+        "active_override_ids": [],
+        "targets_by_actuator": {"actuator.gripper": [0.02]},
+    }
+    base = {
+        "family": "F6",
+        "target_id": "actuator.gripper",
+        "fault_id": "fault",
+        "first_effect_step": 4,
+    }
+
+    def measured(k, values):
+        facts = {}
+        frame = {
+            "actuation": receipt,
+            "fault_audit": {**base, **values},
+            "fault_transitions": [{"kind": "ENDED"}] if k == 10 else (),
+        }
+        projector._restore(k, frame, facts, lambda _: None)
+        return facts["path_restored"]
+
+    assert measured(10, {}) is None
+    assert (
+        measured(
+            11, {"nominal_targets": {"joint": 0.02}, "applied_targets": {"joint": 0.03}}
+        )
+        is False
+    )
+    assert (
+        measured(
+            12,
+            {
+                "nominal_targets": {"joint": 0.02},
+                "applied_targets": {"joint": 0.0200001},
+            },
+        )
+        is True
+    )

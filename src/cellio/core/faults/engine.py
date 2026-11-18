@@ -3,7 +3,11 @@ from __future__ import annotations
 from collections import defaultdict, deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
+from functools import lru_cache
+from inspect import getsource
 from math import isfinite
+
+from cellio.io import digest
 
 from ..models import (
     CellIOError,
@@ -16,6 +20,8 @@ from ..models import (
 )
 from ..signals import usable
 from .spec import compile_fault
+
+RECOVERY_WINDOW_STEPS = 12
 
 
 @dataclass
@@ -41,6 +47,29 @@ class FaultRuntime:
     flushed_packet_count: int = 0
     reason: str | None = None
     evidence_refs: list = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class CompiledFaultPlan:
+    fault_id: str
+    model_id: str
+    realization_rule_id: str
+    realization_rule_sha256: str
+    resolved_resource: Mapping
+    queue_limit: int
+    recovery_window_steps: int
+
+
+@lru_cache(maxsize=32)
+def _rule_hash(engine_type, family, model):
+    functions = [engine_type.observe, engine_type._realized]
+    if family == "F6":
+        functions.extend((engine_type._observe_hold, engine_type._record_hold_sample))
+    elif family != "F4":
+        functions.extend((engine_type._observe_signals, usable))
+    return digest(
+        {"model_id": model, "probe_sources": [getsource(f) for f in functions]}
+    )
 
 
 @dataclass(frozen=True)
@@ -126,9 +155,42 @@ class FaultEngine:
 
     def reset_evidence(self):
         return {
-            "observation_queue_empty": not self._observation_queue.items and not self._cache,
-            "fault_reset": not self.active and not self._hold and self.state.scheduled_start is None,
+            "observation_queue_empty": not self._observation_queue.items
+            and not self._cache,
+            "fault_reset": not self.active
+            and not self._hold
+            and self.state.scheduled_start is None,
         }
+
+    def compiled_plan(self, registry, command_queue_limit, driver_ids=()):
+        if self.spec is None:
+            return None
+        spec = self.spec
+        command = spec.family in {"F4", "F6"}
+        group = "actuators" if command else "signals"
+        resource = {
+            "kind": group,
+            "id": spec.target_id,
+            "type": registry[group][spec.target_id],
+        }
+        if spec.family == "F6":
+            resource["driver_ids"] = sorted(driver_ids)
+        limit = (
+            self._observation_queue.capacity
+            if spec.family == "F3"
+            else command_queue_limit
+            if spec.family == "F4"
+            else 0
+        )
+        return CompiledFaultPlan(
+            spec.fault_id,
+            spec.model_id,
+            f"{spec.model_id}.realization.v1",
+            _rule_hash(type(self), spec.family, spec.model_id),
+            freeze(resource),
+            limit,
+            RECOVERY_WINDOW_STEPS,
+        )
 
     def active_for(self, family, target=None):
         return (
@@ -379,7 +441,10 @@ class FaultEngine:
             if realized[self.spec.family]:
                 self._realized(k, f"observed_signals.{key}")
                 self.state.controller_exposure_count += int(called)
-        elif self.state.actual_end is not None and k <= self.state.actual_end + 12:
+        elif (
+            self.state.actual_end is not None
+            and k <= self.state.actual_end + RECOVERY_WINDOW_STEPS
+        ):
             if (
                 b.source_step == a.source_step == k
                 and b.deliver_step == k
@@ -400,12 +465,11 @@ class FaultEngine:
         applied_targets,
     ):
         # S_k is evidence about the *previous* command interval. Only bridge adjacent samples.
+        measured=actual_positions or {}
+        valid_sample=bool(self._hold) and set(measured)==set(self._hold) and all(
+            type(v) in (int,float) and isfinite(v) for v in measured.values())
         if self._previous_conflict:
-            measured = actual_positions or {}
-            if set(measured) != set(self._hold) or any(
-                type(v) not in (int, float) or not isfinite(v)
-                for v in measured.values()
-            ):
+            if not valid_sample:
                 self._conflict_start = self._last_hold_step = None
             else:
                 self._record_hold_sample(k, measured)
@@ -417,31 +481,43 @@ class FaultEngine:
         )
         if conflict and self.state.physical_hold_verdict == Verdict.NOT_APPLICABLE:
             self.state.physical_hold_verdict = Verdict.UNKNOWN
-        if conflict and not self._previous_conflict and actual_positions is not None:
-            if set(actual_positions) == set(self._hold):
-                self._record_hold_sample(k, actual_positions)
+        if conflict and not self._previous_conflict and valid_sample:
+            self._record_hold_sample(k, measured)
         if not conflict:
             self._conflict_start = None
         self._previous_conflict = conflict
+        valid_targets = (
+            bool(self._hold)
+            and isinstance(nominal_targets, Mapping)
+            and isinstance(applied_targets, Mapping)
+            and set(nominal_targets) == set(self._hold) == set(applied_targets)
+            and all(
+                type(v) in (int, float) and isfinite(v)
+                for targets in (nominal_targets, applied_targets)
+                for v in targets.values()
+            )
+        )
         if (
             self.active
             and receipt is not None
             and receipt.accepted
             and self.spec.fault_id in receipt.active_override_ids
-            and nominal_targets is not None
-            and applied_targets is not None
-            and set(nominal_targets) == set(self._hold) == set(applied_targets)
-            and any(nominal_targets[j] != v for j, v in self._hold.items())
-            and all(applied_targets[j] == v for j, v in self._hold.items())
+            and valid_targets
+            and any(abs(nominal_targets[j] - v) > 1e-6 for j, v in self._hold.items())
+            and all(abs(applied_targets[j] - v) <= 1e-6 for j, v in self._hold.items())
         ):
             self._realized(k, "actuation.targets_by_actuator")
         if (
             self.state.actual_end is not None
-            and k <= self.state.actual_end + 12
+            and k <= self.state.actual_end + RECOVERY_WINDOW_STEPS
             and receipt is not None
             and receipt.accepted
             and self.spec.fault_id not in receipt.active_override_ids
             and self.spec.target_id in receipt.targets_by_actuator
+            and valid_targets
+            and all(
+                abs(applied_targets[j] - v) <= 1e-6 for j, v in nominal_targets.items()
+            )
         ):
             self.state.restoration_status = "PATH_RESTORED"
 
@@ -523,7 +599,7 @@ class FaultEngine:
             )
             if (
                 s.actual_end is not None
-                and s.actual_end <= k <= s.actual_end + 12
+                and s.actual_end <= k <= s.actual_end + RECOVERY_WINDOW_STEPS
                 and key in frame.actuation.targets_by_actuator
             ):
                 s.restoration_status = "PATH_RESTORED"

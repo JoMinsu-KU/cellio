@@ -8,12 +8,21 @@ from cellio.environment import data_root, doctor, lock_context
 from cellio.io import CellIOError, digest, json_value, write_json
 
 
+class CLIParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise CellIOError("CFG_USAGE", f"{message}. See {self.prog} --help.")
+
+
 def parser():
-    p = argparse.ArgumentParser(
+    p = CLIParser(
         prog="cellio",
         description="Robotic workcell I/O regression tests",
-        epilog="Canonical H=7200, physics=120 Hz, scene seeds 1000–1019. Exit: 0 success, "
+        epilog="Canonical H=7200, physics=120 Hz, scene seeds 1000–1019. Default runs directory: "
+        "CELLIO_DATA_ROOT/artifacts/runs. Exit: 0 success, "
         "2 configuration, 3 environment, 4 infrastructure, 5 mismatch, 6 missing evidence, 130 cancelled.",
+    )
+    p.add_argument(
+        "--json", action="store_true", help="Write structured error details to stdout"
     )
     cmds = p.add_subparsers(dest="command", required=True)
     d = cmds.add_parser("doctor")
@@ -118,7 +127,12 @@ def single(a):
         raise CellIOError("RUN_ATTEMPT_FAILED", f"Inspect {directory}", exit_code=4)
     outcome = json.loads((directory / "result.json").read_text(encoding="utf-8"))
     code = 130 if result["completion_status"] == "CANCELLED" else 0
-    if a.assert_expectations and outcome["case_verdict"] in ("FAIL", "UNKNOWN"):
+    if (
+        code == 0
+        and a.assert_expectations
+        and cfg.get("expected")
+        and outcome["case_verdict"] in ("FAIL", "UNKNOWN")
+    ):
         code = 5
     return {
         **result,
@@ -156,10 +170,11 @@ def perform(a):
     if a.command == "run":
         return single(a)
     if a.command in ("campaign", "benchmark"):
-        from cellio.runtime.campaign import create_plan
+        from cellio.runtime.campaign import create_plan, suite_design
         from cellio.runtime.supervisor import execute_plan
 
         if a.command == "benchmark" or a.action == "plan":
+            suite_design(a.suite)
             backend = "mock_lockstep" if a.suite == "oracle-v1" else "isaac62_lockstep"
             _, identity = lock_context(
                 backend,
@@ -208,9 +223,47 @@ def perform(a):
     )
 
 
+def _diagnostic(code, message, path, json_mode):
+    prefix = code.partition("_")[0]
+    module = {
+        "CFG": "config",
+        "ENV": "environment",
+        "ASSET": "assets",
+        "RUN": "runtime",
+        "SIM": "simulation",
+        "TRACE": "artifacts",
+        "ORACLE": "oracle",
+    }.get(prefix, "cli")
+    suggestion = {
+        "config": "Check the named option or field against cellio --help and the configuration schema.",
+        "environment": "Run cellio doctor for the current Conda environment.",
+        "assets": "Check the asset lock with cellio assets verify --offline.",
+        "runtime": "Inspect the attempt ledger and corresponding worker log.",
+        "artifacts": "Inspect the artifact manifest, trace and errors.jsonl.",
+    }.get(module, "Inspect the indicated input and diagnostic files.")
+    detail = {
+        "code": code,
+        "severity": "ERROR",
+        "module": module,
+        "path": path,
+        "message": message,
+        "suggestion": suggestion,
+        "run_id": None,
+    }
+    if json_mode:
+        print(json.dumps(detail, ensure_ascii=True))
+        location = f" [{path}]" if path else ""
+        print(f"{code}{location}: {message}", file=sys.stderr)
+    else:
+        print(json.dumps(detail, ensure_ascii=True), file=sys.stderr)
+
+
 def main(argv=None):
-    args = parser().parse_args(argv)
+    argv = list(sys.argv[1:] if argv is None else argv)
+    json_mode = "--json" in argv
     try:
+        # A global output flag is accepted before or after nested subcommands.
+        args = parser().parse_args([a for a in argv if a != "--json"])
         result, status = perform(args)
         print(
             json.dumps(
@@ -223,16 +276,13 @@ def main(argv=None):
         )
         return status
     except CellIOError as exc:
-        print(
-            json.dumps(
-                {"code": exc.code, "path": exc.path, "message": str(exc)},
-                ensure_ascii=True,
-            ),
-            file=sys.stderr,
-        )
+        _diagnostic(exc.code, str(exc), exc.path, json_mode)
         return exc.exit_code
     except OSError as exc:
-        print(json.dumps({"code": "IO_ERROR", "message": str(exc)}), file=sys.stderr)
+        _diagnostic("IO_ERROR", str(exc), exc.filename, json_mode)
+        return 4
+    except (KeyError, ValueError, TypeError) as exc:
+        _diagnostic("RUN_INVALID_DATA", str(exc), None, json_mode)
         return 4
     except KeyboardInterrupt:
         return 130

@@ -29,3 +29,5 @@ For hard reload, the worker reuses the plant and creates fresh signal, controlle
 Exercise the common contract first with an 8-step mock attempt and offline replay. Repeat with a second generation, stale callbacks, a failed advance and a write failure. Run the same lifecycle, receipt and replay checks with the physical adapter, then execute the scene's own commissioning checks. The canonical research campaigns retain their predefined cells, seeds and thresholds.
 
 The executable extension example is in [the registry and replay integration test](../tests/integration/test_scene_plugin.py). The canonical descriptor is in [reference.py](../src/cellio/plugins/reference.py).
+
+To trigger a fault from a controller event, include `events` in the entity registry. Map each event ID to its scalar payload fields. Each declaration supplies a type from `string`, `integer`, `number` or `boolean` and can restrict the allowed values with `enum`. Register the scene's stage names in the `stage_id` field. The compiler rejects unknown events, payload names and stage IDs before launch.

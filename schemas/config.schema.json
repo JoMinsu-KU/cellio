@@ -30,13 +30,38 @@
           "const": 1
         },
         "variant_id": {
-          "const": "canonical"
+          "type": "string",
+          "enum": [
+            "canonical",
+            "conveyor_speed_plus_10pct"
+          ]
         }
       },
       "required": [
         "cell_id"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "variant_id": {
+                "const": "conveyor_speed_plus_10pct"
+              }
+            },
+            "required": [
+              "variant_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cell_id": {
+                "const": "cell_a"
+              }
+            }
+          }
+        }
+      ]
     },
     "clock": {
       "type": "object",

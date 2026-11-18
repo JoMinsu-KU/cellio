@@ -40,6 +40,12 @@ def test_separate_suites():
     assert len(finite_rows("overhead-v1", PROVENANCE)) == 180
     assert len(finite_rows("boundaries-v1", PROVENANCE)) == 16
     assert len(finite_rows("clean-install", PROVENANCE)) == 10
+    reuse = finite_rows("reuse-v1", PROVENANCE)
+    assert len(reuse) == 40
+    assert {r["initial_state_id"] for r in reuse} == set(range(2000, 2005))
+    assert {r["config"]["scene"]["variant_id"] for r in reuse} == {
+        "conveyor_speed_plus_10pct"
+    }
     assert soak_row(PROVENANCE, 0)["run_id"] != soak_row(PROVENANCE, 10)["run_id"]
     assert soak_row(PROVENANCE, 330)["repeat_index"] == 1
 
@@ -47,3 +53,15 @@ def test_separate_suites():
 def test_lock_required(tmp_path):
     with pytest.raises(CellIOError):
         create_plan("canonical-v1", {}, tmp_path)
+
+
+def test_pinned_oracle_and_soak_design(tmp_path):
+    for suite in ("oracle-v1", "soak-v1"):
+        plan = create_plan(suite, PROVENANCE, tmp_path / suite)
+        assert read_plan(tmp_path / suite / "campaign.plan.json") == plan
+        design = plan["suite_design"]
+        if suite == "oracle-v1":
+            assert len(plan["runs"]) == design["planned_runs"] == 144
+        else:
+            assert plan["generator"] == design["generator"]
+            assert plan["runs"] == []

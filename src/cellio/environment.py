@@ -1,6 +1,7 @@
 """Collect inspectable environment and source identities without importing Kit."""
 
 import hashlib
+from datetime import UTC, datetime
 from importlib import metadata
 import json
 import os
@@ -109,6 +110,7 @@ def probe_static(profile="isaac62"):
 
 def doctor(profile, output, level="smoke"):
     report = probe_static(profile)
+    report["recorded_at_utc"] = datetime.now(UTC).isoformat()
     report["level"] = level
     if profile == "isaac62" and level in ("import", "smoke") and not report["problems"]:
         with TemporaryDirectory() as directory:
@@ -182,7 +184,21 @@ def lock_context(profile, *, measured=False):
                 "Repeat doctor for the current device and environment",
                 exit_code=3,
             )
-        env["kit"] = status["kit"]
+        # Time and individual smoke sample readbacks are evidence in doctor.json.
+        # The environment identity is reusable by a clean installation on this host.
+        kit = status["kit"]
+        env["kit"] = {
+            k: kit[k]
+            for k in (
+                "kit_version",
+                "extensions",
+                "warp_runtime_version",
+                "physics_device",
+                "solver",
+                "tool_frames",
+            )
+            if k in kit
+        }
         from cellio.adapters.isaac62.assets import verify_assets
 
         assets = verify_assets(data_root() / "assets")
@@ -217,6 +233,31 @@ def lock_context(profile, *, measured=False):
         "protocol_hash": digest(protocol),
         "requirements_hash": hashlib.sha256(req.encode()).hexdigest(),
     }
+    if measured and profile == "isaac62_lockstep":
+        expected = {k: v for k, v in provenance.items() if k != "protocol_hash"}
+        robot = folder / "robot_profile.lock.json"
+        if (
+            protocol.get("candidate") != expected
+            or not robot.is_file()
+            or file_hash(robot) != protocol.get("robot_profile_sha256")
+        ):
+            raise CellIOError(
+                "ENV_PROTOCOL_CHANGED",
+                "Source, environment, assets, requirements, or robot calibration differ from the commissioned candidate",
+                exit_code=3,
+            )
+        from cellio.runtime.campaign import FINITE, suite_design
+
+        designs = {
+            s: digest(suite_design(s))
+            for s in sorted(FINITE | {"oracle-v1", "soak-v1"})
+        }
+        if protocol.get("suite_design_hashes") != designs:
+            raise CellIOError(
+                "ENV_PROTOCOL_CHANGED",
+                "Suite design differs from the commissioned candidate",
+                exit_code=3,
+            )
     return dict(
         environment=env, assets=assets, protocol=protocol, requirements_lock=req
     ), provenance

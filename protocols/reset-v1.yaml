@@ -1,0 +1,13 @@
+schema_version: cellio.suite/1.0
+suite_id: reset-v1
+mode: finite
+planned_runs: 144
+cells: [cell_a, cell_b]
+arms: [f1_high, f2, f3, f4, f5, f6]
+state: 1000
+slots: [control, predecessor, post_reset]
+conditions:
+  a: {kind: full_h, predecessor_arm: healthy}
+  b: {kind: fault_start_offset, steps: 8}
+  c: {kind: fault_end_offset, steps: 12}
+  d: {kind: fault_start_offset, steps: 4}

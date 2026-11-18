@@ -1249,6 +1249,8 @@ home q는 이름 순서로 [0,-0.785398163,0,-2.356194490,0,1.570796327,0.785398
 
 초기 gripper 설정: finger target slew=0.040m/s, force cap=20N/독립 finger, linear stiffness=4000N/m, damping=80N·s/m, pad static/dynamic friction=1.0/.8. 실제 USD 단위와 mimic 동작을 readback하고 기록한다.
 
+Windows 프로파일 시운전에서 20 N 조건은 두 셀 모두 파지 안정화 시간 초과를 기록했다. 이후 독립 finger 힘 상한을 4 N으로 낮춰 시험했다. 각 설정의 결과와 변경 이력은 [ADR 002](docs/adr/002-gripper-commissioning.md)에 보존한다. 확증 실험에는 시운전을 마친 후보의 물리 설정을 동결해 사용한다.
+
 PartContact를 Part_000, Table, Belt, Source/Base, Destination/Base, Fixture/Base, FixedJaw, MovingJaw의 실제 collider에 physics-purpose로 bind한다. pad material은 실제 finger pad collider에만 bind한다. friction/restitution combine mode는 모두 average, compliant contact는 OFF다. vendor descendant binding에 덮이지 않는 최종 composed material과 명시 질량을 readback해 잠근다. cube·belt·base·jaw·finger pad의 contactOffset=.001m, restOffset=0을 시작값으로 고정한다. 기타 arm collider의 vendor 설정은 유지한다. [S18]
 
 ### 13.2 허용하는 물리 조작
@@ -2437,6 +2439,8 @@ soak는 두 최소 조건을 모두 만족할 때 종료한다. 첫10개 warmup 
 유한 suite의 plan_mode는finite이며 전체 run 목록을 먼저 동결한다. soak만 plan_mode=soak_generator로 사전 고정한 생성식과 종료 규칙을 사용한다. warmup은A/B healthy를5회씩 번갈아 실행한다. 이후0-based n에 대해 cell=n mod2, arm=floor(n/2) mod8, initial_state=1000+(floor(n/16) mod20), repeat=floor(n/320)으로 선택한다. 각 run 행을 시작 전에 append·hash하고 generator와 stop rule의 원래 hash를 보존한다. 결과에 따라 arm/seed를 바꾸지 않는다. stop rule은 warmup 제외 completed≥200 AND elapsed≥7200s, 보호 한도86400s이며 인프라 오류가 나면 해당 soak를 실패로 종결한다. N_plan은 실제 생성해 실행 예정으로 기록한 행 수이고, 종료 후 가상의 미실행 행을 분모에 추가하지 않는다. 실행 결과와 무관하게 정한 이 종료 규칙을 보고서에 표시한다. 24시간 보호 한도에서 조건 미달이면 incomplete다. 반복 순환 때문에 같은 state를 많이 실행한 수를 신규 일반화 표본으로 주장하지 않는다.
 
 reuse variant는 core 수정 없이 conveyor속도+10% 또는 fixture 위치X+10mm 중 **하나를 사전에 선택해** 해당 geometry/waypoint/requirement를 일관되게 수정한다. 둘 중 결과가 좋은 것만 사후 채택하지 않는다. 기본 R3에는 두 canonical cell이 필수이며 reuse-v1은 강화 자료다.
+
+워크스테이션 구현은 첫 reuse 실행 전에 Cell A의 conveyor 목표 속도를 0.060 m/s에서 0.066 m/s로 높이는 조건을 선택했다. 같은 픽업 위치에 부품이 먼저 도착하므로 기존 컨트롤러의 위치 감지와 정지 확인을 그대로 시험한다. 변형 이름은 `conveyor_speed_plus_10pct`이며, 8개 arm과 초기 상태 2000–2004의 40회를 `protocols/reuse-v1.yaml`에 기록한다.
 
 ### 22.8 요구사항 추적표
 

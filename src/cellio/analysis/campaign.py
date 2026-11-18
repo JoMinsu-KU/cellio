@@ -5,9 +5,8 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from cellio.artifacts import verify_artifact
-from cellio.io import CellIOError, digest
-from cellio.runtime.campaign import read_plan
+from cellio.io import CellIOError, digest, file_hash
+from cellio.runtime.campaign import read_plan, soak_row
 
 from .measurements import Measurements
 from .replay import read, read_attempt
@@ -38,7 +37,7 @@ class Trial:
     @property
     def outcome(self):
         if self.status == "COMPLETED" and self.eval:
-            return self.eval["task_outcome"]
+            return self.eval["task_outcome"] if self.verified_decision else "UNKNOWN"
         if self.status == "NOT_STARTED":
             return "NOT_STARTED"
         if self.status in ("RUNNING", "CANCELLED", "PARTIAL"):
@@ -46,10 +45,18 @@ class Trial:
         return "ERROR"
 
     @property
+    def verified_decision(self):
+        return self.error is None and (
+            self.eval.get("online_offline_equal") is True
+            or self.row.get("benchmark_mode") == "B0"
+            and self.eval.get("online_offline_equal") is None
+        )
+
+    @property
     def evaluable(self):
         return (
             self.status == "COMPLETED"
-            and self.eval.get("online_offline_equal") is not False
+            and self.verified_decision
             and self.eval.get("task_outcome") not in ("UNKNOWN", None)
             and self.eval.get("compliance_verdict") in ("PASS", "FAIL")
         )
@@ -104,110 +111,248 @@ def safe_child(parent, *names):
     return p
 
 
+TERMINAL = {"COMPLETED", "CANCELLED", "INFRA_ERROR", "SKIPPED_PRECONDITION"}
+LIFECYCLE = (
+    "PLANNED",
+    "PREFLIGHT",
+    "BOOTING",
+    "LOADING",
+    "WARMUP",
+    "READY",
+    "RUNNING",
+    "FINALIZING",
+    "CLOSED",
+    "IDLE",
+    "EXITED",
+)
+
+
+def attempt_histories(entries, planned):
+    histories = defaultdict(list)
+    owners = {}
+    for e in entries:
+        run = e["run_id"]
+        ident = e["attempt_id"]
+        index = e["attempt_index"]
+        if run not in planned:
+            raise CellIOError("RUN_LEDGER_EXTRA", run)
+        if (
+            type(index) is not int
+            or index < 0
+            or not isinstance(ident, str)
+            or not ident
+        ):
+            raise CellIOError("RUN_LEDGER_CONFLICT", "Invalid attempt identity/index")
+        if owners.setdefault(ident, (run, index)) != (run, index):
+            raise CellIOError("RUN_LEDGER_CONFLICT", "Reused attempt identity")
+        history = histories[run]
+        if index == len(history):
+            if e["state"] != "PLANNED":
+                raise CellIOError(
+                    "RUN_LEDGER_CONFLICT", "Attempt must begin at PLANNED"
+                )
+            if index and history[-1][-1]["state"] not in TERMINAL:
+                raise CellIOError(
+                    "RUN_LEDGER_CONFLICT", "Retry started before its parent ended"
+                )
+            history.append([])
+        if index != len(history) - 1:
+            raise CellIOError(
+                "RUN_LEDGER_CONFLICT", "Attempt index gap or out-of-order transition"
+            )
+        records = history[index]
+        parent = history[index - 1][0]["attempt_id"] if index else None
+        if (
+            e.get("parent_attempt_id") != parent
+            or (index and not e.get("retry_reason"))
+            or (
+                records
+                and (
+                    records[0]["attempt_id"] != ident
+                    or records[0].get("retry_reason") != e.get("retry_reason")
+                )
+            )
+        ):
+            raise CellIOError(
+                "RUN_LEDGER_CONFLICT", "Inconsistent attempt parent, ID or retry reason"
+            )
+        state = e["state"]
+        if state not in TERMINAL and state not in LIFECYCLE:
+            raise CellIOError(
+                "RUN_LEDGER_CONFLICT", "Unknown ledger state " + str(state)
+            )
+        if records:
+            last = records[-1]["state"]
+            if last in TERMINAL:
+                raise CellIOError(
+                    "RUN_LEDGER_CONFLICT", "Transition after terminal state"
+                )
+            # The supervisor logs process launch (BOOTING) before sampling episode
+            # heartbeats. The episode may still be in PLANNED or PREFLIGHT then.
+            process_launch = (
+                len(records) == 2 and last == "BOOTING" and "pid" in records[-1]
+            )
+            if (
+                state not in TERMINAL
+                and not process_launch
+                and LIFECYCLE.index(state) < LIFECYCLE.index(last)
+            ):
+                raise CellIOError(
+                    "RUN_LEDGER_CONFLICT", "Episode lifecycle moved backwards"
+                )
+        records.append(e)
+    return histories
+
+
+def verify_plan_inputs(path, row, provenance):
+    if digest(read(path / "config.resolved.json")) != row["config_hash"]:
+        raise CellIOError(
+            "RUN_PLAN_HASH", "artifact configuration differs from frozen row"
+        )
+    if read(path / "initial_state.json") != row["initial_state"]:
+        raise CellIOError(
+            "RUN_PLAN_HASH", "artifact initial state differs from frozen row"
+        )
+    for key, name in (
+        ("environment_hash", "environment.lock.json"),
+        ("assets_hash", "assets.lock.json"),
+        ("protocol_hash", "protocol.lock.json"),
+    ):
+        if digest(read(path / name)) != provenance[key]:
+            raise CellIOError(
+                "RUN_PLAN_HASH", name + " differs from campaign provenance"
+            )
+    if (
+        "requirements_hash" in provenance
+        and file_hash(path / "requirements.lock") != provenance["requirements_hash"]
+    ):
+        raise CellIOError(
+            "RUN_PLAN_HASH", "requirements.lock differs from campaign provenance"
+        )
+
+
+def read_trial(directory, row, records, provenance):
+    trial = Trial(row)
+    if not records:
+        return trial
+    ident = records[0]["attempt_id"]
+    path = safe_child(directory, row["run_id"], ident)
+    trial.path, trial.attempt_id = path, ident
+    trial.started = any(s["state"] == "RUNNING" for s in records)
+    terminal = records[-1]
+    ledger_status = terminal["state"]
+    trial.status = ledger_status
+    if not (path / "COMPLETE").exists():
+        if ledger_status in ("COMPLETED", "CANCELLED"):
+            trial.status, trial.error = (
+                "INTEGRITY_ERROR",
+                "final ledger state without COMPLETE",
+            )
+        elif ledger_status == "INFRA_ERROR":
+            trial.error = (
+                terminal.get("error")
+                or terminal.get("reason")
+                or "infrastructure error without sealed artifact"
+            )
+        elif ledger_status not in ("RUNNING", "SKIPPED_PRECONDITION"):
+            trial.status = "PARTIAL"
+        return trial
+    trial.measurement = Measurements()
+    try:
+        trial.eval = read_attempt(path, on_frame=trial.measurement.observe)
+        if trial.eval["run_id"] != row["run_id"] or trial.eval["attempt_id"] != ident:
+            raise CellIOError(
+                "RUN_LEDGER_CONFLICT", "artifact identity differs from plan/ledger"
+            )
+        verify_plan_inputs(path, row, provenance)
+        artifact_status = trial.eval["completion_status"]
+        if ledger_status == "INFRA_ERROR":
+            trial.error = (
+                terminal.get("error")
+                or terminal.get("reason")
+                or "supervisor recorded infrastructure error"
+            )
+        elif ledger_status not in TERMINAL:
+            trial.status, trial.error = (
+                "PARTIAL",
+                "awaiting terminal supervisor transition",
+            )
+        elif ledger_status != artifact_status:
+            trial.status, trial.error = (
+                "INTEGRITY_ERROR",
+                f"ledger {ledger_status} differs from artifact {artifact_status}",
+            )
+        lifecycle = read(path / "result.json").get("lifecycle", [])
+        trial.started |= any(state.get("state") == "RUNNING" for state in lifecycle)
+        trial.measurement.finish(row["config"]["episode"]["horizon_steps"], trial.eval)
+        trial.fault = trial.measurement.fault.copy()
+        stored = read(path / "faults.json")
+        if isinstance(stored, dict):
+            stored = stored.get("faults", [stored] if "family" in stored else [])
+        if stored:
+            trial.fault.update(stored[0])
+        trial.performance = read(path / "performance.json")
+        trial.performance["trace_bytes"] = (path / "trace.jsonl.gz").stat().st_size
+        mismatch = trial.eval["online_offline_equal"] is False
+        missing = (
+            trial.eval["online_offline_equal"] is None
+            and row.get("benchmark_mode") != "B0"
+        )
+        if mismatch or (missing and trial.status == "COMPLETED"):
+            issue = "ONLINE_OFFLINE_MISMATCH" if mismatch else "ONLINE_RESULTS_MISSING"
+            trial.error = (trial.error + "; " if trial.error else "") + issue
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        trial.status, trial.error, trial.eval, trial.fault = (
+            "INTEGRITY_ERROR",
+            str(exc),
+            {},
+            {},
+        )
+    return trial
+
+
 def load_campaign(directory):
     directory = Path(directory)
     plan = read_plan(directory / "campaign.plan.json")
     rows = list(plan["runs"])
     if plan.get("plan_mode") == "soak_generator":
-        for value in lines(directory / "generator.rows.jsonl"):
+        for i, value in enumerate(lines(directory / "generator.rows.jsonl")):
             appended = {k: v for k, v in value.items() if k != "row_hash"}
-            if value.get("row_hash") != digest(appended):
-                raise CellIOError("RUN_PLAN_HASH", "soak row hash mismatch")
+            expected = soak_row(plan["provenance"], i, plan.get("suite_design"))
+            if value.get("row_hash") != digest(appended) or appended != expected:
+                raise CellIOError(
+                    "RUN_PLAN_HASH", f"Soak row {i} differs from the frozen generator"
+                )
             rows.append(appended)
     planned = {row["run_id"] for row in rows}
     if len(planned) != len(rows):
         raise CellIOError("RUN_PLAN_DUPLICATE", "duplicate planned run")
-    entries = defaultdict(lambda: defaultdict(list))
-    extras = []
-    for entry in lines(directory / "ledger.jsonl"):
-        if entry["run_id"] not in planned:
-            raise CellIOError("RUN_LEDGER_EXTRA", entry["run_id"])
-        entries[entry["run_id"]][entry["attempt_index"]].append(entry)
-    trials = []
+    histories = attempt_histories(lines(directory / "ledger.jsonl"), planned)
+    trials, retries = [], []
     for row in rows:
-        trial = Trial(row)
-        trials.append(trial)
-        indexes = entries.get(row["run_id"], {})
-        for i, states in indexes.items():
-            ids = {s["attempt_id"] for s in states}
-            if len(ids) != 1:
-                raise CellIOError("RUN_LEDGER_CONFLICT", row["run_id"])
-            ident = states[0]["attempt_id"]
-            path = safe_child(directory, row["run_id"], ident)
-            if i != 0:
-                extra = {
+        records = histories[row["run_id"]]
+        trials.append(
+            read_trial(
+                directory, row, records[0] if records else (), plan["provenance"]
+            )
+        )
+        for index, retry in enumerate(records[1:], start=1):
+            trial = read_trial(directory, row, retry, plan["provenance"])
+            retries.append(
+                {
                     "run_id": row["run_id"],
-                    "attempt_id": ident,
-                    "attempt_index": i,
-                    "states": [s["state"] for s in states],
+                    "attempt_id": trial.attempt_id,
+                    "attempt_index": index,
+                    "parent_attempt_id": retry[0]["parent_attempt_id"],
+                    "retry_reason": retry[0]["retry_reason"],
+                    "states": [s["state"] for s in retry],
+                    "status": trial.status,
+                    "integrity": trial.eval.get("source_digest"),
+                    "artifact_status": trial.eval.get("completion_status"),
+                    "error": trial.error,
                 }
-                try:
-                    extra["integrity"] = (
-                        verify_artifact(path) if (path / "COMPLETE").exists() else None
-                    )
-                except ValueError as exc:
-                    extra["integrity_error"] = str(exc)
-                extras.append(extra)
-                continue
-            trial.path, trial.attempt_id = path, ident
-            trial.started = any(s["state"] == "RUNNING" for s in states)
-            trial.status = states[-1]["state"]
-            if not (path / "COMPLETE").exists():
-                if trial.status in ("COMPLETED", "INFRA_ERROR", "CANCELLED"):
-                    trial.status, trial.error = (
-                        "INTEGRITY_ERROR",
-                        "final ledger state without COMPLETE",
-                    )
-                elif trial.status not in ("RUNNING", "FAILED", "CRASHED", "HUNG"):
-                    trial.status = "PARTIAL"
-                continue
-            trial.measurement = Measurements()
-            try:
-                trial.eval = read_attempt(path, on_frame=trial.measurement.observe)
-                if (
-                    trial.eval["run_id"] != row["run_id"]
-                    or trial.eval["attempt_id"] != ident
-                ):
-                    raise CellIOError(
-                        "RUN_LEDGER_CONFLICT",
-                        "artifact identity differs from plan/ledger",
-                    )
-                if digest(read(path / "config.resolved.json")) != row["config_hash"]:
-                    raise CellIOError(
-                        "RUN_PLAN_HASH",
-                        "artifact configuration differs from frozen row",
-                    )
-                trial.status = trial.eval["completion_status"]
-                lifecycle = read(path / "result.json").get("lifecycle", [])
-                trial.started |= any(
-                    state.get("state") == "RUNNING" for state in lifecycle
-                )
-                trial.measurement.finish(
-                    row["config"]["episode"]["horizon_steps"], trial.eval
-                )
-                trial.fault = trial.measurement.fault.copy()
-                stored = read(path / "faults.json")
-                if isinstance(stored, dict):
-                    stored = stored.get(
-                        "faults", [stored] if "family" in stored else []
-                    )
-                if stored:
-                    # Includes final-horizon UNOBSERVED/CENSORED closure.
-                    trial.fault.update(stored[0])
-                trial.performance = read(path / "performance.json")
-                trial.performance["trace_bytes"] = (
-                    (path / "trace.jsonl.gz").stat().st_size
-                )
-                if trial.eval["online_offline_equal"] is False:
-                    trial.error = "ONLINE_OFFLINE_MISMATCH"
-            except (OSError, ValueError, KeyError, TypeError) as exc:
-                trial.status, trial.error, trial.eval, trial.fault = (
-                    "INTEGRITY_ERROR",
-                    str(exc),
-                    {},
-                    {},
-                )
-    return plan, trials, extras
+            )
+    return plan, trials, retries
 
 
 RATES = {
@@ -246,7 +391,10 @@ def group_metrics(trials, bootstrap=False):
             )
     outcome = Counter(t.outcome for t in trials)
     compliance = Counter(
-        t.eval.get("compliance_verdict", "UNAVAILABLE") for t in trials
+        t.eval.get("compliance_verdict", "UNAVAILABLE")
+        if t.status == "COMPLETED" and t.verified_decision
+        else "UNAVAILABLE"
+        for t in trials
     )
     return {
         "counts": dict(counts),

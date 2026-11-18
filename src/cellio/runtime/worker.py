@@ -6,11 +6,12 @@ import json
 import os
 import sys
 import time
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Event, Lock, Thread
 
-from cellio.io import canonical, file_hash, write_json
+from cellio.io import CellIOError, canonical, file_hash, write_json
 
 from .episode import make_plant, run_episode
 
@@ -64,6 +65,16 @@ class ResourceSampler:
         self.stop = Event()
         self.nv = None
         self.handle = None
+        self.dxgi = None
+        self.device_memory = None
+        self.epoch = 0
+        if os.name == "nt":
+            from .wddm import ProcessVideoMemory
+
+            try:
+                self.dxgi = ProcessVideoMemory()
+            except (OSError, AttributeError):
+                pass
         try:
             import pynvml as nv
 
@@ -74,6 +85,13 @@ class ResourceSampler:
         except Exception:
             # WDDM and GPU-free CI may not expose a per-process memory accounting API.
             self.nv, self.handle = None, None
+        if self.handle is None and os.name == "nt":
+            from .wddm import DeviceMemory
+
+            try:
+                self.device_memory = DeviceMemory()
+            except (OSError, AttributeError):
+                pass
         self.reset()
         self.thread = Thread(
             target=self._sample_loop, name="cellio-resource-sampler", daemon=True
@@ -82,8 +100,11 @@ class ResourceSampler:
 
     def reset(self):
         with self.lock:
+            self.epoch += 1
             self.peak_rss = self.peak_vram = self.latest_rss = self.latest_vram = None
             self.latest_device = None
+            self.peak_device = None
+            self.vram_source = "process_measurement_unavailable"
             self.samples = 0
 
     def _sample_loop(self):
@@ -91,8 +112,17 @@ class ResourceSampler:
             self._sample()
 
     def _sample(self):
+        with self.lock:
+            epoch = self.epoch
         rss = _rss_bytes()
         vram = device = None
+        if self.device_memory is not None:
+            device = self.device_memory.read()
+        method = None
+        if self.dxgi is not None:
+            vram = self.dxgi.read()
+            if vram is not None:
+                method = "dxgi_process_local"
         if self.handle is not None:
             try:
                 device = self.nv.nvmlDeviceGetMemoryInfo(self.handle).used
@@ -104,16 +134,22 @@ class ResourceSampler:
                     and isinstance(p.usedGpuMemory, int)
                     and 0 <= p.usedGpuMemory <= device
                 ]
-                if own:
+                if own and vram is None:
                     vram = max(own)
+                    method = "nvml_process"
             except Exception:
                 pass
         with self.lock:
+            if self.epoch != epoch:
+                return
             self.latest_rss, self.latest_vram, self.latest_device = rss, vram, device
             if rss is not None:
                 self.peak_rss = max(self.peak_rss or 0, rss)
             if vram is not None:
                 self.peak_vram = max(self.peak_vram or 0, vram)
+                self.vram_source = method
+            if device is not None:
+                self.peak_device = max(self.peak_device or 0, device)
             self.samples += 1
 
     def read(self):
@@ -125,17 +161,24 @@ class ResourceSampler:
                 "end_rss_bytes": self.latest_rss,
                 "end_vram_bytes": self.latest_vram,
                 "end_gpu_device_used_bytes": self.latest_device,
+                "peak_gpu_device_used_bytes": self.peak_device,
+                "device_memory_measurement": "nvml_v1_used_including_reserved"
+                if self.latest_device is not None
+                else "device_measurement_unavailable",
                 "memory_samples": self.samples,
-                "vram_measurement": "nvml_process"
-                if self.peak_vram is not None
-                else "process_measurement_unavailable",
+                "vram_measurement": self.vram_source,
+                "vram_adapter": self.dxgi.name if self.dxgi is not None else None,
             }
 
     def close(self):
         self.stop.set()
-        self.thread.join(2)
+        self.thread.join()
+        if self.dxgi:
+            self.dxgi.close()
         if self.nv:
             self.nv.nvmlShutdown()
+        if self.device_memory:
+            self.device_memory.close()
 
 
 class Heartbeat:
@@ -286,8 +329,40 @@ def _append(path, row):
         os.fsync(stream.fileno())
 
 
-def execute_job(path):
+def execute_job(path, *, process_boundary=False):
+    from .campaign import exclusive
+
     spec = json.loads(path.read_text(encoding="utf-8-sig"))
+    lease_directory = spec.get("plant_lease_directory")
+    lease = nullcontext()
+    if lease_directory is not None:
+        directory = Path(lease_directory)
+        directory.mkdir(parents=True, exist_ok=True)
+        lease = exclusive(directory)
+    try:
+        # The OS owns the lock until normal exit or native Kit fast shutdown.
+        with lease:
+            if process_boundary:
+                from cellio.adapters.isaac62.application import worker_main
+
+                return worker_main(_execute_job, path, spec)
+            return _execute_job(path, spec)
+    except CellIOError as exc:
+        if exc.code != "RUN_PLAN_LOCKED":
+            raise
+        write_json(
+            Path(spec.get("result_path", path.with_suffix(".result.json"))),
+            {
+                "completion_status": "INFRA_ERROR",
+                "reason": "RUN_PLANT_LOCKED",
+                "message": "Another plant worker owns the simulator lease",
+                "episode_count": 0,
+            },
+        )
+        return 4
+
+
+def _execute_job(path, spec):
 
     def output(key, suffix):
         return Path(spec.get(key, path.with_suffix(suffix)))
@@ -425,7 +500,7 @@ def execute_job(path):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("job", type=Path)
-    return execute_job(parser.parse_args(argv).job)
+    return execute_job(parser.parse_args(argv).job, process_boundary=True)
 
 
 if __name__ == "__main__":

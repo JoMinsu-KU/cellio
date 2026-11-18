@@ -14,6 +14,7 @@ from cellio.core.models import (
 from cellio.scenes import get_scene
 from cellio.scenes.definition import ARM_NAMES, FINGER_NAMES, HOME
 from .assets import CATALOG_PATH, LOCK, file_sha256, motion_files, verify_assets
+from .application import release_application, start_application
 from .geometry import compose, rotate, world_aabb
 
 DT = 1 / 120
@@ -51,11 +52,17 @@ class IsaacPlant:
     def load(self, scene_config):
         scene_id = scene_config.get("scene_id", scene_config.get("id"))
         self.scene = get_scene(scene_id)
+        variant = scene_config.get("variant_id")
+        if variant in (None, "canonical"):
+            self.belt_run_speed = .060
+        elif self.scene.scene_id == "cell_a" and variant == "conveyor_speed_plus_10pct":
+            self.belt_run_speed = .066
+        else:
+            raise CellIOError("CFG_SCENE_VARIANT", str(variant))
         if self.app is not None:
             return
-        from isaacsim.simulation_app import SimulationApp
-        self.app = SimulationApp({"headless": self.headless, "multi_gpu": False,
-                                  "disable_viewport_updates": self.headless, "fast_shutdown": False})
+        self.app = start_application({"headless": self.headless, "multi_gpu": False,
+                                      "disable_viewport_updates": self.headless})
         import omni.kit.app
         import omni.timeline
         import omni.usd
@@ -181,12 +188,19 @@ class IsaacPlant:
                                   "composed_materials": self.builder.material_readbacks,
                                   "collider_id_by_path": self.builder.collider_ids,
                                   "hand_T_tcp": self.hand_T_tcp, "site_T_tcp": self.motion.site_T_tcp}
+        asset_id = str(self.robot_asset)
+        if self.asset_root is not None and Path(asset_id).is_absolute():
+            asset_id = "cache://" + Path(asset_id).resolve().relative_to(Path(self.asset_root).resolve()).as_posix()
         self.provenance = {"device": str(self.manager.get_device()), "solver": self.physics_scene.get_solver_type(),
                            "physics_hz": self.physics_scene.get_steps_per_second(),
                            "gravity": list(self.physics_scene.get_gravity()), "episode_clock_offset_s": self._offset,
-                           "robot_asset": str(self.robot_asset), "tool_site": self.motion.site,
+                           "robot_asset": asset_id, "tool_site": self.motion.site,
                            "motion_config_hashes": motion_hashes,
+                           "finger_drive_settings": self.builder.finger_drive_settings,
+                           "articulation_solver": self.builder.solver_settings,
                            "dof_names": self.names, "finger_drivers": list(self.builder.finger_drivers)}
+        if self.builder.belt is not None:
+            self.provenance["belt_run_speed_mps"] = self.belt_run_speed
 
     def _read_bodies(self):
         view = self.views["bodies"]
@@ -295,6 +309,7 @@ class IsaacPlant:
         elif intent.kind == CommandKind.HOLD:
             self._held_drivers[target] = self.driver_positions(target, truth)
             self._goals[target] = self.coordinate(target, truth)
+            self._slewed.update(self._held_drivers[target])
         else:
             self._held_drivers.pop(target, None)
             self._goals[target] = intent.value
@@ -357,7 +372,7 @@ class IsaacPlant:
             if not self._goals["actuator.process"]:
                 self.process_steps = 0
         if self.builder.belt is not None:
-            self.belt_speed = _slew(self.belt_speed, .06 if self._goals["actuator.belt"] else 0., DT)
+            self.belt_speed = _slew(self.belt_speed, self.belt_run_speed if self._goals["actuator.belt"] else 0., DT)
             self.builder.belt.GetSurfaceVelocityAttr().Set(self.builder.Gf.Vec3f(0., self.belt_speed, 0.))
             committed["actuator.belt"] = float(self.builder.belt.GetSurfaceVelocityAttr().Get()[1])
         committed["actuator.robot"] = _floats(self.robot.get_dof_position_targets(dof_indices=list(self.motion.arm_indices)))
@@ -392,5 +407,5 @@ class IsaacPlant:
             try:
                 self._release_stage()
             finally:
-                self.app.close()
+                release_application(self.app)
                 self.app = None

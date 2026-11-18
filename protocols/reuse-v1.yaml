@@ -1,0 +1,11 @@
+schema_version: cellio.suite/1.0
+suite_id: reuse-v1
+mode: finite
+planned_runs: 40
+cell: cell_a
+variant_id: conveyor_speed_plus_10pct
+conveyor_target_m_per_s: 0.066
+first_state: 2000
+last_state: 2004
+arms: [healthy, f1_low, f1_high, f2, f3, f4, f5, f6]
+state_block_shuffle_seed: 20261118

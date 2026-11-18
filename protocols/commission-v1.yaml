@@ -1,0 +1,8 @@
+schema_version: cellio.suite/1.0
+suite_id: commission-v1
+mode: finite
+planned_runs: 40
+cells: [cell_a, cell_b]
+consecutive_runs_per_cell: 20
+arm: healthy
+initial_state: {x_offset_m: 0.0, y_offset_m: 0.0, yaw_rad: 0.0, mass_kg: 0.05}

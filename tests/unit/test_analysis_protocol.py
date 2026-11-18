@@ -31,6 +31,11 @@ def test_verified_trace_to_report_evaluation_pair(tmp_path):
         k: digest(k)
         for k in ("code_hash", "environment_hash", "protocol_hash", "assets_hash")
     }
+    provenance.update(
+        environment_hash=digest({"backend": "mock"}),
+        assets_hash=digest({}),
+        protocol_hash=digest({"version": 1}),
+    )
     rows = []
     for repeat in (0, 1):
         candidate = make_row("pilot-v1", provenance, "cell_a", "healthy", 1000, repeat)
@@ -65,7 +70,7 @@ def test_verified_trace_to_report_evaluation_pair(tmp_path):
     )
     assert result["completion_status"] == "COMPLETED", result["errors"]
     with (source / "ledger.jsonl").open("w") as log:
-        for state in ("RUNNING", "COMPLETED"):
+        for state in ("PLANNED", "RUNNING", "COMPLETED"):
             print(
                 json.dumps(
                     {
@@ -94,3 +99,230 @@ def test_verified_trace_to_report_evaluation_pair(tmp_path):
     assert (dest / "report.html").is_file() and (
         dest / "tables" / "campaign_flow.csv"
     ).is_file()
+
+
+def test_ledger_supervisor_failure_after_valid_artifact_and_parent_link(tmp_path):
+    import pytest
+
+    from cellio.analysis.campaign import load_campaign
+    from cellio.io import CellIOError
+    from cellio.runtime.campaign import append_line
+
+    provenance = {
+        k: digest(k)
+        for k in ("code_hash", "assets_hash", "environment_hash", "protocol_hash")
+    }
+    provenance.update(
+        environment_hash=digest({"backend": "mock"}),
+        assets_hash=digest({}),
+        protocol_hash=digest({"version": 1}),
+    )
+    row = make_row("pilot-v1", provenance, "cell_a", "healthy", 1000, 0)
+    row["config"]["profile"] = "mock_lockstep"
+    row["config"]["episode"]["horizon_steps"] = 12
+    row["config_hash"] = digest(row["config"])
+    semantic = {k: v for k, v in row.items() if k not in ("run_id", "config")}
+    row["run_id"] = digest({"row": semantic, "provenance": provenance})[:24]
+    plan = {
+        "runs": [row],
+        "suite_id": "pilot-v1",
+        "schema_version": "cellio.plan/1.0",
+        "provenance": provenance,
+        "plan_mode": "finite",
+        "protocol_hash": provenance["protocol_hash"],
+    }
+    plan["plan_hash"] = digest(plan)
+    write_json(tmp_path / "campaign.plan.json", plan)
+    ledger = tmp_path / "ledger.jsonl"
+    for i, ident in enumerate(("initial", "retry")):
+        result = run_episode(
+            row["config"],
+            tmp_path / row["run_id"] / ident,
+            run_id=row["run_id"],
+            attempt_id=ident,
+            initial_state=row["initial_state"],
+            environment={"backend": "mock"},
+            assets={},
+            protocol={"version": 1},
+            requirements_lock="fixture\n",
+        )
+        assert result["completion_status"] == "COMPLETED"
+        for state in ("PLANNED", "RUNNING", "INFRA_ERROR" if i == 0 else "COMPLETED"):
+            e = {
+                "state": state,
+                "run_id": row["run_id"],
+                "attempt_id": ident,
+                "attempt_index": i,
+                "parent_attempt_id": "initial" if i else None,
+                "retry_reason": "requested" if i else None,
+            }
+            if state == "INFRA_ERROR":
+                e["error"] = "WORKER_EXIT_ERROR"
+            append_line(ledger, e)
+    _, (primary,), retries = load_campaign(tmp_path)
+    assert primary.eval["completion_status"] == "COMPLETED"
+    assert (
+        primary.status == "INFRA_ERROR"
+        and primary.error == "WORKER_EXIT_ERROR"
+        and not primary.evaluable
+    )
+    assert (
+        retries[0]["status"] == "COMPLETED"
+        and retries[0]["integrity"]
+        and retries[0]["parent_attempt_id"] == "initial"
+    )
+    (tmp_path / row["run_id"] / "retry" / "COMPLETE").unlink()
+    assert load_campaign(tmp_path)[2][0]["status"] == "INTEGRITY_ERROR"
+    third = {
+        "state": "PLANNED",
+        "run_id": row["run_id"],
+        "attempt_id": "bad",
+        "attempt_index": 2,
+        "parent_attempt_id": "initial",
+        "retry_reason": "requested",
+    }
+    append_line(ledger, third)
+    with pytest.raises(CellIOError, match="parent"):
+        load_campaign(tmp_path)
+
+
+def test_soak_generator_rejects_rehashed_row_from_wrong_position(tmp_path):
+    import pytest
+
+    from cellio.analysis.campaign import load_campaign
+    from cellio.io import CellIOError
+    from cellio.runtime.campaign import append_line, create_plan, soak_row
+
+    provenance = {
+        k: digest(k)
+        for k in ("code_hash", "assets_hash", "environment_hash", "protocol_hash")
+    }
+    plan = create_plan("soak-v1", provenance, tmp_path)
+    wrong = soak_row(provenance, 1, plan["suite_design"])
+    append_line(tmp_path / "generator.rows.jsonl", {**wrong, "row_hash": digest(wrong)})
+    with pytest.raises(CellIOError, match="frozen generator"):
+        load_campaign(tmp_path)
+
+
+def test_standalone_oracle_campaign_matches_recorded_results(tmp_path):
+    from cellio.acceptance import evaluate_gold
+    from cellio.runtime.campaign import create_plan
+
+    provenance = {
+        k: digest(k)
+        for k in ("code_hash", "assets_hash", "environment_hash", "protocol_hash")
+    }
+    create_plan("oracle-v1", provenance, tmp_path)
+    dest = tmp_path / "report"
+    assert report(tmp_path, dest)["status"] == "NOT_RUN"
+    gold = evaluate_gold()
+    write_json(tmp_path / "oracle.results.json", gold)
+    assert report(tmp_path, dest)["status"] == "PASS"
+    assert len((dest / "tables/oracle_witnesses.csv").read_text().splitlines()) == 145
+    changed = {**gold, "passed": False}
+    write_json(tmp_path / "oracle.results.json", changed)
+    assert report(tmp_path, dest)["status"] == "FAIL"
+
+
+def test_soak_evidence_binds_elapsed_time_single_process_and_final_shutdown(tmp_path):
+    from cellio.analysis.campaign import Trial
+    from cellio.analysis.suites import soak_evidence
+
+    trials = []
+    ledger = []
+    rows = []
+    worker = tmp_path / ".workers" / "process"
+    worker.mkdir(parents=True)
+    base = 1000000000
+    spacing = 36_000_000_000
+    for i in range(211):
+        ident = f"attempt{i}"
+        run = f"run{i}"
+        path = tmp_path / run / ident
+        path.mkdir(parents=True)
+        (path / "manifest.start.json").write_text(
+            json.dumps({"generation": i}), encoding="utf-8"
+        )
+        trial = Trial(
+            {
+                "run_id": run,
+                "chain_slot": "warmup" if i < 10 else "measurement",
+                "config": {"faults": [], "episode": {"horizon_steps": 7200}},
+            },
+            started=True,
+            status="COMPLETED",
+            attempt_id=ident,
+            path=path,
+            eval={"task_outcome": "FAILED", "compliance_verdict": "FAIL"},
+        )
+        trials.append(trial)
+        for offset, state in enumerate(("PLANNED", "BOOTING", "COMPLETED")):
+            ledger.append(
+                {
+                    "attempt_id": ident,
+                    "state": state,
+                    "monotonic_ns": base + i * spacing + offset,
+                    **({"pid": 42} if state == "BOOTING" else {}),
+                }
+            )
+        rows.append(
+            {
+                "run_id": run,
+                "attempt_id": ident,
+                "generation": i,
+                "completion_status": "COMPLETED",
+            }
+        )
+    (tmp_path / "ledger.jsonl").write_text(
+        "".join(json.dumps(e) + "\n" for e in ledger), encoding="utf-8"
+    )
+    (worker / "results.jsonl").write_text(
+        "".join(json.dumps(e) + "\n" for e in rows), encoding="utf-8"
+    )
+    write_json(worker / "process.json", {"pid": 42})
+    write_json(
+        worker / "result.json", {"completion_status": "COMPLETED", "episode_count": 211}
+    )
+    start = base + 10 * spacing - 1
+    end = ledger[-1]["monotonic_ns"] + 1
+    summary = {
+        "completed": 201,
+        "warmup": 10,
+        "worker_pid": 42,
+        "measurement_start_ns": start,
+        "measurement_end_ns": end,
+        "wall_seconds": (end - start) / 1e9,
+    }
+    write_json(tmp_path / "soak.result.json", summary)
+    heartbeat = {"pid": 42, "state": "EXITED", "monotonic_ns": end + 5}
+    write_json(worker / "heartbeat.json", heartbeat)
+    assert soak_evidence(tmp_path, trials)["status"] == "PASS"
+    write_json(worker / "heartbeat.json", {**heartbeat, "state": "CLOSED"})
+    assert soak_evidence(tmp_path, trials)["status"] == "FAIL"
+    write_json(worker / "heartbeat.json", heartbeat)
+    write_json(tmp_path / "soak.result.json", {**summary, "wall_seconds": 12345})
+    assert soak_evidence(tmp_path, trials)["status"] == "FAIL"
+
+
+def test_unverified_scoring_does_not_count_success_except_frozen_b0_offline_evaluation():
+    from cellio.analysis.campaign import Trial, group_metrics
+
+    row = {
+        "config": {"faults": [], "episode": {"horizon_steps": 12}},
+        "initial_state_id": 1,
+    }
+    evaluation = {
+        "task_outcome": "SUCCESS",
+        "compliance_verdict": "PASS",
+        "online_offline_equal": None,
+    }
+    trial = Trial(row, started=True, status="COMPLETED", eval=evaluation)
+    assert trial.outcome == "UNKNOWN" and not trial.evaluable
+    assert (
+        group_metrics([trial])["compliance_distribution"]["UNAVAILABLE"]["numerator"]
+        == 1
+    )
+    row["benchmark_mode"] = "B0"
+    assert trial.outcome == "SUCCESS" and trial.evaluable
+    evaluation["online_offline_equal"] = False
+    assert trial.outcome == "UNKNOWN" and not trial.evaluable

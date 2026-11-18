@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import tempfile
+import time
 from collections.abc import Mapping
 from enum import Enum
 from pathlib import Path
@@ -54,7 +55,20 @@ def atomic_write(path: Path, data: bytes):
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
-        os.replace(temp, path)
+        # A concurrent Windows reader can hold the old file without delete-sharing.
+        # Retry the atomic rename; readers keep seeing a complete old or new file.
+        deadline = time.monotonic() + 2
+        while True:
+            try:
+                os.replace(temp, path)
+                break
+            except PermissionError as exc:
+                if (
+                    getattr(exc, "winerror", None) not in (5, 32, 33)
+                    or time.monotonic() >= deadline
+                ):
+                    raise
+                time.sleep(0.02)
     finally:
         Path(temp).unlink(missing_ok=True)
 

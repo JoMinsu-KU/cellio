@@ -7,6 +7,9 @@ from cellio.core.models import CellIOError
 BASE = "/World/Cell"
 ROBOT = BASE + "/Robot"
 PART = BASE + "/Parts/Part_000"
+# Both 20 N baseline scenes showed persistent joint oscillation during a
+# two-pad grasp of the 50 g part. Freeze the final value after commissioning.
+FINGER_FORCE_LIMIT_N = 4.
 
 
 def _vec(Gf, xyz):
@@ -27,6 +30,8 @@ class StageBuilder:
         self.material_readbacks = {}
         self.materials = {}
         self.finger_drivers = []
+        self.finger_drive_settings = {}
+        self.solver_settings = {}
         self.belt = None
         self.clamp = None
         UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
@@ -137,6 +142,17 @@ class StageBuilder:
             if prim.IsInstance():
                 prim.SetInstanceable(False)
         descendants = tuple(U.PrimRange(robot))
+        roots = [p for p in descendants if p.HasAPI(P.ArticulationRootAPI)]
+        if len(roots) != 1:
+            raise CellIOError("ASSET_BINDING_MISMATCH", f"Expected one Franka articulation, found {len(roots)}")
+        settings = self.Physx.PhysxArticulationAPI.Apply(roots[0])
+        velocity_iterations = self.profile.get("articulation_velocity_iterations", 1)
+        if type(velocity_iterations) is not int or not 1 <= velocity_iterations <= 255:
+            raise CellIOError("ASSET_PHYSICS_PROFILE", "Invalid articulation velocity iteration count")
+        settings.CreateSolverVelocityIterationCountAttr(velocity_iterations)
+        self.solver_settings = {
+            "position_iterations": settings.GetSolverPositionIterationCountAttr().Get(),
+            "velocity_iterations": settings.GetSolverVelocityIterationCountAttr().Get()}
         name_map = {}
         for prim in descendants:
             name_map.setdefault(prim.GetName(), []).append(prim)
@@ -153,8 +169,15 @@ class StageBuilder:
                     drive.CreateTypeAttr("force")
                     drive.CreateStiffnessAttr(4000.)
                     drive.CreateDampingAttr(80.)
-                    drive.CreateMaxForceAttr(20.)
+                    cap = self.profile.get("finger_force_limit_n", FINGER_FORCE_LIMIT_N)
+                    if type(cap) not in (int, float) or not 0 < cap <= 20.:
+                        raise CellIOError("ASSET_PHYSICS_PROFILE", "Finger force cap must be within (0,20] N")
+                    drive.CreateMaxForceAttr(float(cap))
                     self.finger_drivers.append(joint_name)
+                    self.finger_drive_settings[joint_name] = {
+                        "force_cap_n": float(drive.GetMaxForceAttr().Get()),
+                        "stiffness_n_per_m": float(drive.GetStiffnessAttr().Get()),
+                        "damping_n_s_per_m": float(drive.GetDampingAttr().Get())}
         if not self.finger_drivers:
             raise CellIOError("ASSET_BINDING_MISMATCH", "No independently driven finger joint")
         for entity, name in (("hand", "panda_hand"), ("finger_left", "panda_leftfinger"),

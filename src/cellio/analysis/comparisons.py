@@ -158,7 +158,7 @@ def overhead(trials):
     output = {}
     for cell, rows in by_cell.items():
         available = [r for r in rows if r["overhead_percent"] is not None]
-        blocks = defaultdict(list)
+        blocks = {r["initial_state"]: [] for r in rows}
         for r in available:
             blocks[r["initial_state"]].append(r["overhead_percent"])
         output[cell] = {
@@ -170,7 +170,7 @@ def overhead(trials):
                 {"incomplete_pair": len(rows) - len(available)},
             ),
             "paired_mean_by_state_interval": block_bootstrap(
-                [(mean(v), 1) for v in blocks.values()]
+                [(mean(v), 1) if v else (0, 0) for v in blocks.values()]
             ),
         }
     return output
@@ -232,13 +232,14 @@ def compare(reference, candidate):
                 "task_success_difference": value,
             }
         )
+        block = cells[k[0]][k[1]]
         if value is not None:
-            cells[k[0]][k[1]].append(value)
+            block.append(value)
     return {
         "protocol_hash": plan_a["protocol_hash"],
         "pairs": pairs,
         "within_cell_paired_success_difference": {
-            c: block_bootstrap([(mean(v), 1) for v in blocks.values()])
+            c: block_bootstrap([(mean(v), 1) if v else (0, 0) for v in blocks.values()])
             for c, blocks in cells.items()
         },
     }

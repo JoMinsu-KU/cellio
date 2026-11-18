@@ -21,7 +21,7 @@ def export_schemas(directory):
         "record_hash": record_hash,
         "step": {"type": ["integer", "null"], "minimum": 0},
     }
-    trace = obj(fields, fields)
+    trace = obj(fields, [key for key in fields if key != "step"])
     trace["properties"].update(
         {
             k: {}
@@ -57,6 +57,7 @@ def export_schemas(directory):
             "if": {"properties": {"record_type": enum(["tick", "final_snapshot"])}},
             "then": {
                 "required": [
+                    "step",
                     "truth",
                     "raw_signals",
                     "observed_signals",
@@ -71,6 +72,7 @@ def export_schemas(directory):
                     "tick_kind",
                 ],
                 "properties": {
+                    "step": integer(0),
                     "truth": {"type": "object"},
                     "raw_signals": {"type": "object"},
                     "observed_signals": {"type": "object"},
@@ -81,7 +83,21 @@ def export_schemas(directory):
                     "events": {"type": "array"},
                 },
             },
-        }
+        },
+        {
+            "if": {"properties": {"record_type": {"const": "episode_start"}}},
+            "then": {"required": ["step"], "properties": {"step": {"enum": [0, None]}}},
+        },
+        {
+            "if": {"properties": {"record_type": {"const": "episode_end"}}},
+            "then": {
+                "required": ["end_step", "completion_status", "task_outcome", "errors"],
+                "properties": {
+                    "end_step": {"type": ["integer", "null"], "minimum": 0},
+                    "errors": {"type": "array"},
+                },
+            },
+        },
     ]
     required = {
         "run_id": {"type": "string"},

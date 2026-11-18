@@ -1,0 +1,8 @@
+schema_version: cellio.suite/1.0
+suite_id: soak-v1
+mode: soak_generator
+cells: [cell_a, cell_b]
+arms: [healthy, f1_low, f1_high, f2, f3, f4, f5, f6]
+first_state: 1000
+state_count: 20
+generator: {warmup: 10, minimum_completed: 200, minimum_seconds: 7200, limit_seconds: 86400}

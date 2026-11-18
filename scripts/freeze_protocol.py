@@ -5,7 +5,7 @@ from pathlib import Path
 from cellio.analysis.campaign import load_campaign
 from cellio.environment import data_root, lock_context
 from cellio.io import digest, file_hash, write_json
-from cellio.runtime.campaign import ARMS
+from cellio.runtime.campaign import ARMS, FINITE, suite_design
 
 
 def freeze(root, calibration):
@@ -19,7 +19,12 @@ def freeze(root, calibration):
         ("pilot-v1", 5 * len(ARMS)),
     ):
         plan, rows, _ = load_campaign(root / suite)
-        for key in ("environment_hash", "assets_hash", "code_hash"):
+        for key in (
+            "environment_hash",
+            "assets_hash",
+            "code_hash",
+            "requirements_hash",
+        ):
             if plan["provenance"][key] != identity[key]:
                 raise ValueError(f"{suite} {key} differs from the current candidate")
         for cell in ("cell_a", "cell_b"):
@@ -62,6 +67,11 @@ def freeze(root, calibration):
         "pilot_bytes_per_step": stored / nsteps,
         "pilot_attempt_ids": [t.attempt_id for t in pilots],
         "robot_profile_sha256": file_hash(calibration),
+        "candidate": {k: v for k, v in identity.items() if k != "protocol_hash"},
+        "suite_design_hashes": {
+            s: digest(suite_design(s))
+            for s in sorted(FINITE | {"oracle-v1", "soak-v1"})
+        },
         "evidence": evidence,
     }
     dst = data_root() / "locks" / "protocol.lock.json"

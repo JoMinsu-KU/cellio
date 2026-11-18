@@ -228,7 +228,10 @@ class AttemptWriter:
         self.finished = True
         self.thread.join(timeout=20)
         try:
-            atomic_write(self.path / "errors.jsonl", b"".join(canonical(e) + b"\n" for e in errors))
+            atomic_write(
+                self.path / "errors.jsonl",
+                b"".join(canonical(e) + b"\n" for e in errors),
+            )
         except OSError:
             # The worker result and supervisor ledger are independent of this volume.
             return False
@@ -273,11 +276,16 @@ class AttemptWriter:
         }
         # Hash the data streams before sampling closure time. The last metadata
         # write and completion marker necessarily follow this measurement.
-        performance["finalization_wall_ns"] = (performance.get("finalization_wall_ns") or 0) + perf_counter_ns() - started
+        performance["finalization_wall_ns"] = (
+            (performance.get("finalization_wall_ns") or 0) + perf_counter_ns() - started
+        )
         performance["writer_max_backlog"] = self.max_backlog
         perf_path = self.path / "performance.json"
         write_json(perf_path, performance)
-        listing["performance.json"] = {"size": perf_path.stat().st_size, "sha256": file_hash(perf_path)}
+        listing["performance.json"] = {
+            "size": perf_path.stat().st_size,
+            "sha256": file_hash(perf_path),
+        }
         manifest = self.path / "manifest.final.json"
         write_json(
             manifest, {**self.ids, "files": listing, "last_record_hash": self.previous}
@@ -417,16 +425,33 @@ def _verify(path):
                 final_step = k
                 reused = record.get("reused_snapshot", False)
                 if reused:
-                    if k != ticks - 1 or record.get("reused_record_step") != k or record["truth"] != previous_truth:
-                        raise trace_error("Final snapshot reuse does not match the recorded prefix")
+                    if (
+                        k != ticks - 1
+                        or record.get("reused_record_step") != k
+                        or record["truth"] != previous_truth
+                    ):
+                        raise trace_error(
+                            "Final snapshot reuse does not match the recorded prefix"
+                        )
                 elif k != ticks:
-                    raise trace_error("Final snapshot is not adjacent to the decision prefix")
+                    raise trace_error(
+                        "Final snapshot is not adjacent to the decision prefix"
+                    )
                 if (
                     record["tick_kind"] != "FINAL"
                     or record["actuation"] is not None
                     or record["controller_called"]
                     or record["controller_output"] is not None
-                    or any(record[field] for field in ("intents","deliveries","applied","actuator_targets","events"))
+                    or any(
+                        record[field]
+                        for field in (
+                            "intents",
+                            "deliveries",
+                            "applied",
+                            "actuator_targets",
+                            "events",
+                        )
+                    )
                     or record["raw_signals"]
                     or record["observed_signals"]
                 ):
@@ -480,12 +505,19 @@ def _verify(path):
         raise trace_error("Completed attempt lacks full horizon")
     if result["completion_status"] not in {"COMPLETED", "INFRA_ERROR", "CANCELLED"}:
         raise trace_error("Unknown completion status")
-    if (result["end_step"] != final_step or result.get("last_valid_snapshot", final_step) != final_step
-            or result.get("no_snapshot", initial is None) != (initial is None)):
+    if (
+        result["end_step"] != final_step
+        or result.get("last_valid_snapshot", final_step) != final_step
+        or result.get("no_snapshot", initial is None) != (initial is None)
+    ):
         raise trace_error("Result disagrees with the observed prefix")
     advances = result.get("last_successful_advance")
-    if advances is not None and (type(advances) is not int or advances < 0 or advances > ticks
-            or (final_step is not None and advances not in (final_step, final_step + 1))):
+    if advances is not None and (
+        type(advances) is not int
+        or advances < 0
+        or advances > ticks
+        or (final_step is not None and advances not in (final_step, final_step + 1))
+    ):
         raise trace_error("Invalid last successful advance")
     return {
         "valid": True,

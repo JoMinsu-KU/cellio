@@ -1,0 +1,18 @@
+schema_version: cellio.suite/1.0
+suite_id: canonical-v1
+mode: finite
+planned_runs: 820
+cells: [cell_a, cell_b]
+state_block_shuffle_seed: 20261118
+reference:
+  arms: [healthy, f1_low, f1_high, f2, f3, f4, f5, f6]
+  first_state: 1000
+  last_state: 1019
+  repeats: 2
+mutants:
+  ids: [mutant.c_m1, mutant.c_m2, mutant.c_m3, mutant.c_m4, mutant.c_m5, mutant.c_m6]
+  matched_arms: [f5, f6, f1_high, f4, f2, f3]
+  first_state: 1000
+  last_state: 1004
+  fault_repeats: 2
+  healthy_repeats: 1

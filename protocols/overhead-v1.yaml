@@ -1,0 +1,10 @@
+schema_version: cellio.suite/1.0
+suite_id: overhead-v1
+mode: finite
+planned_runs: 180
+cells: [cell_a, cell_b]
+first_state: 1000
+last_state: 1009
+repeats: 3
+mode_arms: {B0: healthy, B1: healthy, B2: f4}
+state_block_shuffle_seed: 20261118

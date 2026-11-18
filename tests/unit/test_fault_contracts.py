@@ -548,6 +548,29 @@ def test_T_F4_14_queue_overflow_and_duplicate():
         fx.tick(1, commands=(intent(1, 1),))
 
 
+@pytest.mark.parametrize(
+    "readback", [None, {}, {"finger_driver": float("nan")}, {"finger_driver": 0.04}]
+)
+def test_F6_restoration_requires_submitted_nominal_target_readback(
+    readback, monkeypatch
+):
+    fx = Fixture(plan("F6", start=0, duration=3))
+    for k in range(3):
+        fx.tick(k)
+    original = fx.fault.observe
+
+    def probe(frame, **fields):
+        fields["applied_targets"] = readback
+        return original(frame, **fields)
+
+    with monkeypatch.context() as m:
+        m.setattr(fx.fault, "observe", probe)
+        fx.tick(3)
+    assert fx.fault.state.restoration_status != "PATH_RESTORED"
+    fx.tick(4)
+    assert fx.fault.state.restoration_status == "PATH_RESTORED"
+
+
 def test_T_F6_09_contact_deflection_fails_despite_boundary_commit():
     fx = Fixture(plan("F6", start=0, duration=60))
     for k in range(40):

@@ -2,7 +2,9 @@
 
 from collections import defaultdict
 from math import acos, dist
+from pathlib import Path
 
+from .campaign import lines
 from .replay import read
 from .statistics import distribution, plateau, ratio
 
@@ -37,6 +39,13 @@ def performance(trials):
             "critical_path_all": intervals("intervals"),
             "critical_path_active": intervals("active_intervals"),
         }
+        if mode in ("B1", "B2"):
+            for timing in values.values():
+                timing["p99_target_ms"] = 3.33
+                timing["p99_target_assessment"] = (
+                    "INSUFFICIENT_EVIDENCE" if timing["p99"] is None or len(timing["source_artifact_ids"]) != len(items)
+                    else "MEETS_TARGET" if timing["p99"] <= 3.33 else "ABOVE_TARGET"
+                )
         for key, unit, factor in (
             ("startup_wall_ns", "s", 1e-9),
             ("running_wall_ns", "s", 1e-9),
@@ -231,3 +240,105 @@ def soak(trials, elapsed_seconds):
         ),
         "source_artifact_ids": [t.attempt_id for t in data if t.eval],
     }
+
+
+def soak_evidence(directory, trials):
+    """Validate a contiguous, timed soak from one long-lived worker."""
+    directory = Path(directory)
+    summary = directory / "soak.result.json"
+    result = soak(trials, None)
+    if not summary.is_file():
+        return {
+            **result,
+            "reason": "supervisor timing and closed worker evidence unavailable",
+        }
+    try:
+        timing = read(summary)
+        pid, start, stop = (
+            timing[k]
+            for k in ("worker_pid", "measurement_start_ns", "measurement_end_ns")
+        )
+        if (
+            not all(type(v) is int and v > 0 for v in (pid, start, stop))
+            or stop < start
+        ):
+            raise ValueError("Invalid monotonic window or worker PID")
+        elapsed = (stop - start) / 1e9
+        if timing["wall_seconds"] != elapsed or not 7200 <= elapsed <= 86400:
+            raise ValueError("Elapsed time differs from the permitted measured window")
+        warmup = [t for t in trials if t.row["chain_slot"] == "warmup"]
+        data = [t for t in trials if t.row["chain_slot"] == "measurement"]
+        if (
+            warmup + data != list(trials)
+            or len(warmup) != timing["warmup"]
+            or len(warmup) != 10
+            or len(data) != timing["completed"]
+            or len(data) < 200
+        ):
+            raise ValueError("Warmup/measurement counts differ from the stop rule")
+        if any(t.status != "COMPLETED" or t.error or not t.eval for t in trials):
+            raise ValueError(
+                "Every warmup and measured attempt needs a sealed, completed artifact"
+            )
+        ledger = list(lines(directory / "ledger.jsonl"))
+        ordered = [e["monotonic_ns"] for e in ledger]
+        if any(type(t) is not int for t in ordered) or ordered != sorted(ordered):
+            raise ValueError("Invalid ledger monotonic clock sequence")
+        launch = [e for e in ledger if e.get("pid") is not None]
+        closed = [e for e in ledger if e["state"] == "COMPLETED"]
+        planned = [e for e in ledger if e["state"] == "PLANNED"]
+        ids = [t.attempt_id for t in trials]
+        for entries in (launch, closed, planned):
+            if [e["attempt_id"] for e in entries] != ids:
+                raise ValueError(
+                    "Ledger attempt sequence differs from the frozen generator"
+                )
+        if any(e["pid"] != pid for e in launch):
+            raise ValueError("Soak process changed")
+        if (
+            not closed[len(warmup) - 1]["monotonic_ns"]
+            <= start
+            <= planned[len(warmup)]["monotonic_ns"]
+        ):
+            raise ValueError("Measurement started outside the post-warmup boundary")
+        workers = [
+            w.parent
+            for w in (directory / ".workers").glob("*/process.json")
+            if read(w).get("pid") == pid
+        ]
+        if len(workers) != 1:
+            raise ValueError("Cannot identify a unique soak process")
+        worker = workers[0]
+        beat, summary_exit = (
+            read(worker / "heartbeat.json"),
+            read(worker / "result.json"),
+        )
+        if (
+            beat.get("pid") != pid
+            or beat.get("state") != "EXITED"
+            or not closed[-1]["monotonic_ns"] <= stop <= beat["monotonic_ns"]
+            or summary_exit.get("completion_status") != "COMPLETED"
+            or summary_exit.get("episode_count") != len(ids)
+        ):
+            raise ValueError("Worker shutdown or measurement end is unverified")
+        worker_rows = list(lines(worker / "results.jsonl"))
+        for i, (t, entry) in enumerate(zip(trials, worker_rows, strict=True)):
+            if (
+                entry.get("attempt_id") != t.attempt_id
+                or entry.get("run_id") != t.row["run_id"]
+                or entry.get("generation") != i
+                or entry.get("completion_status") != "COMPLETED"
+                or read(t.path / "manifest.start.json").get("generation") != i
+            ):
+                raise ValueError(
+                    "Attempt or generation differs from the long-lived worker record"
+                )
+        return {
+            **soak(trials, elapsed),
+            "worker_pid": pid,
+            "worker_directory": str(worker),
+            "measurement_start_ns": start,
+            "measurement_end_ns": stop,
+        }
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        return {**result, "status": "FAIL", "reason": str(exc)}

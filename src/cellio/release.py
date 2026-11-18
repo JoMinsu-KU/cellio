@@ -114,13 +114,7 @@ def audit_reuse(root, folder):
     classified = {path: category(path) for path in changed}
     branches = {}
     for path in changed:
-        if not path.endswith(".py") or not path.startswith(
-            (
-                "src/cellio/core/oracle/",
-                "src/cellio/core/faults/",
-                "src/cellio/core/clock",
-            )
-        ):
+        if not path.endswith(".py") or not path.startswith("src/cellio/core/"):
             continue
         if path.endswith(("/fixtures.py", "/presets.py")):
             continue
@@ -135,12 +129,16 @@ def audit_reuse(root, folder):
         "candidate_commit": head,
         "changed_files": classified,
         "introduced_scene_specific_core_branches": branches,
+        "authoring_hours": None,
+        "authoring_hours_reason": "No contemporaneous time record separates scene integration from other development",
     }
     if branches:
         return gate(
             "FAIL", **details, reason="new concrete-cell logic in reusable engine"
         )
-    present=set(git(root,"ls-tree","-r","--name-only",head,*REGRESSIONS).splitlines())
+    present = set(
+        git(root, "ls-tree", "-r", "--name-only", head, *REGRESSIONS).splitlines()
+    )
     missing = [p for p in REGRESSIONS if p not in present]
     if missing:
         return gate("NOT_RUN", **details, missing=missing)
@@ -148,12 +146,16 @@ def audit_reuse(root, folder):
     out.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=out) as scratch:
         junit = out / "regression.xml"
-        checkout=Path(scratch)/"candidate"
-        archive=Path(scratch)/"candidate.zip"
-        git(root,"archive","--format=zip","--output",str(archive.resolve()),head)
+        checkout = Path(scratch) / "candidate"
+        archive = Path(scratch) / "candidate.zip"
+        git(root, "archive", "--format=zip", "--output", str(archive.resolve()), head)
         with zipfile.ZipFile(archive) as z:
             z.extractall(checkout)
-        test_env={**os.environ,"PYTHONPATH":str((checkout/"src").resolve()),"PYTHONNOUSERSITE":"1"}
+        test_env = {
+            **os.environ,
+            "PYTHONPATH": str((checkout / "src").resolve()),
+            "PYTHONNOUSERSITE": "1",
+        }
         result = subprocess.run(
             [
                 sys.executable,
@@ -192,7 +194,7 @@ def audit_reuse(root, folder):
         test_count=len(cases),
         junit_sha256=file_hash(junit) if cases else None,
         command=[sys.executable, "-m", "pytest", "-q", *REGRESSIONS],
-        tested_tree=git(root,"rev-parse",head+"^{tree}"),
+        tested_tree=git(root, "rev-parse", head + "^{tree}"),
         diagnostics=result.stdout[-1600:] if not clean_tests else None,
     )
     proof = gate("PASS" if clean_tests else "FAIL", (junit,), **details)
@@ -201,22 +203,33 @@ def audit_reuse(root, folder):
 
 
 def raw_index(campaign, enforce_physics=True):
-    from cellio.analysis.campaign import lines, safe_child
+    from cellio.analysis.campaign import (
+        attempt_histories,
+        lines,
+        safe_child,
+        verify_plan_inputs,
+    )
     from cellio.runtime.campaign import read_plan
 
     plan = read_plan(campaign / "campaign.plan.json")
     if plan["suite_id"] != "canonical-v1" or len(plan["runs"]) != 820:
         raise ValueError("release raw evidence requires the frozen 820-run campaign")
-    primary = {}
-    for event in lines(campaign / "ledger.jsonl"):
-        if event["attempt_index"] == 0:
-            old = primary.setdefault(event["run_id"], event["attempt_id"])
-            if old != event["attempt_id"]:
-                raise ValueError("conflicting primary attempt")
+    histories = attempt_histories(
+        lines(campaign / "ledger.jsonl"), {r["run_id"] for r in plan["runs"]}
+    )
     rows = []
     for row in plan["runs"]:
-        path = safe_child(campaign, row["run_id"], primary[row["run_id"]])
+        history = histories[row["run_id"]]
+        if (
+            not history
+            or history[0][-1]["state"] != "COMPLETED"
+            or history[0][-1].get("error")
+        ):
+            raise ValueError("Missing completed primary attempt in release ledger")
+        ident = history[0][0]["attempt_id"]
+        path = safe_child(campaign, row["run_id"], ident)
         verified = verify_artifact(path)
+        verify_plan_inputs(path, row, plan["provenance"])
         result = read(path / "result.json")
         if (
             enforce_physics
@@ -224,7 +237,7 @@ def raw_index(campaign, enforce_physics=True):
             or verified["completion_status"] != "COMPLETED"
             or verified["ticks"] != 7200
             or row["run_id"] != verified["run_id"]
-            or digest(read(path / "config.resolved.json")) != row["config_hash"]
+            or ident != verified["attempt_id"]
         ):
             raise ValueError(
                 "release raw evidence is incomplete or uses a different configuration"

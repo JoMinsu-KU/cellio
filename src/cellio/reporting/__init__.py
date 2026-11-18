@@ -8,10 +8,10 @@ from cellio.analysis.campaign import group_metrics, load_campaign
 from cellio.analysis.comparisons import confusion, mutant_pairs, overhead
 from cellio.analysis.measurements import histogram_summary
 from cellio.analysis.replay import read
-from cellio.analysis.suites import performance, reset_chains, soak
+from cellio.analysis.suites import performance, reset_chains, soak_evidence
 from cellio.io import file_hash, write_json
 
-from .render import render_report, timeline
+from .render import render_report, table, timeline
 
 
 def oracle_corpus():
@@ -34,9 +34,103 @@ def oracle_corpus():
     return {"status": "NOT_RUN", "reason": "frozen oracle corpus unavailable"}
 
 
+def oracle_report(plan, source, out):
+    from cellio.acceptance import evaluate_gold, gold_directory
+    from cellio.io import atomic_write, digest
+
+    corpus = read(gold_directory() / "gold.json")
+    expected = [(case["id"], digest(case)) for case in corpus]
+    planned = [(row["case_id"], row["case_hash"]) for row in plan["runs"]]
+    if planned != expected:
+        raise ValueError("Oracle plan case IDs/hashes differ from the frozen corpus")
+    evidence = evaluate_gold()
+    stored = source / "oracle.results.json"
+    recorded_equal = read(stored) == evidence if stored.is_file() else None
+    status = (
+        "NOT_RUN"
+        if recorded_equal is None
+        else "PASS"
+        if recorded_equal and evidence["passed"]
+        else "FAIL"
+    )
+    counts = {
+        "N_plan": len(planned),
+        "N_start": len(planned) if recorded_equal is not None else 0,
+        "N_verified_cases": len(planned) if recorded_equal else 0,
+    }
+    data = {
+        "schema_version": "cellio.metrics/1.0",
+        "suite_id": plan["suite_id"],
+        "plan_hash": plan["plan_hash"],
+        "protocol_hash": plan["protocol_hash"],
+        "campaign_status": status,
+        "counts": counts,
+        "recorded_matches_replay": recorded_equal,
+        "recorded_results_sha256": file_hash(stored) if stored.is_file() else None,
+        "oracle": oracle_corpus(),
+        "independent_replay": evidence,
+    }
+    (out / "tables").mkdir(parents=True, exist_ok=True)
+    write_json(out / "metrics.json", data)
+    write_json(out / "tables/oracle.json", data["oracle"])
+    rows = [
+        {
+            "case_id": c["id"],
+            "matches_gold": c["passed"],
+            **{
+                prefix + "_" + key: value
+                for prefix in ("expected", "actual")
+                for key, value in c[prefix].items()
+            },
+        }
+        for c in evidence["cases"]
+    ]
+    table(out / "tables/oracle_witnesses.csv", rows, list(rows[0]))
+    labels = data["oracle"]["matrix_4x4"]
+    table(
+        out / "tables/oracle_confusion.csv",
+        [{"expected": key, **vals} for key, vals in labels.items()],
+        ["expected", *labels.keys()],
+    )
+    headline = (
+        f"Campaign {status}. Independent replay evaluated {len(rows)} frozen cases."
+    )
+    links = [
+        ("Confusion matrix", "tables/oracle_confusion.csv"),
+        ("Case witnesses", "tables/oracle_witnesses.csv"),
+        ("Replay decisions", "metrics.json"),
+    ]
+    md = (
+        "# Oracle fixture campaign\n\n"
+        + headline
+        + "\n\n"
+        + "\n".join(f"- [{k}]({v})" for k, v in links)
+        + "\n"
+    )
+    html = (
+        '<!doctype html><meta charset="utf-8"><title>CellIO oracle fixtures</title><h1>Oracle fixture campaign</h1><p>'
+        + headline
+        + "</p><ul>"
+        + "".join(f'<li><a href="{v}">{k}</a></li>' for k, v in links)
+        + "</ul>"
+    )
+    atomic_write(out / "report.md", md.encode())
+    atomic_write(out / "report.html", html.encode())
+    return {
+        "output": str(out),
+        "metrics": str(out / "metrics.json"),
+        "report_html": str(out / "report.html"),
+        "report_markdown": str(out / "report.md"),
+        "counts": counts,
+        "status": status,
+    }
+
+
 def report(campaign_dir, output_dir):
     source, out = Path(campaign_dir).resolve(), Path(output_dir).resolve()
     plan, trials, extra = load_campaign(source)
+    if plan["suite_id"] == "oracle-v1":
+        return oracle_report(plan, source, out)
     for trial in trials:
         if trial.path and out.is_relative_to(trial.path):
             raise ValueError(
@@ -114,24 +208,37 @@ def report(campaign_dir, output_dir):
         }
         for t in trials
     ]
-    elapsed_file = source / "soak.result.json"
-    elapsed = read(elapsed_file).get("wall_seconds") if elapsed_file.is_file() else None
-    reuse = source / "scene_reuse.json"
+    reuse_results = {
+        "status": "NOT_RUN",
+        "reason": "no recorded Cell A to Cell B regression audit",
+    }
+    evidence_root = next(
+        (
+            p
+            for p in (source, source.parent)
+            if (p / "release-evidence/reuse/scene_reuse.json").is_file()
+        ),
+        None,
+    )
+    if evidence_root is not None:
+        from cellio.acceptance import checkout
+        from cellio.release import audit_reuse
+
+        # Recompute the exact committed-tree diff and isolated regressions.
+        try:
+            reuse_results = audit_reuse(checkout(), out)
+        except FileNotFoundError as exc:
+            reuse_results = {"status": "NOT_RUN", "reason": str(exc)}
     measurements = {
         "oracle": oracle_corpus(),
         "mutants": mutant_pairs(trials),
         "overhead": overhead(trials),
         "performance": performance(trials),
         "reset_chains": reset_chains(trials),
-        "soak": soak(trials, elapsed)
+        "soak": soak_evidence(source, trials)
         if plan["suite_id"] == "soak-v1"
         else {"status": "NOT_RUN", "reason": "different suite"},
-        "scene_reuse": read(reuse)
-        if reuse.is_file()
-        else {
-            "status": "NOT_RUN",
-            "reason": "extension diff and measured work log unavailable",
-        },
+        "scene_reuse": reuse_results,
         "delays": {
             k: histogram_summary(delays[k], delay_sources[k]) for k in delay_keys
         },

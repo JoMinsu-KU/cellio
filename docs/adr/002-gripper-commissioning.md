@@ -1,0 +1,7 @@
+# ADR 002 — Franka gripper commissioning
+
+On 18 November 2026 the first complete runs with a 20 N drive-force limit timed out while grasping the 50 g part. Cell A entered the abort sequence at step 2,068 and Cell B at step 1,648. Both reached the 7,200-step horizon with a failed goal. The Windows and WSL2 replays agree on the requirement verdicts and first witnesses for each run. [Cell A](../../results/workstation/commissioning-a-before-tuning-wsl.json) · [Cell B](../../results/workstation/commissioning-b-before-tuning-wsl.json)
+
+We tested a 4 N upper limit per independently actuated finger and made an explicit hold command begin from the measured joint position. The passing Cell A diagnostic completed its transfer at step 4,080 and reached the horizon with task SUCCESS and compliance PASS. The corresponding Cell B diagnostic still timed out. These were single commissioning runs. The nominal repeated-run evidence is collected separately under `commission-v1`. [Cell A Windows replay](../../results/workstation/commissioning-a-4n-windows.json) · [Cell A WSL2 replay](../../results/workstation/commissioning-a-4n-wsl.json)
+
+The change affects the contact dynamics and simulated time to complete a grasp. The position, velocity and dwell requirements used to recognize a completed grasp apply to every diagnostic. The simulated steps, goal deadline and evaluation seeds continue to follow the versioned experiment protocols.

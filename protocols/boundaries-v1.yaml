@@ -1,0 +1,9 @@
+schema_version: cellio.suite/1.0
+suite_id: boundaries-v1
+mode: finite
+planned_runs: 16
+cells: [cell_a, cell_b]
+arm: healthy
+yaw_bounds_rad: [-0.03, 0.03]
+x_bounds_m: {cell_a: [-0.001, 0.001], cell_b: [-0.002, 0.002]}
+y_bounds_m: {cell_a: [-0.004, 0.004], cell_b: [-0.002, 0.002]}

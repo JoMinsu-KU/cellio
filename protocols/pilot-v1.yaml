@@ -1,0 +1,9 @@
+schema_version: cellio.suite/1.0
+suite_id: pilot-v1
+mode: finite
+planned_runs: 80
+cells: [cell_a, cell_b]
+first_state: 0
+last_state: 4
+arms: [healthy, f1_low, f1_high, f2, f3, f4, f5, f6]
+state_block_shuffle_seed: 20261118

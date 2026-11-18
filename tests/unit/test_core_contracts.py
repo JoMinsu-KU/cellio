@@ -135,6 +135,38 @@ def base_fault(trigger, arm, offset):
     )
 
 
+@pytest.mark.parametrize(
+    ("event", "event_filter", "valid"),
+    [
+        (
+            "controller.stage_enter",
+            {"stage_id": "grasp", "operation_epoch": 0, "job_id": 0},
+            True,
+        ),
+        ("controller.abort", {"reason": "TIMEOUT", "cancelled_epoch": 0}, True),
+        ("controller.substage_enter", {"waypoint": "transfer_mid"}, True),
+        ("controller.stage_enter", {"stage_id": "uncalibrated_fixture"}, False),
+        ("controller.stage_enter", {"operation_epoch": True}, False),
+        ("controller.stage_enter", {"job_id": 1}, False),
+        ("controller.stage_enter", {"cause": "TIMEOUT"}, False),
+        ("controller.undeclared", {}, False),
+    ],
+)
+def test_controller_trigger_registered_stage_payload_and_types(
+    event, event_filter, valid
+):
+    spec = base_fault(
+        {"kind": "controller_event", "event_type": event, "event_filter": event_filter},
+        {"open_step": 0, "close_step": 4},
+        0,
+    )
+    if valid:
+        assert FaultEngine(spec, 8).spec.trigger["event_type"] == event
+    else:
+        with pytest.raises(CellIOError, match="CFG_FAULT_TRIGGER"):
+            FaultEngine(spec, 8)
+
+
 def test_matched_controller_event_latches_after_arm_closes():
     bus = EventBus()
     spec = base_fault(

@@ -152,16 +152,28 @@ def compile_fault(
             "CFG_FAULT_TRIGGER",
             "invalid controller event trigger",
         )
-        fields=registry.get("events",{}).get(tr["event_type"])
-        _valid(fields is not None,"CFG_FAULT_TRIGGER",f"unregistered controller event {tr['event_type']}")
-        types={"string":(str,),"integer":(int,),"boolean":(bool,),"number":(int,float)}
-        for key,value in tr["event_filter"].items():
-            declaration=fields.get(key,{})
-            _valid(type(value) in types.get(declaration.get("type"),()) and
-                   (type(value) is not float or isfinite(value)) and
-                   ("enum" not in declaration or value in declaration["enum"]) and
-                   ("minimum" not in declaration or value>=declaration["minimum"]),
-                   "CFG_FAULT_TRIGGER",f"unregistered or invalid filter {tr['event_type']}.{key}")
+        fields = registry.get("events", {}).get(tr["event_type"])
+        _valid(
+            fields is not None,
+            "CFG_FAULT_TRIGGER",
+            f"unregistered controller event {tr['event_type']}",
+        )
+        types = {
+            "string": (str,),
+            "integer": (int,),
+            "boolean": (bool,),
+            "number": (int, float),
+        }
+        for key, value in tr["event_filter"].items():
+            declaration = fields.get(key, {})
+            _valid(
+                type(value) in types.get(declaration.get("type"), ())
+                and (type(value) is not float or isfinite(value))
+                and ("enum" not in declaration or value in declaration["enum"])
+                and ("minimum" not in declaration or value >= declaration["minimum"]),
+                "CFG_FAULT_TRIGGER",
+                f"unregistered or invalid filter {tr['event_type']}.{key}",
+            )
     elif kind in {"world_level", "world_rising"}:
         if predicates is None:
             predicates = registry["predicates"]

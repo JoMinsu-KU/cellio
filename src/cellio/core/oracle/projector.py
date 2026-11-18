@@ -2,7 +2,7 @@
 
 from collections import deque
 from collections.abc import Mapping
-from math import acos, dist
+from math import acos, dist, isfinite
 
 from .audit import CommandAudit, usable
 from .geometry import (
@@ -524,6 +524,26 @@ class Projector:
             receipt, "active_override_ids", ()
         )
         facts["no_stale_tail"] = no_old and no_override
-        facts["path_restored"] = facts["no_stale_tail"] and target in get(
-            receipt, "targets_by_actuator", {}
-        )
+        normal_commit = target in get(receipt, "targets_by_actuator", {})
+        if family == "F6" and normal_commit:
+            nominal = get(report, "nominal_targets")
+            applied = get(report, "applied_targets")
+            if (
+                not isinstance(nominal, Mapping)
+                or not nominal
+                or not isinstance(applied, Mapping)
+            ):
+                normal_commit = None
+            elif set(nominal) != set(applied):
+                normal_commit = False
+            else:
+                # The physical adapter authenticates float32 readbacks to one micrometre.
+                normal_commit = all(
+                    type(nominal[j]) in (int, float)
+                    and type(applied[j]) in (int, float)
+                    and isfinite(nominal[j])
+                    and isfinite(applied[j])
+                    and abs(nominal[j] - applied[j]) <= 1e-6
+                    for j in nominal
+                )
+        facts["path_restored"] = all3((facts["no_stale_tail"], normal_commit))

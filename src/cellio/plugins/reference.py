@@ -42,17 +42,24 @@ class ReferenceScene:
 
         a = self.scene_id == "cell_a"
         scene = self.build_config()
-        stage_ids=[*(s.name for s in (CELL_A if a else CELL_B)), "done", "aborted"]
-        event_fields={
-            "stage_id":{"type":"string","enum":stage_ids},
-            "job_id":{"type":"integer","enum":[0]},
-            "operation_epoch":{"type":"integer","minimum":0},
+        stage_ids = [*(s.name for s in (CELL_A if a else CELL_B)), "done", "aborted"]
+        event_fields = {
+            "stage_id": {"type": "string", "enum": stage_ids},
+            "job_id": {"type": "integer", "enum": [0]},
+            "operation_epoch": {"type": "integer", "minimum": 0},
         }
-        events={
-            "controller.stage_enter":event_fields,
-            "controller.done":event_fields,
-            "controller.abort":{**event_fields,"reason":{"type":"string"},"cancelled_epoch":{"type":"integer","minimum":0}},
-            "controller.substage_enter":{**event_fields,"waypoint":{"type":"string","enum":list(scene.waypoints)}},
+        events = {
+            "controller.stage_enter": event_fields,
+            "controller.done": event_fields,
+            "controller.abort": {
+                **event_fields,
+                "reason": {"type": "string"},
+                "cancelled_epoch": {"type": "integer", "minimum": 0},
+            },
+            "controller.substage_enter": {
+                **event_fields,
+                "waypoint": {"type": "string", "enum": list(scene.waypoints)},
+            },
         }
         actuators = {
             "actuator.robot": ["POSE", "HOLD"],

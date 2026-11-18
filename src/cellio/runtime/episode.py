@@ -122,6 +122,10 @@ class _Run:
         self.writer_factory = writer_factory or AttemptWriter
         self.resources = resource_sampler
         self.fault_factory = FaultEngine if fault_factory is None else fault_factory
+        if not callable(self.fault_factory):
+            raise CellIOError(
+                "CFG_PROFILE", "fault_factory must be a local Python callable"
+            )
         self.writer = self.controller = self.oracle = self.clock = self.fault = None
         self.status, self.reason = "INFRA_ERROR", None
         self.state, self.phase = "PLANNED", None
@@ -150,6 +154,7 @@ class _Run:
         self.reset_comparison = self.plant_provenance = self.geometry_manifest = None
         self.current_mission = "ACTIVE"
         self.plugin_identity = None
+        self.compiled_fault_plan = None
         self.started = perf_counter_ns()
 
     def notify(self, state):
@@ -296,6 +301,17 @@ class _Run:
             for_controller(missing, first),
         )
         self.last_truth = self.snapshot(first)
+        if self.fault.spec and hasattr(self.fault, "compiled_plan"):
+            drivers = ()
+            if self.fault.spec.family == "F6":
+                drivers = self.plant.driver_positions(
+                    self.fault.spec.target_id, self.last_truth
+                )
+            self.compiled_fault_plan = json_value(
+                self.fault.compiled_plan(
+                    self.registry, self.router.queue_limit, drivers
+                )
+            )
         self.plant_provenance = json_value(getattr(self.plant, "provenance", {}))
         self.geometry_manifest = json_value(
             getattr(self.plant, "geometry_manifest", {})
@@ -351,7 +367,10 @@ class _Run:
             return inspect_reset() if inspect_reset else None
 
         return {
-            **(observed(self.fault) or {"observation_queue_empty":None,"fault_reset":None}),
+            **(
+                observed(self.fault)
+                or {"observation_queue_empty": None, "fault_reset": None}
+            ),
             "command_queue_empty": self.router.pending_count == 0
             and not self.router.desired
             and not self.router.effective,
@@ -729,7 +748,11 @@ class _Run:
             "faults": self.fault_reports,
             "requirements": reqs,
             "artifact_digest": None,
-            "fault_implementation": f"{self.fault_factory.__module__}.{self.fault_factory.__qualname__}",
+            "compiled_fault_plan": self.compiled_fault_plan,
+            "fault_implementation": (
+                f"{getattr(self.fault_factory, '__module__', type(self.fault_factory).__module__)}."
+                f"{getattr(self.fault_factory, '__qualname__', type(self.fault_factory).__qualname__)}"
+            ),
             "plant_provenance": self.plant_provenance,
             "geometry_manifest": self.geometry_manifest,
             "reset_comparison": self.reset_comparison,
