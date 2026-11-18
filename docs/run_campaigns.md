@@ -74,6 +74,15 @@ python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" --o
 python scripts/reproduce_figures.py --campaign "$campaign_root/overhead-v1" --output "$campaign_root/release-evidence/overhead-wsl"
 ```
 
+To combine the measured panels for publication, pass the other raw suite directories alongside the canonical campaign. Both scripts replay the available attempts. Figure 4 groups all registered controllers by cell and fault arm. Figure 6 draws each panel from the corresponding suite.
+
+```sh
+python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/publication"
+python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" --companion-campaign "$campaign_root/overhead-v1" --companion-campaign "$campaign_root/reset-v1" --companion-campaign "$campaign_root/soak-v1" --output "$campaign_root/release-evidence/publication"
+```
+
+An oracle-only campaign also regenerates the interface diagram, the checked-in native camera views, the gold confusion matrix, and Tables 2 and 4. Supply `--timeline-attempt <sealed-attempt-directory>` to include a separately identified commissioning trace in Figure 3. The workstation snapshot used Cell A attempt `5efc632a-4535-42b0-82da-666a6162b9ef`. The output `figures/index.json` identifies the available inputs, measured panels and file hashes. [Workstation figures and tables](../results/publication/README.md)
+
 To package a completed canonical campaign for transfer, run the following from the release checkout. The ZIP64 archive carries the actual plan, ledger, attempt manifests and data streams. The packager verifies every first-attempt file against its archived bytes. The release manifest binds the archive digest to the source tag and dependency locks.
 
 ```powershell

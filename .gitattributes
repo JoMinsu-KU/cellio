@@ -1,4 +1,6 @@
 * text=auto eol=lf
 *.gz binary
 *.png binary
+*.pdf binary
+results/publication/tables/*.csv -text whitespace=trailing-space,space-before-tab,cr-at-eol
 *.usdc binary

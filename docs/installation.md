@@ -7,7 +7,7 @@ conda create -n cellio-isaac62 -c conda-forge python=3.12.16 pip
 conda activate cellio-isaac62
 python -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu130
 python -m pip install "isaacsim[all,extscache]==6.2.0.0" --extra-index-url https://pypi.nvidia.com
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,plots]"
 ```
 
 The first Kit launch requests the NVIDIA Omniverse license agreement. See the [NVIDIA 6.2 Python installation guide](https://docs.isaacsim.omniverse.nvidia.com/6.2.0/installation/install_python.html).

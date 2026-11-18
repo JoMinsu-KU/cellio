@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -e ".[dev]"
+      - run: python -m pip install -e ".[dev,plots]"
       - run: python -m pytest -q
       - run: python -m cellio validate --config examples/cell_a/healthy.yaml
       - run: python -m cellio validate --config examples/cell_b/healthy.yaml

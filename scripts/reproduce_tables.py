@@ -5,6 +5,8 @@ import csv
 import json
 from pathlib import Path
 
+from publication_sources import static_tables
+
 from cellio.reporting import report
 
 
@@ -18,13 +20,24 @@ def write_table(path, fieldnames, rows):
 def reproduce(campaign, output):
     produced = report(campaign, output)
     payload = json.loads(Path(produced["metrics"]).read_text(encoding="utf-8"))
+    static_tables(output)
     if payload["suite_id"] == "oracle-v1":
         return produced
     tables = output / "tables"
     rates = []
     outcomes = []
+    conditions = []
     for group in payload["groups"]:
         key = group["group"]
+        conditions.append(
+            {
+                **key,
+                **group["counts"],
+                "non_evaluable_reasons": json.dumps(
+                    group["non_evaluable_reasons"], sort_keys=True
+                ),
+            }
+        )
         for name, m in group["rates"].items():
             ci = m.get("bootstrap", {})
             rates.append(
@@ -56,6 +69,17 @@ def reproduce(campaign, output):
                         "fraction": metric["value"],
                     }
                 )
+    write_table(
+        tables / "table3_conditions.csv",
+        [
+            "cell",
+            "arm",
+            "controller",
+            *sorted({k for g in payload["groups"] for k in g["counts"]}),
+            "non_evaluable_reasons",
+        ],
+        conditions,
+    )
     write_table(
         tables / "coverage_rates.csv",
         [
