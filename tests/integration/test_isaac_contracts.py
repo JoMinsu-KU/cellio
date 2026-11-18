@@ -197,6 +197,8 @@ def _check_physics():
         for generation, cell in enumerate(("cell_a", "cell_b"), 1):
             plant.load({"scene_id": cell})
             plant.reset({}, generation)
+            assert plant.provenance["part_sleep_threshold_m2_s2"] == pytest.approx(
+                0. if cell == "cell_a" else 0.00005)
             tick = Tick(cell, generation, 0)
             truth = plant.snapshot(tick)
             assert truth.complete and truth.bodies["cell_tcp"].valid

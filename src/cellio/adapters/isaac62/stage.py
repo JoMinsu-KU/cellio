@@ -50,7 +50,8 @@ class StageBuilder:
         for zone in scene.zones:
             visual = self._shape(BASE + "/Zones/" + zone.name, zone.center, zone.size)
             UsdGeom.Imageable(visual).MakeInvisible()
-        self._box(PART, Box("Part_000", scene.part_center, PART_SIZE_M, "dynamic", .05))
+        part_on_belt = any(box.name == scene.placement_support and box.kind == "belt" for box in scene.boxes)
+        self._box(PART, Box("Part_000", scene.part_center, PART_SIZE_M, "dynamic", .05), allow_sleep=not part_on_belt)
         base = UsdGeom.Xform.Define(stage, ROBOT)
         base.AddTranslateOp().Set(Gf.Vec3d(*robot_base))
         if not base.GetPrim().GetReferences().AddReference(str(robot_asset)):
@@ -117,7 +118,7 @@ class StageBuilder:
             "contact_offset": float(collider.GetContactOffsetAttr().Get()),
             "rest_offset": float(collider.GetRestOffsetAttr().Get())}
 
-    def _box(self, path, box):
+    def _box(self, path, box, *, allow_sleep=False):
         P, X, G = self.Physics, self.Physx, self.Geom
         body = G.Xform.Define(self.stage, path)
         body.AddTranslateOp().Set(_vec(self.Gf, box.center))
@@ -133,7 +134,16 @@ class StageBuilder:
                 self.belt.CreateSurfaceVelocityAttr(self.Gf.Vec3f(0))
             else:
                 P.MassAPI.Apply(body.GetPrim()).CreateMassAttr(box.mass)
-                X.PhysxRigidBodyAPI.Apply(body.GetPrim()).CreateSleepThresholdAttr(0.)
+                physx_body = X.PhysxRigidBodyAPI.Apply(body.GetPrim())
+                # A moving belt surface need not wake an already sleeping payload.
+                # Parts resting on a static source can sleep until a gripper touches them.
+                if not allow_sleep:
+                    physx_body.CreateSleepThresholdAttr(0.)
+                if path == PART:
+                    self.part_sleep_threshold = float(physx_body.GetSleepThresholdAttr().Get())
+                    if (not isfinite(self.part_sleep_threshold) or self.part_sleep_threshold < 0
+                            or (self.part_sleep_threshold > 0) != allow_sleep):
+                        raise CellIOError("ASSET_PHYSICS_PROFILE", "Unexpected workpiece sleep threshold")
         entity = "part_000" if path == PART else box.name
         if box.kind in {"fixed_jaw", "moving_jaw"}:
             entity = box.kind

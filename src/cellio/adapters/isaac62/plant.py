@@ -259,6 +259,7 @@ class IsaacPlant:
                            "robot_root_before_warmup": {"xyz_m": root_xyz, "orientation_wxyz": root_wxyz,
                                                        "composed_scale": root_scale},
                            "part_before_warmup": {"xyz_m": initial_xyz, "orientation_wxyz": initial_wxyz},
+                           "part_sleep_threshold_m2_s2": self.builder.part_sleep_threshold,
                            "gripper_slew_mps": self.gripper_slew_mps,
                            "gripper_open_slew_mps": self.gripper_open_slew_mps,
                            "articulation_solver": self.builder.solver_settings,

@@ -1846,6 +1846,8 @@ hard_reload는 reset-chain·soak 전용 검증 프로파일이다. 같은 worker
 
 초기조건 manifest에는 setter에 입력한 initial_state와 warmup 후 실제 S0를 둘 다 저장한다. 물체는 table과 겹치지 않도록 시작하며 중력 settling이 자연스럽게 일어나게 한다. 초기 pose를 맞추기 위해 warmup 후 물체를 다시 옮기지 않는다.
 
+Cell B에서는 정지한 받침대 위 부품에 PhysX 기본 sleep 임계값을 적용하고, 합성된 USD 속성값을 attempt마다 기록한다. 파일럿 시드 1의 F4 재설정 시험에서 sleep을 끈 후보는 소프트웨어 상태 초기화(R16)에 통과했지만, 부품의 S0 각속도 차이가 0.00193548 rad/s로 허용치 0.001 rad/s를 넘었다. 기본 임계값(실측 약 0.000050 m²/s²)을 적용하자 240스텝 후 새 프로세스와 재설정 실행에서 부품의 선속도와 각속도가 모두 0이었고 S0 비교를 통과했다. 재설정 후 두 손가락은 소스와 고정구에서 각각 부품을 잡아 50 mm 넘게 들어 올렸다. Cell A의 벨트 위 부품에는 §13.3에 따라 임계값 0을 적용한다. 이 결과의 범위는 Cell B 파일럿 초기 상태 한 개다. [두 후보의 최초 실행 기록과 해시](results/workstation/passive-source-reset.json)
+
 ### 17.3 reset의 정확한 의미
 
 reset 시작 시 먼저 generation을 증가시키고 이전 callback·message·command를 거부한다. 다음 항목을 명시적으로 제거한다.

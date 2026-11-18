@@ -1,0 +1,771 @@
+{
+  "schema": "cellio.passive-source-reset/1.0",
+  "scope": "Two native development reset chains on the same observed Cell B pilot state 1. All three first attempts per candidate are retained. The formal reset-v1, soak-v1 and pilot gates are separate.",
+  "units": "Positions in metres, angular velocity in radians per second. S0 deltas are maximum Euclidean norms across bodies.",
+  "extraction": "Supported grasp uses simultaneous left finger, right finger and named support contact. First rise over 0.050 m is relative to that supported part position, with both fingers still touching and named support released. Fixture grasp follows simultaneous contact with both jaws and fixture base.",
+  "nominal_inputs": {
+    "cell": "cell_b",
+    "scene_seed": 1,
+    "family": "F4",
+    "reset_condition": "d",
+    "warmup_steps": 240,
+    "horizon_steps": 7200,
+    "initial_state": {
+      "mass_kg": 0.05,
+      "placement": {
+        "mode": "sampled",
+        "proposals": [
+          {
+            "geometry": {
+              "accepted": true,
+              "overlapping_solids": [],
+              "separating_axis_gaps_m": {
+                "Destination/Base": 0.4502071400872423,
+                "Fixture/Base": 0.2602071400872423,
+                "Fixture/FixedJaw": 0.3008807962302236,
+                "Fixture/MovingJaw": 0.3039695042014974,
+                "Source/Base": 0.004999999999999928,
+                "Table": 0.04499999999999997
+              },
+              "support": "Source/Base",
+              "support_vertical_gap_m": 0.004999999999999928,
+              "support_xy_margin_m": 0.04877654294671738
+            },
+            "state": {
+              "mass_kg": 0.05,
+              "x_offset_m": -0.0005579488527612689,
+              "y_offset_m": -0.0007152985702624779,
+              "yaw_rad": -0.02574207601674189
+            }
+          }
+        ]
+      },
+      "x_offset_m": -0.0005579488527612689,
+      "y_offset_m": -0.0007152985702624779,
+      "yaw_rad": -0.02574207601674189
+    },
+    "original_sleep_policy": "Threshold 0 was authored in the original source. That candidate did not record the threshold in the per-attempt readback."
+  },
+  "original": {
+    "role": "prior candidate with disabled workpiece sleep",
+    "plan_file_sha256": "3665b4425d9f87459c86cf00e3a17948b4e153c14a8b42dfcab205f63e3b8e6c",
+    "plan_content_hash": "97ad31ce283238fbf594840c4d986ddfa0c14e5806c9ff3d8c544d7f02174e2b",
+    "ledger_file_sha256": "28012e08718d8a16bd5987b5a43ae5df3c9319c3d5af121cd65f4e625477ba07",
+    "plan_provenance": {
+      "assets_hash": "d5d4e4ba1b716770d9d7d5f71f79d87b35aaa8b390524400f7f6a221d575f476",
+      "code_hash": "a0c5cb9586be44e3fd91b137d2bcaf497d04144930c3c88c4185d5e1a8d2e311",
+      "environment_hash": "c082baba0dc3a927732ad378b61136731fe6e17ddaf5fed93d53175d67a46253",
+      "protocol_hash": "75db9face3b02ce93d9b2d6e1e0e67c72130d95c7e4799977e4ca7669fea09c9",
+      "requirements_hash": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165"
+    },
+    "reset_chain": {
+      "chain_id": "cell_b.f4.d",
+      "status": "FAIL",
+      "source_artifact_ids": [
+        "0a2a6070-e99f-49c1-b696-33d9bce243ab",
+        "b6b6138d-aee0-4fc5-8d84-1e8fa41f1446",
+        "1fd1b0b3-e228-4713-a2cf-89d65c877dc7"
+      ],
+      "physical_s0": {
+        "verdict": "FAIL",
+        "max_error": {
+          "position_m": 4.708515230298946e-06,
+          "orientation_rad": 0.0,
+          "linear_mps": 9.48693970613552e-05,
+          "angular_rps": 0.0019354791467167726,
+          "revolute_rad": 6.67572021484375e-06,
+          "prismatic_m": 0.0
+        },
+        "limits": {
+          "position_m": 0.0001,
+          "orientation_rad": 0.001,
+          "linear_mps": 0.001,
+          "angular_rps": 0.001,
+          "revolute_rad": 0.0001,
+          "prismatic_m": 0.0001
+        }
+      },
+      "software_clear": "PASS",
+      "post_reset_goal": "SUCCESS",
+      "control_goal": "SUCCESS",
+      "control_post_verdicts_equal": true
+    },
+    "first_attempts": [
+      {
+        "slot": "control",
+        "arm": "healthy",
+        "generation": 0,
+        "run_id": "c82b13c9ed376a9e828532bd",
+        "attempt_id": "0a2a6070-e99f-49c1-b696-33d9bce243ab",
+        "attempt_index": 0,
+        "lifecycle": "COMPLETED",
+        "reason": null,
+        "end_step": 7200,
+        "task_outcome": "SUCCESS",
+        "compliance": "PASS",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "351fffc37aabbe98f25716fcf4f558135d466a58bd5405be04205becfbc5bb8e",
+        "trace_record_chain_sha256": "d15eb56a2844ee1b315a652316e90f9d672a14037e26de675c3055b7b34e4812",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "0b9c1f68c341453402ea51df4021b969f88dd43080b707cdf2bf83217afe3040",
+          "config.resolved.json": "eb5f273214ff69ae9164f4233ab49a0723f536fd0bb6c5cb2360a5b0ddd5c3c0",
+          "environment.lock.json": "30336bb1bb250a81f048bf182d1433fb869ef205cba2c665c76d7e1ee0467c8d",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "12be5e5fc57903a4e2dea589e043bdf9492e52923c5ebde1637a7a05d6c08fe6",
+          "faults.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "initial_snapshot.json": "2a32117a0e013d169a51a45a64c340bd0ce40fa7ccde30b551d417f0477d43a4",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "caadf389e98785f894b26db08be588530f2de1b3dc92675a241eed1aac063694",
+          "performance.json": "fffe4e12123a2ea51aa281449e85ca159eb340a19fe238b206b14c0a8042cd27",
+          "protocol.lock.json": "dc20e9573b50796ef4cb71c306e85206cc7e24a72740be718d34637ef63b553f",
+          "requirements.json": "63254cc27db5ecf5f6d48cf9a1c15fab45a97783c316e7f4fa86ffe7a8636502",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "4f864c283a27b75c7ad6b55ed787497fbe041eac68295bf88a8d5c023c58e46b",
+          "trace.jsonl.gz": "fb148713b9c192be28b56dbcf2dc7fec91abb9841cc3531eb99cfe48c95c3beb"
+        },
+        "sleep_threshold_readback_m2_s2": null,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.44944247603416443,
+            -0.24071502685546875,
+            0.8100000023841858
+          ],
+          "linear_velocity_mps": [
+            2.753246371867135e-05,
+            -4.021236236440018e-05,
+            -0.00010399846360087395
+          ],
+          "angular_velocity_rps": [
+            0.00024007867614272982,
+            0.004014257341623306,
+            1.6263138604699634e-05
+          ]
+        },
+        "part_contact_and_lift": {
+          "source_supported_grasp": {
+            "step": 1514,
+            "part_xyz_m": [
+              0.44928213953971863,
+              -0.24012774229049683,
+              0.8099995255470276
+            ],
+            "contacting_part": [
+              "Source/Base",
+              "finger_left",
+              "finger_right"
+            ]
+          },
+          "source_lift_over_50mm": {
+            "step": 1724,
+            "part_xyz_m": [
+              0.4492103159427643,
+              -0.2396114021539688,
+              0.8607019186019897
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right"
+            ],
+            "vertical_rise_m": 0.05070239305496216
+          },
+          "both_jaws_and_fixture_support": {
+            "step": 3738,
+            "part_xyz_m": [
+              0.5015852451324463,
+              0.11991508305072784,
+              0.8100000023841858
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "fixed_jaw",
+              "moving_jaw"
+            ]
+          },
+          "fixture_supported_grasp": {
+            "step": 5149,
+            "part_xyz_m": [
+              0.5000002384185791,
+              0.11991576850414276,
+              0.8099997043609619
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ]
+          },
+          "fixture_lift_over_50mm": {
+            "step": 5351,
+            "part_xyz_m": [
+              0.5000883936882019,
+              0.1202777773141861,
+              0.8602041006088257
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ],
+            "vertical_rise_m": 0.05020439624786377
+          }
+        }
+      },
+      {
+        "slot": "predecessor",
+        "arm": "f4",
+        "generation": 0,
+        "run_id": "5c511da5c36fe224f99d08e2",
+        "attempt_id": "b6b6138d-aee0-4fc5-8d84-1e8fa41f1446",
+        "attempt_index": 0,
+        "lifecycle": "CANCELLED",
+        "reason": "TEST_RESET_CANCEL",
+        "end_step": 3561,
+        "task_outcome": "UNKNOWN",
+        "compliance": "UNKNOWN",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "3dedbe45d21251865d833c0ee4735e3617100984b21ca22f6714b0107a53d736",
+        "trace_record_chain_sha256": "720488ba02470e55b442adcaa14b0dde2ffe6696efdc7562b3cd4e138165c05a",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "8e908b523bb27127e3d3e46f106ac07e0027755238b80233081f6e68473f60b8",
+          "config.resolved.json": "84678973ef79a17dcb299361072361cdbd3c37b482133445835b107fd490be81",
+          "environment.lock.json": "30336bb1bb250a81f048bf182d1433fb869ef205cba2c665c76d7e1ee0467c8d",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "66916eaf5e5c72fc1313d4b340ea1f5e6bd5827c542020df999c6360ba89a614",
+          "faults.json": "c8a466be07d3cbb3c0b8132b4ac25339fd166c24e5df75f02dbb2c33c1ee334a",
+          "initial_snapshot.json": "5eef8f26b5484359613ea54483bf45030c4b211fe0327c4691293784fb076955",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "e03142bab135476f40b19929db2f940a3fcbd3afd7ef28099548bdf52aa38881",
+          "performance.json": "3761a48d5d3b137d749914a00d0bcfacd91961e14683dda2452f23b47d7355c1",
+          "protocol.lock.json": "dc20e9573b50796ef4cb71c306e85206cc7e24a72740be718d34637ef63b553f",
+          "requirements.json": "ffd4316f121d77d42a6cdcdc9b0eb1521394761193e7caa8a16b09260fb15dd0",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "813625b3437cee223605a2dcadcb3b92faab79e81685e332ff0ec7590d080d0a",
+          "trace.jsonl.gz": "76fb97f52079d3f7dfde7ddf0911f6c23c09c1a022f58d9495268a0050ca69b0"
+        },
+        "sleep_threshold_readback_m2_s2": null,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.44944247603416443,
+            -0.24071502685546875,
+            0.8100000023841858
+          ],
+          "linear_velocity_mps": [
+            2.753246371867135e-05,
+            -4.021236236440018e-05,
+            -0.00010399846360087395
+          ],
+          "angular_velocity_rps": [
+            0.00024007867614272982,
+            0.004014257341623306,
+            1.6263138604699634e-05
+          ]
+        },
+        "fault_start_step": 3557,
+        "outstanding_fault_at_boundary": true
+      },
+      {
+        "slot": "post_reset",
+        "arm": "healthy",
+        "generation": 1,
+        "run_id": "6b7019bf3e595d091d3dda42",
+        "attempt_id": "1fd1b0b3-e228-4713-a2cf-89d65c877dc7",
+        "attempt_index": 0,
+        "lifecycle": "COMPLETED",
+        "reason": null,
+        "end_step": 7200,
+        "task_outcome": "SUCCESS",
+        "compliance": "PASS",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "9748615fd3eab988a7729a855ad81ba89cc7551e3e597d770ad02b9c3437eb10",
+        "trace_record_chain_sha256": "976022597e91fc56459b527e6fb6667ec76af7ce63120ce1900b8cccec67ff01",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "e8ae6b4c0a70fdd382a54e405a002eb2f062485d927781c99b451e707e5ae06e",
+          "config.resolved.json": "cc9c044e8a4ebace2f09b66eea2224833e5eeb5179c6841bda51eb79433a69eb",
+          "environment.lock.json": "30336bb1bb250a81f048bf182d1433fb869ef205cba2c665c76d7e1ee0467c8d",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "ec68211bd7ac8135c8bb1582757f18336d2f33d935bd9404bfd239983838286b",
+          "faults.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "initial_snapshot.json": "125773799db2d4491c773d77c2fa81b75ddfebed541c064906c8cba392699603",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "4bafaaad751788a224e8646b5510ddb43da367c93ea379e64b44520021254c10",
+          "performance.json": "b46866284d9a87e586f15852e0e9dd15736677b1c3df65cb210cc1d6c867736b",
+          "protocol.lock.json": "dc20e9573b50796ef4cb71c306e85206cc7e24a72740be718d34637ef63b553f",
+          "requirements.json": "9d011f5117029a6cf69923ddc96018eb775a78da694d8c98480ceff290a47571",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "c4c77d6de8aa63a45934d97576f010a6c1c65a064e6b29a0a347ed90222c46a8",
+          "trace.jsonl.gz": "6afb3c42500e2041ba1bddf80ead206ce86725e192e45a980cc8b370e0021087"
+        },
+        "sleep_threshold_readback_m2_s2": null,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.44944241642951965,
+            -0.24071486294269562,
+            0.809999942779541
+          ],
+          "linear_velocity_mps": [
+            0.0001221573620568961,
+            -3.936107532354072e-05,
+            -0.00011075171642005444
+          ],
+          "angular_velocity_rps": [
+            0.00030374835478141904,
+            0.005947278346866369,
+            -5.759816849604249e-05
+          ]
+        },
+        "part_contact_and_lift": {
+          "source_supported_grasp": {
+            "step": 1514,
+            "part_xyz_m": [
+              0.4492814540863037,
+              -0.2401251494884491,
+              0.8099995255470276
+            ],
+            "contacting_part": [
+              "Source/Base",
+              "finger_left",
+              "finger_right"
+            ]
+          },
+          "source_lift_over_50mm": {
+            "step": 1722,
+            "part_xyz_m": [
+              0.44925594329833984,
+              -0.23960620164871216,
+              0.8603917956352234
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right"
+            ],
+            "vertical_rise_m": 0.0503922700881958
+          },
+          "both_jaws_and_fixture_support": {
+            "step": 3738,
+            "part_xyz_m": [
+              0.5015883445739746,
+              0.11991490423679352,
+              0.8100001215934753
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "fixed_jaw",
+              "moving_jaw"
+            ]
+          },
+          "fixture_supported_grasp": {
+            "step": 5149,
+            "part_xyz_m": [
+              0.5000005960464478,
+              0.11991529911756516,
+              0.809999942779541
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ]
+          },
+          "fixture_lift_over_50mm": {
+            "step": 5339,
+            "part_xyz_m": [
+              0.5000798106193542,
+              0.12024015933275223,
+              0.8601932525634766
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ],
+            "vertical_rise_m": 0.05019330978393555
+          }
+        }
+      }
+    ]
+  },
+  "experimental": {
+    "role": "candidate using the PhysX default sleep threshold on the passive source",
+    "plan_file_sha256": "179f81a57bd3e46358554398ac90e37d6b49c05ddefcb2dc83da2b75409010a3",
+    "plan_content_hash": "a2e96918c86d905a8d35a8d7f8e5723c81837546f6515ed92e156aa6e370ea31",
+    "ledger_file_sha256": "b8d0387b8f2107dfe9fb9eddf309b65e159ca247e396795fce867afa5aa8e8b0",
+    "plan_provenance": {
+      "assets_hash": "d5d4e4ba1b716770d9d7d5f71f79d87b35aaa8b390524400f7f6a221d575f476",
+      "code_hash": "d414b22ed45d1443eae52f19a35ed821ba54516c3ca5b9ef4c8de7e7fa2c4d5f",
+      "environment_hash": "885f46a1d74938666a061bf807627577c1a9d76f39a3429b4caedda683e7f399",
+      "protocol_hash": "fd1b8ae2aeeec8cba258845da3e8565aaf2b2512aa8f81d2e2a8b2ce1e0d9af0",
+      "requirements_hash": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165"
+    },
+    "reset_chain": {
+      "chain_id": "cell_b.f4.d",
+      "status": "PASS",
+      "source_artifact_ids": [
+        "f8f93532-ae48-43c6-8994-45f52885ebec",
+        "3cd7021e-3896-4d6e-a4e8-3f026389de78",
+        "badf8551-43e7-45e1-b08e-27f7ed654b83"
+      ],
+      "physical_s0": {
+        "verdict": "PASS",
+        "max_error": {
+          "position_m": 4.708515230298946e-06,
+          "orientation_rad": 0.0005620421293411357,
+          "linear_mps": 0.0,
+          "angular_rps": 0.0,
+          "revolute_rad": 6.67572021484375e-06,
+          "prismatic_m": 0.0
+        },
+        "limits": {
+          "position_m": 0.0001,
+          "orientation_rad": 0.001,
+          "linear_mps": 0.001,
+          "angular_rps": 0.001,
+          "revolute_rad": 0.0001,
+          "prismatic_m": 0.0001
+        }
+      },
+      "software_clear": "PASS",
+      "post_reset_goal": "SUCCESS",
+      "control_goal": "SUCCESS",
+      "control_post_verdicts_equal": true
+    },
+    "first_attempts": [
+      {
+        "slot": "control",
+        "arm": "healthy",
+        "generation": 0,
+        "run_id": "61b8bf1887d33ff0929fc170",
+        "attempt_id": "f8f93532-ae48-43c6-8994-45f52885ebec",
+        "attempt_index": 0,
+        "lifecycle": "COMPLETED",
+        "reason": null,
+        "end_step": 7200,
+        "task_outcome": "SUCCESS",
+        "compliance": "PASS",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "90a66a2845ea5deb7117c7eabf5d2dc901ac488c946bf070b03db917060005a4",
+        "trace_record_chain_sha256": "bdee5525e8a742f23278e23360f10f13d5ccb7ad12c9dfd3534210737f988f2b",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "f7cafe4c97ec2b465e666d369610aeb3ce533a5cd0815086f0ffd12299c72f34",
+          "config.resolved.json": "eb5f273214ff69ae9164f4233ab49a0723f536fd0bb6c5cb2360a5b0ddd5c3c0",
+          "environment.lock.json": "8b01ba37d1752dd8c0addca50f1752cf14c99509ec79a7af988bc41201cace57",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "2ff2cf46d0d896497ba88bab45ce5b7ef6906c638d9aeb7138a421a9590ced79",
+          "faults.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "initial_snapshot.json": "66c79cd486ad308f0a5f3d619cf4ba3a290f322c03877b8d50630118efc8c0eb",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "f10125ec06ff206fe0fc829ca1801db016fd8c05f3e46939958504c10008ee16",
+          "performance.json": "ab379299b1e5c1ae635d9e7d289daec7eb8aeb1f88ea377293797f56897120b1",
+          "protocol.lock.json": "085ac6d0c317dc148404d11fee44ab285b033ae941f0aa08257bf7ce607698b9",
+          "requirements.json": "3b8cbbe250c763c0fe302a0a410267c749547b1441d57182e667549dc335f2d7",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "bda81758cac07423b01f1078085400561202810bde7c48c54962b72bb85857de",
+          "trace.jsonl.gz": "be715a45f4e73105730d81d3f5facb41b521f40ec3f4284a232b212b0820c389"
+        },
+        "sleep_threshold_readback_m2_s2": 4.999999873689376e-05,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.44944196939468384,
+            -0.2407153695821762,
+            0.8099998831748962
+          ],
+          "linear_velocity_mps": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "angular_velocity_rps": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "part_contact_and_lift": {
+          "source_supported_grasp": {
+            "step": 1514,
+            "part_xyz_m": [
+              0.449281245470047,
+              -0.24012455344200134,
+              0.8099997639656067
+            ],
+            "contacting_part": [
+              "Source/Base",
+              "finger_left",
+              "finger_right"
+            ]
+          },
+          "source_lift_over_50mm": {
+            "step": 1720,
+            "part_xyz_m": [
+              0.44917094707489014,
+              -0.2395942360162735,
+              0.8606250882148743
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right"
+            ],
+            "vertical_rise_m": 0.05062532424926758
+          },
+          "both_jaws_and_fixture_support": {
+            "step": 3738,
+            "part_xyz_m": [
+              0.5015830993652344,
+              0.11994411051273346,
+              0.8100000023841858
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "fixed_jaw",
+              "moving_jaw"
+            ]
+          },
+          "fixture_supported_grasp": {
+            "step": 5149,
+            "part_xyz_m": [
+              0.5000008344650269,
+              0.11994495987892151,
+              0.809999942779541
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ]
+          },
+          "fixture_lift_over_50mm": {
+            "step": 5347,
+            "part_xyz_m": [
+              0.5000728964805603,
+              0.12024528533220291,
+              0.8601908087730408
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ],
+            "vertical_rise_m": 0.050190865993499756
+          }
+        }
+      },
+      {
+        "slot": "predecessor",
+        "arm": "f4",
+        "generation": 0,
+        "run_id": "78def0d744badf423bd18350",
+        "attempt_id": "3cd7021e-3896-4d6e-a4e8-3f026389de78",
+        "attempt_index": 0,
+        "lifecycle": "CANCELLED",
+        "reason": "TEST_RESET_CANCEL",
+        "end_step": 3561,
+        "task_outcome": "UNKNOWN",
+        "compliance": "UNKNOWN",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "352147a8a284cc4fa65b92592e0fcb1f169079c9ede4d97ce12142b29ba6dffb",
+        "trace_record_chain_sha256": "22d19179e88b8072eaf60e1df5fc23f24eb5db1a82c3b65f37a0c03a180475fd",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "87e095ea376ef70254c3da98a3d2b5148b5ecfdb9ee810a8fcc902db77d802e0",
+          "config.resolved.json": "84678973ef79a17dcb299361072361cdbd3c37b482133445835b107fd490be81",
+          "environment.lock.json": "8b01ba37d1752dd8c0addca50f1752cf14c99509ec79a7af988bc41201cace57",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "ca0e069c4e4ccf2abc8696e89fcab54d7d61e11165e8ccde6fb375787ed622fa",
+          "faults.json": "0f133fbba160bc5ef213d8ae26b127287a08d6895a64d120b640767d11123307",
+          "initial_snapshot.json": "7ea33513d149b7d9b4094c1e2835bc6b66c64acd42fe89675384c6cdf387eb8d",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "7d5994e11e15af982a2560329264c6177705c66a67e48a5bb5dc4406cfcb0afb",
+          "performance.json": "0366c40000e98b61fc4194d3c663ec376900d237505f279fa79b60c8a0533b74",
+          "protocol.lock.json": "085ac6d0c317dc148404d11fee44ab285b033ae941f0aa08257bf7ce607698b9",
+          "requirements.json": "ffd4316f121d77d42a6cdcdc9b0eb1521394761193e7caa8a16b09260fb15dd0",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "71680d4b7b8e502a97bfad46807ac3edf46fd5e2c8a8a24316fb10ab62081c7b",
+          "trace.jsonl.gz": "7d8072dc63b26e7fc5be7fa6ff55837d2e5e24d5cf1d5625c67b83e807dad6f5"
+        },
+        "sleep_threshold_readback_m2_s2": 4.999999873689376e-05,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.44944196939468384,
+            -0.2407153695821762,
+            0.8099998831748962
+          ],
+          "linear_velocity_mps": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "angular_velocity_rps": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fault_start_step": 3557,
+        "outstanding_fault_at_boundary": true
+      },
+      {
+        "slot": "post_reset",
+        "arm": "healthy",
+        "generation": 1,
+        "run_id": "eb6719df5efd7704d98ac6a0",
+        "attempt_id": "badf8551-43e7-45e1-b08e-27f7ed654b83",
+        "attempt_index": 0,
+        "lifecycle": "COMPLETED",
+        "reason": null,
+        "end_step": 7200,
+        "task_outcome": "SUCCESS",
+        "compliance": "PASS",
+        "online_offline_equal": true,
+        "manifest_final_sha256": "3d7de1d769ef16d2d195ec07df45b306ea32c28b084f07b0285b279a0ad9b6de",
+        "trace_record_chain_sha256": "667418a7fa23d41fe8a07633450bbc0f543c65c52ca9910b115a1d5579167819",
+        "files_sha256": {
+          "assets.lock.json": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "commands.jsonl.gz": "8d5c6b6a4977a8ccb7f458685d8c883111809189350bc64fefc1acb0011a818c",
+          "config.resolved.json": "cc9c044e8a4ebace2f09b66eea2224833e5eeb5179c6841bda51eb79433a69eb",
+          "environment.lock.json": "8b01ba37d1752dd8c0addca50f1752cf14c99509ec79a7af988bc41201cace57",
+          "errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events.jsonl.gz": "81f32a361dd264a0b149796f038460c2a7c5fc30081cb4d673ac496b01a919bd",
+          "faults.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "initial_snapshot.json": "8efa2475fb73a7627d77a4ac053b4bfd4e915a1824312c1da0c61462e5f5718b",
+          "initial_state.json": "0aed91ecf71014ae38bd4eea5b28aaeeac2e1c97af80bae8db5900ecb5199792",
+          "manifest.start.json": "c7aef386ed89893660cbc7da53da02ca0af536617c44ff1aa2b0321ec98807a1",
+          "performance.json": "26c5855a0d178904d3cc7fd7db94ae0a1fa86769196d582f7284f667dd2c9921",
+          "protocol.lock.json": "085ac6d0c317dc148404d11fee44ab285b033ae941f0aa08257bf7ce607698b9",
+          "requirements.json": "9b7ed3679f6886a6554d5b475ed1043b3c75dba16a45822d611e623ba9d846e3",
+          "requirements.lock": "ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165",
+          "result.json": "da69c5bae5b7cdc2de28e0243607d8d0dc803b3ad5685632c7fb0c898d78f2c6",
+          "trace.jsonl.gz": "1322ae97a3c2fe192e6aa47a435725670b64c2aed5c4ea37a3fb0be3acb56aba"
+        },
+        "sleep_threshold_readback_m2_s2": 4.999999873689376e-05,
+        "part_at_s0": {
+          "contacts": [
+            [
+              "Source/Base",
+              "part_000"
+            ]
+          ],
+          "position_m": [
+            0.449442058801651,
+            -0.24071532487869263,
+            0.8099998831748962
+          ],
+          "linear_velocity_mps": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "angular_velocity_rps": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "part_contact_and_lift": {
+          "source_supported_grasp": {
+            "step": 1514,
+            "part_xyz_m": [
+              0.44928300380706787,
+              -0.24012398719787598,
+              0.809999406337738
+            ],
+            "contacting_part": [
+              "Source/Base",
+              "finger_left",
+              "finger_right"
+            ]
+          },
+          "source_lift_over_50mm": {
+            "step": 1729,
+            "part_xyz_m": [
+              0.4492325484752655,
+              -0.2396131008863449,
+              0.8607509732246399
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right"
+            ],
+            "vertical_rise_m": 0.050751566886901855
+          },
+          "both_jaws_and_fixture_support": {
+            "step": 3746,
+            "part_xyz_m": [
+              0.5015904307365417,
+              0.11994944512844086,
+              0.8100001811981201
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "fixed_jaw",
+              "moving_jaw"
+            ]
+          },
+          "fixture_supported_grasp": {
+            "step": 5157,
+            "part_xyz_m": [
+              0.500000536441803,
+              0.11995134502649307,
+              0.8100000023841858
+            ],
+            "contacting_part": [
+              "Fixture/Base",
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ]
+          },
+          "fixture_lift_over_50mm": {
+            "step": 5348,
+            "part_xyz_m": [
+              0.5000895857810974,
+              0.12022268027067184,
+              0.8607166409492493
+            ],
+            "contacting_part": [
+              "finger_left",
+              "finger_right",
+              "fixed_jaw"
+            ],
+            "vertical_rise_m": 0.05071663856506348
+          }
+        }
+      }
+    ]
+  }
+}
