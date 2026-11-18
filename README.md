@@ -18,6 +18,8 @@ The formal fixed-state commissioning suite completed 20 first attempts per cell 
 
 Candidate `a6f3f9d` then completed 8 of 16 planned boundary attempts. All eight reached the placement goal. Seven passed compliance. On Cell A boundary 3, the measured part-to-tool displacement reached 18.942 mm at step 2,043, exceeding the 18 mm carry limit. The coordinator stopped before the pilot. WSL2 reproduced all 136 boundary requirement verdicts and first witnesses. [Candidate history, denominators and source hashes](results/qualification/candidate-a6f3f9d/README.md)
 
+Candidate `8ad96bd` completed all 40 nominal trials and all 16 boundary trials with successful placement and passing compliance. In the 80-run pilot, 30 trials succeeded, 40 ended in a controlled abort, and 10 failed. All ten failures occurred in Cell A when the gripper's closed signal froze or arrived late. All 70 injected faults took effect and their normal paths recovered. Windows and WSL2 agreed on all 2,312 requirement verdicts and first witness steps across the 136 runs. [Qualification plans and replay evidence](results/qualification/candidate-8ad96bd/summary.json)
+
 A small Windows-generated [mock attempt](examples/traces/mock-36) is available for offline replay. It contains 36 physics decisions. The final placement goal expires at this short horizon. The [Windows verdicts](results/r0/replay-windows.json) and [WSL verdicts](results/r0/replay-linux.json) record the same source digest, rule digest and witness steps.
 
 ```sh
