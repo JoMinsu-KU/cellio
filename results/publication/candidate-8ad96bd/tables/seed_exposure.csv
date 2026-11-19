@@ -1,0 +1,7 @@
+scene_seeds,cell,distinct_cell_states,planned,started,evaluable,task_success,fault_planned,fault_realized
+1000,both,2,68,68,68,31,52,50
+1000,cell_a,1,34,34,34,17,26,26
+1000,cell_b,1,34,34,34,14,26,24
+1001–1019,both,38,752,752,752,304,628,620
+1001–1019,cell_a,19,376,376,376,158,314,314
+1001–1019,cell_b,19,376,376,376,146,314,306

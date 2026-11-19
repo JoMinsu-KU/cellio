@@ -1,0 +1,49 @@
+scope,item,value,source,sha256
+windows-isaac62,os,Windows,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,os_version,10.0.26200,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,architecture,AMD64,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,python,3.12.16,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,installed distributions,170,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,cellio,1.0.0,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,isaacsim,6.2.0.0,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,torch,2.11.0+cu130,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,numpy,2.3.1,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,warp-lang,1.19.0,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,matplotlib,3.10.8,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,jsonschema,4.26.0,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,pytest,8.4.2,locks/windows-isaac62/python-environment.json,b857d2b37aa51fb4ca234e9242c61c6eb875dfd35954a5118c9e9684da605ec6
+windows-isaac62,hash-pinned wheel requirements,ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165,locks/windows-isaac62/requirements.lock,ee692ade6e8e86868b463d6d9b188d2d97289f099fc35a3307fb855ab8979165
+wsl-audit,os,Linux,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,os_version,#1 SMP Tue Nov 5 00:21:55 UTC 2024,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,architecture,x86_64,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,python,3.12.16,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,installed distributions,34,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,cellio,1.0.0,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,numpy,2.5.5,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,matplotlib,3.10.8,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,jsonschema,4.26.0,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,pytest,8.4.2,locks/wsl-audit/python-environment.json,a9afc285084526f1933e1679dc059517d9048f292cab81d25f623a10d5517694
+wsl-audit,hash-pinned wheel requirements,bae1a0d1de4bebcb1ecef44aeb3df24670b7e12d89b4e734751073b55d7cf3f1,locks/wsl-audit/requirements.lock,bae1a0d1de4bebcb1ecef44aeb3df24670b7e12d89b4e734751073b55d7cf3f1
+native doctor,platform,Windows,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native doctor,processor,"Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native doctor,installed_ram_bytes,68719476736,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native doctor,recorded_at_utc,2026-11-18T11:58:32.049842+00:00,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native GPU,name,NVIDIA GeForce RTX 4090,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native GPU,driver_version,610.88,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+native GPU,vram_mib,24564,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+Kit probe,kit_version,110.4.0+feature.386251.187cf21b.gl,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+Kit probe,physics_device,cpu,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+Kit probe,solver,TGS,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+Kit probe,warp_runtime_version,1.17.0,results/workstation/doctor-windows-1.0.0.json,ea2784f57048592318c3a09a6fc5a847fb30b408b5baec7e3c41eb14efb15a17
+Franka asset inventory,inventory schema,cellio.assets/1.0,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Franka asset inventory,layout,catalog-and-sdk-relative-v3-mdl,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Franka asset inventory,recorded file hashes,74,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Franka asset inventory,recorded bytes,58198290,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Franka asset inventory,motion configuration records,14,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Franka asset inventory,source terms,https://docs.isaacsim.omniverse.nvidia.com/6.2.0/common/licenses.html,results/workstation/franka-assets-portable.lock.json,500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313
+Robot profile,schema,cellio.robot_profile/1.0,results/workstation/robot_profile.lock.json,fc4e672742181c05354a7cec37f4fc28770c9648544769c95b3aef2080b2a446
+Robot profile,tool_frame,panda_hand,results/workstation/robot_profile.lock.json,fc4e672742181c05354a7cec37f4fc28770c9648544769c95b3aef2080b2a446
+Robot profile,finger_drivers,['panda_finger_joint1'],results/workstation/robot_profile.lock.json,fc4e672742181c05354a7cec37f4fc28770c9648544769c95b3aef2080b2a446
+Robot profile,hand_T_tcp,"[0.0, 0.0, 0.1034, 1.0, 0.0, 0.0, 0.0]",results/workstation/robot_profile.lock.json,fc4e672742181c05354a7cec37f4fc28770c9648544769c95b3aef2080b2a446
+Geometry calibration,physical pose samples,5,results/workstation/franka-geometry.json,87d03622c295b7494f927eff3e5e68655955d069bf5d8321b63e2d8b32494759
+Geometry calibration,recorded result,True,results/workstation/franka-geometry.json,87d03622c295b7494f927eff3e5e68655955d069bf5d8321b63e2d8b32494759

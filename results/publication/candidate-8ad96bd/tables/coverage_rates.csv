@@ -1,0 +1,401 @@
+cell,arm,controller,metric,numerator,denominator,fraction,lower95,upper95,undefined_bootstrap_fraction,exclusions
+cell_a,f1_high,mutant.c_m3,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,task_success_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,mutant.c_m3,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f1_high,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_high,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f1_low,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f1_low,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f1_low,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f2,mutant.c_m5,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f2,mutant.c_m5,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,mutant.c_m5,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f2,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f2,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f2,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f3,mutant.c_m6,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,task_success_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,mutant.c_m6,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f3,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f3,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f3,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f4,mutant.c_m4,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f4,mutant.c_m4,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,mutant.c_m4,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f4,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f4,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f5,mutant.c_m1,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f5,mutant.c_m1,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,mutant.c_m1,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f5,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f5,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f5,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_a,f6,mutant.c_m2,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,task_success_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,mutant.c_m2,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f6,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,f6,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,f6,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m1,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m1,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m1,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m1,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m1,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m1,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m1,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m1,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m1,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m1,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m2,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m2,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m2,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m2,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m2,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m3,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m3,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m3,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m3,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m3,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m4,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m4,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m4,task_success_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m4,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m4,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m5,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m5,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m5,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m5,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m5,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m6,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,mutant.c_m6,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m6,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,mutant.c_m6,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,mutant.c_m6,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_a,healthy,reference,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 40}"
+cell_a,healthy,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_a,healthy,reference,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 40}"
+cell_a,healthy,reference,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 40}"
+cell_a,healthy,reference,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"
+cell_a,healthy,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_a,healthy,reference,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"
+cell_a,healthy,reference,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"
+cell_b,f1_high,mutant.c_m3,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,mutant.c_m3,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f1_high,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_high,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f1_low,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f1_low,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f1_low,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f2,mutant.c_m5,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f2,mutant.c_m5,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,mutant.c_m5,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f2,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f2,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f2,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f3,mutant.c_m6,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,task_success_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,mutant.c_m6,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f3,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f3,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f3,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,mutant.c_m4,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f4,mutant.c_m4,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f4,mutant.c_m4,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f4,mutant.c_m4,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 10}"
+cell_b,f4,mutant.c_m4,realization_given_activation,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f4,mutant.c_m4,realization_per_plan,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f4,mutant.c_m4,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f4,mutant.c_m4,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f4,mutant.c_m4,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f4,mutant.c_m4,valid_fault_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f4,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f4,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f4,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f5,mutant.c_m1,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,task_success_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f5,mutant.c_m1,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,mutant.c_m1,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f5,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f5,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f5,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,activation_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,evaluable_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,infrastructure_error_rate,0,10,0.0,0.0,0.0,0.0,{}
+cell_b,f6,mutant.c_m2,path_recovery_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,realization_given_activation,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,realization_per_plan,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,start_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,task_success_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,trigger_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,mutant.c_m2,valid_fault_rate,10,10,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,activation_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f6,reference,path_recovery_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,realization_given_activation,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,realization_per_plan,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,task_success_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,f6,reference,trigger_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,f6,reference,valid_fault_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m1,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m1,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m1,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m1,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m1,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m1,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m1,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m1,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m1,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m1,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m2,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m2,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m2,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m2,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m2,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m3,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m3,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m3,task_success_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m3,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m3,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m4,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m4,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m4,task_success_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m4,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m4,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m5,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m5,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m5,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m5,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m5,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,evaluable_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m6,infrastructure_error_rate,0,5,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,mutant.c_m6,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,start_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m6,task_success_rate,5,5,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,mutant.c_m6,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,mutant.c_m6,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 5}"
+cell_b,healthy,reference,activation_rate,0,0,,,,1.0,"{""N_trigger eligibility not met"": 40}"
+cell_b,healthy,reference,evaluable_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,reference,infrastructure_error_rate,0,40,0.0,0.0,0.0,0.0,{}
+cell_b,healthy,reference,path_recovery_rate,0,0,,,,1.0,"{""N_recovery_eligible eligibility not met"": 40}"
+cell_b,healthy,reference,realization_given_activation,0,0,,,,1.0,"{""N_activate eligibility not met"": 40}"
+cell_b,healthy,reference,realization_per_plan,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"
+cell_b,healthy,reference,start_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,reference,task_success_rate,40,40,1.0,1.0,1.0,0.0,{}
+cell_b,healthy,reference,trigger_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"
+cell_b,healthy,reference,valid_fault_rate,0,0,,,,1.0,"{""N_faultplan eligibility not met"": 40}"

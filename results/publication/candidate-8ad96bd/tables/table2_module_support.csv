@@ -1,0 +1,17 @@
+id,scope,source_status,symbol,source,sha256
+M01,Configuration and registry,definition present,resolve,src/cellio/config/__init__.py,53167e71fa4722c85955e2dbbf2e34b044f6a5672ae136264c2a10949f2d739e
+M02,Clock and event phases,definition present,StepClock,src/cellio/core/clock.py,1b977dc59fb64f37a7746c87178050f73d12bc9f3980cddc78ff20d0cd06b17b
+M03,Native Isaac plant,definition present,IsaacPlant,src/cellio/adapters/isaac62/plant.py,d399ff1ef77dffee13400aa988c7e30e7da3c0ae2067c77eaa57cd037f7bc2e4
+M04,Scene geometry and independent truth,definition present,Scene,src/cellio/scenes/definition.py,957307b5fd36d3bbe0badb904a722968a438d31e83464595abbb28f0568d7dff
+M05,Nominal typed signals,definition present,NominalSampler,src/cellio/core/signals.py,bb204ab4897250bba4e014bc19d7302c00b434c72eb362f36a02f178091b23ea
+M06,"Observation, delivery and actuator faults",definition present,FaultEngine,src/cellio/core/faults/engine.py,922eaadc6bcf9f93ff69245384945d7f22a642c6a8a432355f33922373334268
+M07,Command validation and delivery,definition present,CommandRouter,src/cellio/core/commands.py,d8c5a0659b2e93bd72baef1c6bd899cd77dec11181b408592a83c7a343c19c00
+M08,Reference and mutant controllers,definition present,ReferenceController,src/cellio/controllers/reference.py,d97087762b15efa2b406e8b8f1615ba6ec8eb716d2d85342aa2996b79dc04ec0
+M09,Independent finite-trace oracle,definition present,Oracle,src/cellio/core/oracle/engine.py,1fe2044cbb33f3f2493c766c2afbd27935c3dec9d2ad946559e0bd353052aab1
+M10,Fixed-step episode runner,definition present,run_episode,src/cellio/runtime/episode.py,3d7d9aea281137c7048ec695e23d1df06ed6363ccac854214e4b0093ab24ab5f
+M11,Campaign supervisor,definition present,execute_plan,src/cellio/runtime/supervisor.py,a894f3c12a129676bc2aab372228486d1d4d71eddebca8579d702b61e6f73e51
+M12,Sealed trace verification,definition present,verify_artifact,src/cellio/artifacts/trace.py,25b7eac394108b1be6bf47830bc2573175b615942fec2b4d952f8fd4d351ed93
+M13,Replay and reporting,definition present,report,src/cellio/reporting/__init__.py,38b2417cd00ed0c2d5e723a6e32bad9c35516c30e6cd070d48af0cf944bfb7e4
+M14,CLI and workstation diagnostics,definition present,main,src/cellio/cli/main.py,747b657fe23042f052a134f4f08cd82852b4b6178fd59cd24c0b515dba848ddc
+M15,Registered scene extensions,definition present,scene_plugin,src/cellio/plugins/__init__.py,ca3ab5df8c33fe0fe324dac0ca5bb95bcdea0304e9614820e48f66340a643739
+M16,External OpenPLC / wall-clock integration,outside the implemented release scope (optional),,,

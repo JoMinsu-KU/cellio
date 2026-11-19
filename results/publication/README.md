@@ -1,6 +1,6 @@
 # Workstation publication evidence
 
-The registered evaluation now has 820 verified first attempts. Its results include the six matched mutant models and the 80 reference stop-time violations in Cell A. [Registered results](candidate-8ad96bd/primary/primary-review.md) · [Physical stop-time analysis](candidate-8ad96bd/primary/r06-physical-diagnosis.md)
+The registered evaluation has 820 verified first attempts. Its results include six matched mutant models, the 80 reference stop-time violations in Cell A and the workstation's measured figures and tables. [Registered figures and tables](candidate-8ad96bd/README.md) · [Physical stop-time analysis](candidate-8ad96bd/primary/r06-physical-diagnosis.md)
 
 The following snapshot contains results reproduced on 18 November 2026, before the registered evaluation. Figures 1, 2, 3 and the gold-fixture panel of Figure 5 are available as PNG and PDF. The figure index records the source plan, protocol, trace and generated-file hashes. [Commissioning figure index](figures/index.json)
 

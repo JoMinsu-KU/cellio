@@ -21,13 +21,15 @@ All 560 reference fault injections took effect and their normal paths recovered.
 
 The evaluation distinguished all six intentionally defective controller variants, exceeding the target of five. Across the 120 registered faulted mutant–reference pairs, 110 exposed a targeted requirement violation. In the remaining 10 pairs, the configured fault had no measured effect on the mutant. An additional 60 nominal mutant trials measured diagnostic behavior. [Primary analysis and paired results](results/publication/candidate-8ad96bd/primary/primary-review.md) · [Windows and WSL2 comparison](results/publication/candidate-8ad96bd/primary/report-comparison.json)
 
+For the versioned acceptance decision, open the release summary attached to the matching GitHub release. It records the fifteen required gates, the separate clean-environment quickstarts and each recommended performance target. [Releases](https://github.com/JoMinsu-KU/cellio/releases)
+
 ## Qualification and development history
 
 The Windows [physics probe](results/workstation/doctor-windows-drive.json) measures free fall and a driven prismatic joint. In separate full-horizon commissioning runs, Cell A transferred its part and Cell B clamped, processed and unloaded its part. Windows and WSL2 reproduced the first witness step of each requirement. The [commissioning record](docs/adr/002-gripper-commissioning.md) identifies the tuning conditions and the overlap of one initial state with the registered evaluation.
 
 The workstation completed 19 headless development attempts of 7,200 steps each. The register retains the failed, aborted and successful trials and their hashes. On the evaluation candidate, a separate 120-step comparison measured one second of physical time in both GUI and headless modes, with zero observed difference in part position. [Workstation commissioning register](results/workstation/commissioning-register.json) · [GUI clock and trajectory comparison](results/workstation/gui-clock-8ad96bd.json)
 
-The publication materials include the actual Cell A transfer and Cell B clamping images, a trace of a stuck-low belt observation, and the independent oracle confusion matrix. [Figures and tables](results/publication/README.md)
+The publication materials include native images of the Cell A transfer and Cell B clamping, a fault timeline, coverage by condition and the oracle confusion matrix. The earlier commissioning snapshot also retains the stuck-low belt example. [Registered figures and tables](results/publication/candidate-8ad96bd/README.md) · [Commissioning figures](results/publication/README.md)
 
 The [campaign guide](docs/run_campaigns.md) explains how to collect the repeated nominal trials, check the boundary states, freeze the candidate, and resume the registered physical campaigns. The [experiment protocols](protocols) specify their cells, seeds and repeat counts.
 
