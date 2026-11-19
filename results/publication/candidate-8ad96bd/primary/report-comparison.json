@@ -1,0 +1,21 @@
+{
+  "summary_sha256": "0d1786202e9b814a08015f52fa90ad767398572604bb7351afaab2df1be73820",
+  "reports": {
+    "Windows": {
+      "platform": "Windows",
+      "kernel": "11",
+      "report_file_sha256": "41eeea814505531827f84a2d424b8fd4c148e43e558452590799f6441f1bafb1",
+      "verified_first_attempts": 820,
+      "matched_pair_decisions_and_target_witnesses": 120,
+      "status": "MATCH"
+    },
+    "WSL": {
+      "platform": "Linux",
+      "kernel": "5.15.167.4-microsoft-standard-WSL2",
+      "report_file_sha256": "da7ffdbfa699f23699c133324f3d1c413fcfa9fe1e8b471c6c4fd8dce3069883",
+      "verified_first_attempts": 820,
+      "matched_pair_decisions_and_target_witnesses": 120,
+      "status": "MATCH"
+    }
+  }
+}

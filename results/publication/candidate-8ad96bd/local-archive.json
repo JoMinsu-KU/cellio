@@ -1,0 +1,14 @@
+{
+  "format": "ZIP64",
+  "suite": "canonical-v1",
+  "storage": "workstation",
+  "archive_sha256": "a70ca252b439623ba31bf6009934b12ba8144e351579e0ad245127b328129d7d",
+  "archive_bytes": 10492293502,
+  "entry_count": 14762,
+  "entry_bytes_total": 10617102088,
+  "matched_first_attempt_manifests": 820,
+  "plan_hash": "c3c4eba15f6f7546fefb21a9380a5175fa39f4068fb8e9e3c6b6319aa9d6a680",
+  "plan_file_sha256": "cb0050ef42760ea791a412477d0f130061f98c6ae913a707a600ee64f952ff82",
+  "ledger_file_sha256": "3f2467a23e583b0c74130fd5ef605cde938e0ce37391cbd4d33cb35f550fe27d",
+  "first_attempt_index_sha256": "08bc7dadd1d8100438bc14c9e5936f4432833952c139e8a8b5df8f390be61985"
+}

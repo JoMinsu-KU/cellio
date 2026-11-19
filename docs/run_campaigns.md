@@ -4,7 +4,7 @@ Use the Windows Conda environment with the commissioned Isaac Sim installation. 
 
 ```powershell
 conda activate cellio-isaac62
-$campaignRoot = Join-Path $env:LOCALAPPDATA 'CellIO\campaigns'
+$campaignRoot = Join-Path $env:LOCALAPPDATA 'CellIO\campaigns\candidate-01'
 python scripts/run_workstation_protocol.py --campaign-root $campaignRoot --phase commission-v1
 python scripts/run_workstation_protocol.py --campaign-root $campaignRoot --phase all
 ```
@@ -60,7 +60,7 @@ After the registered canonical campaign completes, open the same checkout in WSL
 
 ```sh
 windows_local_appdata=$(powershell.exe -NoProfile -Command '$env:LOCALAPPDATA' | tr -d '\r')
-campaign_root="$(wslpath -u "$windows_local_appdata")/CellIO/campaigns"
+campaign_root="$(wslpath -u "$windows_local_appdata")/CellIO/campaigns/candidate-01"
 python -m cellio acceptance --level r0 --strict --report "$campaign_root/release-evidence/r0-wsl.json"
 python -m cellio report --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/canonical-wsl"
 python scripts/compare_platform_replays.py --campaign "$campaign_root/canonical-v1" --windows "$campaign_root/canonical-v1/reports/metrics.json" --wsl "$campaign_root/release-evidence/canonical-wsl/metrics.json" --output "$campaign_root/release-evidence/canonical-platform-comparison.json"
@@ -75,6 +75,8 @@ python scripts/reproduce_figures.py --campaign "$campaign_root/overhead-v1" --ou
 ```
 
 To combine the measured panels for publication, pass the other raw suite directories alongside the canonical campaign. Both scripts replay the available attempts. Figure 4 groups all registered controllers by cell and fault arm. Figure 6 draws each panel from the corresponding suite.
+
+For the archived workstation evaluation, use `candidate-8ad96bd` in both campaign-root variables. Its Figure 2 source directory, `$campaign_root/release-evidence/fixed-camera`, contains the two captured PNGs and their provenance. Add `--renders "$campaign_root/release-evidence/fixed-camera"` to regenerate the figure from that local capture.
 
 ```sh
 python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/publication"
