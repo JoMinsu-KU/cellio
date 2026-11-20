@@ -1,0 +1,891 @@
+{
+  "canonical_retrospective": [
+    {
+      "attempts": 40,
+      "compliance": "FAIL",
+      "task": "CONTROLLED_ABORT"
+    },
+    {
+      "attempts": 320,
+      "compliance": "PASS",
+      "task": "CONTROLLED_ABORT"
+    },
+    {
+      "attempts": 125,
+      "compliance": "FAIL",
+      "task": "FAILED"
+    },
+    {
+      "attempts": 55,
+      "compliance": "FAIL",
+      "task": "SUCCESS"
+    },
+    {
+      "attempts": 280,
+      "compliance": "PASS",
+      "task": "SUCCESS"
+    }
+  ],
+  "cases": [
+    {
+      "attempt": "upper_cross-A-normal/attempt-01",
+      "case": "upper_cross-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018267,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.14996509891333
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295457,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.249968872358316
+        }
+      ],
+      "placement": "A",
+      "sequence": "upper_cross"
+    },
+    {
+      "attempt": "upper_cross-A-stale_ok/attempt-01",
+      "case": "upper_cross-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": true,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018267,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.14996509891333
+        },
+        {
+          "actual": "OK",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295457,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 33.249968872358316
+        }
+      ],
+      "placement": "A",
+      "sequence": "upper_cross"
+    },
+    {
+      "attempt": "upper_cross-B-normal/attempt-01",
+      "case": "upper_cross-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018244,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.14984441879276
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295436,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.249967723850915
+        }
+      ],
+      "placement": "B",
+      "sequence": "upper_cross"
+    },
+    {
+      "attempt": "upper_cross-B-stale_ok/attempt-01",
+      "case": "upper_cross-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": true,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018244,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.14984441879276
+        },
+        {
+          "actual": "OK",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295436,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 33.249967723850915
+        }
+      ],
+      "placement": "B",
+      "sequence": "upper_cross"
+    },
+    {
+      "attempt": "lower_cross-A-normal/attempt-01",
+      "case": "lower_cross-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447535,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84996747117819
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967561,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.749967859079355
+        }
+      ],
+      "placement": "A",
+      "sequence": "lower_cross"
+    },
+    {
+      "attempt": "lower_cross-A-stale_ok/attempt-01",
+      "case": "lower_cross-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": true,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447535,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84996747117819
+        },
+        {
+          "actual": "OK",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967561,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 32.749967859079355
+        }
+      ],
+      "placement": "A",
+      "sequence": "lower_cross"
+    },
+    {
+      "attempt": "lower_cross-B-normal/attempt-01",
+      "case": "lower_cross-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.8500187024473,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84984679105762
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.750017009675396,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.749966710571954
+        }
+      ],
+      "placement": "B",
+      "sequence": "lower_cross"
+    },
+    {
+      "attempt": "lower_cross-B-stale_ok/attempt-01",
+      "case": "lower_cross-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": true,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.8500187024473,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84984679105762
+        },
+        {
+          "actual": "OK",
+          "expected": "NG",
+          "geometry_mm": 32.750017009675396,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 32.749966710571954
+        }
+      ],
+      "placement": "B",
+      "sequence": "lower_cross"
+    },
+    {
+      "attempt": "upper_reverse-A-normal/attempt-01",
+      "case": "upper_reverse-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.250018022954585,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24996679168524
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018255,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.14990559184816
+        }
+      ],
+      "placement": "A",
+      "sequence": "upper_reverse"
+    },
+    {
+      "attempt": "upper_reverse-A-stale_ok/attempt-01",
+      "case": "upper_reverse-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.250018022954585,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24996679168524
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018255,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.14990559184816
+        }
+      ],
+      "placement": "A",
+      "sequence": "upper_reverse"
+    },
+    {
+      "attempt": "upper_reverse-B-normal/attempt-01",
+      "case": "upper_reverse-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295435,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24984611156467
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.150016330182666,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.14996250199065
+        }
+      ],
+      "placement": "B",
+      "sequence": "upper_reverse"
+    },
+    {
+      "attempt": "upper_reverse-B-stale_ok/attempt-01",
+      "case": "upper_reverse-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295435,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24984611156467
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.150016330182666,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.14996250199065
+        }
+      ],
+      "placement": "B",
+      "sequence": "upper_reverse"
+    },
+    {
+      "attempt": "lower_reverse-A-normal/attempt-01",
+      "case": "lower_reverse-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.750017009675624,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.74996577840628
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447414,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.84990796411302
+        }
+      ],
+      "placement": "A",
+      "sequence": "lower_reverse"
+    },
+    {
+      "attempt": "lower_reverse-A-stale_ok/attempt-01",
+      "case": "lower_reverse-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.750017009675624,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.74996577840628
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447414,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.84990796411302
+        }
+      ],
+      "placement": "A",
+      "sequence": "lower_reverse"
+    },
+    {
+      "attempt": "lower_reverse-B-normal/attempt-01",
+      "case": "lower_reverse-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967539,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.74984509828571
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.85001870244753,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.84996487425551
+        }
+      ],
+      "placement": "B",
+      "sequence": "lower_reverse"
+    },
+    {
+      "attempt": "lower_reverse-B-stale_ok/attempt-01",
+      "case": "lower_reverse-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967539,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.74984509828571
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.85001870244753,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.84996487425551
+        }
+      ],
+      "placement": "B",
+      "sequence": "lower_reverse"
+    },
+    {
+      "attempt": "both_good-A-normal/attempt-01",
+      "case": "both_good-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447535,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84996747117819
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018266,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.149967179586405
+        }
+      ],
+      "placement": "A",
+      "sequence": "both_good"
+    },
+    {
+      "attempt": "both_good-A-stale_ok/attempt-01",
+      "case": "both_good-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.850018702447535,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84996747117819
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.15001633018266,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 33.149967179586405
+        }
+      ],
+      "placement": "A",
+      "sequence": "both_good"
+    },
+    {
+      "attempt": "both_good-B-normal/attempt-01",
+      "case": "both_good-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.8500187024473,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84984679105762
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.150016330182446,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 33.149966031079
+        }
+      ],
+      "placement": "B",
+      "sequence": "both_good"
+    },
+    {
+      "attempt": "both_good-B-stale_ok/attempt-01",
+      "case": "both_good-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": true
+      },
+      "nominally_triggered": true,
+      "parts": [
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 32.8500187024473,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 32.84984679105762
+        },
+        {
+          "actual": "OK",
+          "expected": "OK",
+          "geometry_mm": 33.150016330182446,
+          "owner": "P1",
+          "part": "P2",
+          "probe_mm": 33.149966031079
+        }
+      ],
+      "placement": "B",
+      "sequence": "both_good"
+    },
+    {
+      "attempt": "both_bad-A-normal/attempt-01",
+      "case": "both_bad-A-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.250018022954585,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24996679168524
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.7500170096755,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.74990627134111
+        }
+      ],
+      "placement": "A",
+      "sequence": "both_bad"
+    },
+    {
+      "attempt": "both_bad-A-stale_ok/attempt-01",
+      "case": "both_bad-A-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.250018022954585,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24996679168524
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.7500170096755,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.74990627134111
+        }
+      ],
+      "placement": "A",
+      "sequence": "both_bad"
+    },
+    {
+      "attempt": "both_bad-B-normal/attempt-01",
+      "case": "both_bad-B-normal",
+      "condition": "normal",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295435,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24984611156467
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967562,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.7499631814836
+        }
+      ],
+      "placement": "B",
+      "sequence": "both_bad"
+    },
+    {
+      "attempt": "both_bad-B-stale_ok/attempt-01",
+      "case": "both_bad-B-stale_ok",
+      "condition": "stale_ok",
+      "flags": {
+        "cycle_completion": false,
+        "output_quality": false,
+        "result_owner": false
+      },
+      "nominally_triggered": false,
+      "parts": [
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 33.25001802295435,
+          "owner": "P1",
+          "part": "P1",
+          "probe_mm": 33.24984611156467
+        },
+        {
+          "actual": "NG",
+          "expected": "NG",
+          "geometry_mm": 32.75001700967562,
+          "owner": "P2",
+          "part": "P2",
+          "probe_mm": 32.7499631814836
+        }
+      ],
+      "placement": "B",
+      "sequence": "both_bad"
+    }
+  ],
+  "inputs_sha256": {
+    "cell-c-observer-comparison-v1.json": "4f7b03478dbf16c4605acd67b3c81243b94eefc997d2b8f90b319ff8368297fc",
+    "cell-c-softwarex-v1.json": "8a24b33506172e8761fa3158c23328c0ca35ffb1cfb1c590f35d186428ba1d59",
+    "first-attempt-index.json": "08bc7dadd1d8100438bc14c9e5936f4432833952c139e8a8b5df8f390be61985",
+    "observations.jsonl": "58226a833d3f7c8627a8ab9cf8436e5c3923ebbe6d4dfa81f22700ca7be92f51"
+  },
+  "matrices": {
+    "cycle_completion": {
+      "FN": 6,
+      "FP": 0,
+      "TN": 18,
+      "TP": 0
+    },
+    "output_quality": {
+      "FN": 2,
+      "FP": 0,
+      "TN": 18,
+      "TP": 4
+    },
+    "result_owner": {
+      "FN": 0,
+      "FP": 0,
+      "TN": 18,
+      "TP": 6
+    }
+  },
+  "paired_P2": [
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": true,
+      "owner_changed": true,
+      "placement": "A",
+      "sequence": "upper_cross"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": true,
+      "owner_changed": true,
+      "placement": "B",
+      "sequence": "upper_cross"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": true,
+      "owner_changed": true,
+      "placement": "A",
+      "sequence": "lower_cross"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": true,
+      "owner_changed": true,
+      "placement": "B",
+      "sequence": "lower_cross"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "A",
+      "sequence": "upper_reverse"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "B",
+      "sequence": "upper_reverse"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "A",
+      "sequence": "lower_reverse"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "B",
+      "sequence": "lower_reverse"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": true,
+      "placement": "A",
+      "sequence": "both_good"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": true,
+      "placement": "B",
+      "sequence": "both_good"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "A",
+      "sequence": "both_bad"
+    },
+    {
+      "measured_height_difference_mm": 0.0,
+      "output_changed": false,
+      "owner_changed": false,
+      "placement": "B",
+      "sequence": "both_bad"
+    }
+  ],
+  "planned": 24,
+  "schema": "cellio.softwarex.observer-audit/1",
+  "scorable": 24,
+  "unavailable": []
+}

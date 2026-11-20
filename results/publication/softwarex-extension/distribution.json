@@ -1,0 +1,55 @@
+{
+  "schema": "cellio.publication.distribution/1",
+  "source_commit": "3640cb4bc2fd469b4b29e46fbf948f4bfa109c40",
+  "development_version": "1.1.0.dev1",
+  "wheel": {
+    "name": "cellio-1.1.0.dev1-py3-none-any.whl",
+    "bytes": 1294341,
+    "sha256": "528a1c6e0184c7fa294f85b1e650e1f862b6603f59a8a3c44a081feaa3eb2b5f",
+    "python_sources": 100,
+    "source_date_epoch": 1767225600
+  },
+  "windows_cpu_rebuilds_from_git": 2,
+  "bit_identical": true,
+  "windows_cpu_replay": {
+    "normal": {
+      "exit_code": 0,
+      "verdict": "PASS",
+      "destinations": [
+        "OK",
+        "NG"
+      ],
+      "result_ids": [
+        "P1",
+        "P2"
+      ]
+    },
+    "stale_ok": {
+      "exit_code": 5,
+      "verdict": "FAIL",
+      "destinations": [
+        "OK",
+        "OK"
+      ],
+      "result_ids": [
+        "P1",
+        "P1"
+      ]
+    }
+  },
+  "linux_clean_venv_receipt": "wsl-clean-install.json",
+  "linux_clean_venv_receipt_sha256": "5d02940abb730ff49dc7e19d2df2b0857d97c146a113d8caf909abdfe1f470c2",
+  "preliminary_windows_qualification_wheel_sha256": "f33610d68e4523e673d2763b1a0b43d71a848c13142733b23682ed915fe08e8b",
+  "delta_from_preliminary_wheel": {
+    "added": [
+      "cellio-1.1.0.dev1.data/data/share/cellio/protocols/cell-c-metrology-v1.json"
+    ],
+    "removed": [],
+    "different": [
+      "cellio-1.1.0.dev1.dist-info/RECORD"
+    ]
+  },
+  "github_visibility_checked": "PRIVATE",
+  "visibility_check_date": "2026-11-20",
+  "public_release": false
+}

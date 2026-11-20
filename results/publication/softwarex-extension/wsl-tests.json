@@ -1,0 +1,20 @@
+{
+  "platform": "Ubuntu on WSL2",
+  "python": "3.12.16",
+  "command": "python -m pytest -q -p no:cacheprovider --basetemp=<fresh-temporary-directory> --junitxml=<local-report.xml>",
+  "counts": {
+    "tests": 447,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 446
+  },
+  "skipped": [
+    {
+      "test": "tests.integration.test_isaac_contracts.test_isaac_real_one_step_and_hard_reload",
+      "reason": "Set CELLIO_RUN_ISAAC_TESTS and CELLIO_ASSET_CACHE on a 6.2 runtime"
+    }
+  ],
+  "junit_sha256": "4569a067b5a17a557590d1e38fb41fc96d02853825a1040f045bcf3f70cb0eec",
+  "elapsed_s": 33.018
+}

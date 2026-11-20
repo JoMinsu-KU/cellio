@@ -1,0 +1,9 @@
+{
+  "name": "cell-c-local-native-replays.zip",
+  "bytes": 78917482,
+  "sha256": "6e0b8ee2628ea8f6e30af647221bafa3c89ce6250349455fbccfbd82a14e13ac",
+  "member_count": 500,
+  "uncompressed_bytes": 334383968,
+  "manifest_sha256": "47a6becb6a27acac31dd64243831dcfd56e9084bcfb91d6a4f32a9a99668b872",
+  "scope": "workstation-only native evidence; generated USD may contain absolute local asset paths"
+}

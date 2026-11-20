@@ -1,0 +1,85 @@
+{
+  "dependencies": [
+    {
+      "name": "attrs",
+      "version": "26.1.0"
+    },
+    {
+      "name": "cellio",
+      "version": "1.1.0.dev1"
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.26.0"
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1"
+    },
+    {
+      "name": "pip",
+      "version": "25.0.1"
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3"
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0"
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.9.1"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    }
+  ],
+  "examples": {
+    "normal": {
+      "bins": [
+        "OK",
+        "NG"
+      ],
+      "exit": 0,
+      "owners": [
+        "P1",
+        "P2"
+      ],
+      "verdict": "PASS"
+    },
+    "stale_ok": {
+      "bins": [
+        "OK",
+        "OK"
+      ],
+      "exit": 5,
+      "owners": [
+        "P1",
+        "P1"
+      ],
+      "verdict": "FAIL"
+    }
+  },
+  "kernel": "5.15.167.4-microsoft-standard-WSL2",
+  "package": {
+    "absent": {
+      "isaacsim": true,
+      "numpy": true,
+      "omni": true,
+      "pxr": true,
+      "scipy": true,
+      "torch": true
+    },
+    "installed_in_venv": true,
+    "version": "1.1.0.dev1"
+  },
+  "pip_check": "passed",
+  "python": "3.12.16",
+  "system": "Linux",
+  "wheel": "cellio-1.1.0.dev1-py3-none-any.whl",
+  "wheel_bytes": 1294341,
+  "wheel_sha256": "528a1c6e0184c7fa294f85b1e650e1f862b6603f59a8a3c44a081feaa3eb2b5f"
+}

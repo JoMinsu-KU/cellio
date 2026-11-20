@@ -1,0 +1,1951 @@
+{
+  "protocol_sha256": "8a24b33506172e8761fa3158c23328c0ca35ffb1cfb1c590f35d186428ba1d59",
+  "allocation_sha256": "6c5a7e096c6def556fb8ed750b5d2b8903b32750680e909b1359723786552790",
+  "frozen_sources": {
+    "protocols/cell-c-softwarex-v1.json": "8a24b33506172e8761fa3158c23328c0ca35ffb1cfb1c590f35d186428ba1d59",
+    "scripts/run_cell_c_extension.py": "ed33c918eda3acc9e531881771b820d9673d30c304ebd8e884e070737eda2c25",
+    "src/cellio/inspection/study/run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3",
+    "src/cellio/inspection/study/cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+    "src/cellio/inspection/study/cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+    "src/cellio/inspection/study/cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+    "src/cellio/inspection/study/floor_epoxy.png": "f6426879f5f80adf8946025c489286d2e599c101a02795315219ea021575e2f3",
+    "src/cellio/inspection/study/inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+    "src/cellio/inspection/study/prepare.py": "75ada4c2119e2abcd316b3dfa78072797d89ca1465b38dc6ce0e5d4c305b3437",
+    "src/cellio/inspection/study/render_study.py": "635cb04c61acbb0f8fd7bc2c7a101686fac7bf6fc18b10da4d38444012fb83e1"
+  },
+  "planned_runs": 24,
+  "started_first_attempts": 24,
+  "completed_first_attempts": 24,
+  "core_verified_first_attempts": 24,
+  "geometry_verified_first_attempts": 24,
+  "core_verified_parts_first_attempts": 48,
+  "observations_sha256": "58226a833d3f7c8627a8ab9cf8436e5c3923ebbe6d4dfa81f22700ca7be92f51",
+  "expected_endpoint_count": 48,
+  "physical_misroutes": {
+    "stale_ok": 4
+  },
+  "stale_tags": {
+    "stale_ok": 6
+  },
+  "stale_and_correct_bin": {
+    "stale_ok": 2
+  },
+  "cases": [
+    {
+      "id": "upper_cross-A-normal",
+      "sequence": "upper_cross",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "upper_cross-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 71.51599999999962,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1627,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "c504d8015a69d90035ea53d8f5943c37d75d7e6a7f2495b181fed5cfcec5a1c8",
+            "result.json": "2934c4fd1680e09de2e6ee186802613efa8129a24e215cf7da254a2453eeca58",
+            "motion.jsonl": "f40b2999b3a9de13a16c97621437368b957554a6ddc556b02b38c6d2cb2bfd78",
+            "live.usda": "77bf74758559a8d871889e5eacc6179a312eeee7a2027cd0e29d7204d2d58a9c",
+            "replay.usda": "e77c0c8736b107f42ac43cb3600ad9d1bbe31afd39c55732622adf62deef8c6c",
+            "self-clearance.json": "6eaf63978a266c7a084ccacc4054e45b1265d282b2f33cd3f4f4057b0d90e87d",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "0e9cf65befc4540bfa8ad669d6150286c357ddc02edbe18939313fed1f99fd74"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_cross-A-stale_ok",
+      "sequence": "upper_cross",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "upper_cross-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.57800000000134,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "c5e92a3839344c6ade0e3a96cd80f6739522b296e384c8d845bff5943a8d0649",
+            "result.json": "b644febd2e9bb6d271217f7bce939e02a77c95cb2b06f2284c5c913097cbe78e",
+            "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+            "live.usda": "b4792a2240dce64697a12ebbd6986f6bdf21e619cb004cc4a52d83cc23a17210",
+            "replay.usda": "c0bec6698087d679262d3bf84e5f8d27b60a23d7526f583e28307ffb8fe47ee2",
+            "self-clearance.json": "7dd556b04eeffb2935ba0b5d03e70c0b25215ccc597d6e0d14e68c0e404933c0",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "a4ed2647ccae7b8c075a060b37c246e12491e2d205e88a10592ca45c8bf28b24"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_cross-B-stale_ok",
+      "sequence": "upper_cross",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "upper_cross-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.5,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "ebfb78baf4e6c02bdb997925f5e5a0896a3d4d8f3405d61b24f57ae0139bebd3",
+            "result.json": "9d6c873b3ed45c2de104f86fec844e5ce06d55c30d1f2bdc221c7f9992364d25",
+            "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+            "live.usda": "c4b1ddd3bb84be10e9b3e024ac04a769729ccc393c3572df6bd3498cbe3d1aa7",
+            "replay.usda": "b67d4a2e05bcf19dc7b57f24f75b2d7a55d909a0ad9213bff5ff8ee635d12e0d",
+            "self-clearance.json": "0d4cec5d9b613c262e61d6d5ffb2b63a399a8c27226a7ad2f6fcdbe3d015c160",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "a62a21942ee39f192f152a4749282c87e3cd84da5644a03345635c599dec6fe1"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_cross-B-normal",
+      "sequence": "upper_cross",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "upper_cross-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.88999999999942,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1627,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "1a93419edb2078e65705216705a6dd0f1372b0de1b7e2892c1712fd7cb6e7351",
+            "result.json": "dfc7db43c30069dd21bca344adb35ce471da0f61309b579ce3ad84e68bd69afd",
+            "motion.jsonl": "f6aee350ef5701f3120df01f785aae94c1dbfc5d90cf56841018d469ff70a81a",
+            "live.usda": "e8c2b8df218af7d47e413cb1bf7fbfb3cb9310f7327c2eec6a5ca9db96f3b516",
+            "replay.usda": "da0c0975da6c370db9c2ad4afa0458bc34d2e3c496371ca17a081a404694b95e",
+            "self-clearance.json": "ab47c14afc1255911e9b65a89fe55bf5208aefa2f2797a6cc61289e8b65fba53",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "3c764bedd4b05b51aad65f7bf05a13fbdc0ceb7d8011016ae4192f07a846454f"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_cross-A-normal",
+      "sequence": "lower_cross",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "lower_cross-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 74.25,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1627,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "8a7f0f3173328a48ba936b1663f5980003b83199c675cf63df266f82dbe898de",
+            "result.json": "aa0be6ca0b857a987a7d0697b46ddc5e091cd2968ad35afde386fb22b245dc67",
+            "motion.jsonl": "f40b2999b3a9de13a16c97621437368b957554a6ddc556b02b38c6d2cb2bfd78",
+            "live.usda": "768fba86f757042551aceb759f5c169fc8e07fabbc8224774b2f01193247fac0",
+            "replay.usda": "e77c0c8736b107f42ac43cb3600ad9d1bbe31afd39c55732622adf62deef8c6c",
+            "self-clearance.json": "6eaf63978a266c7a084ccacc4054e45b1265d282b2f33cd3f4f4057b0d90e87d",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "433e33d8ac27e7b46491181c4e0800f552ff3a1a97d14856b16e7a59c118627b"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_cross-A-stale_ok",
+      "sequence": "lower_cross",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "lower_cross-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 70.40599999999904,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "31eaa658b99092dbd506b36432c768b6d4cb92f7b000401662b56e3bcbe6ec72",
+            "result.json": "af462eb752e7afb95a6a4419029009daff6240ae87c04b0aff8af710305edd32",
+            "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+            "live.usda": "1057133af70b078e5b577275fed9f18cd9e592d702b35ba4670a2d71548a8c12",
+            "replay.usda": "c0bec6698087d679262d3bf84e5f8d27b60a23d7526f583e28307ffb8fe47ee2",
+            "self-clearance.json": "7dd556b04eeffb2935ba0b5d03e70c0b25215ccc597d6e0d14e68c0e404933c0",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "9898df0216ed584b45d70ef9017b9e9a110a194376f06fede5c8bbd5f45d5a96"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_cross-B-stale_ok",
+      "sequence": "lower_cross",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "lower_cross-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 70.28100000000268,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "7ae6beb2022d7c36ada9b8038481c940600763a15522bcb3bcd8b6e4ad75744d",
+            "result.json": "2632373da88eeed66408b6b6cfe40a6f315040e2bfbe63ae4f9ff63469979717",
+            "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+            "live.usda": "e03cfe6d0964e01eaab59b75d4f48789a8eaea88fd9f93e8efc37ce95aae30ef",
+            "replay.usda": "b67d4a2e05bcf19dc7b57f24f75b2d7a55d909a0ad9213bff5ff8ee635d12e0d",
+            "self-clearance.json": "0d4cec5d9b613c262e61d6d5ffb2b63a399a8c27226a7ad2f6fcdbe3d015c160",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "be229088251c38e0cf59f370115be88288b4edf0fa834d87e73498a4c304f856"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_cross-B-normal",
+      "sequence": "lower_cross",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "lower_cross-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 68.73400000000038,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1627,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "866b0a512525cf04f747e303ebc18a211321a9c109fe5c53f67485342a7662e2",
+            "result.json": "35aea1152fb53b4558b841395f4d267ce9d4ff46d124403314ce78900bb56a31",
+            "motion.jsonl": "f6aee350ef5701f3120df01f785aae94c1dbfc5d90cf56841018d469ff70a81a",
+            "live.usda": "f7ceb4a0c2683f69375db2f72adf16a407254608e75345939d36ec3388290e25",
+            "replay.usda": "da0c0975da6c370db9c2ad4afa0458bc34d2e3c496371ca17a081a404694b95e",
+            "self-clearance.json": "ab47c14afc1255911e9b65a89fe55bf5208aefa2f2797a6cc61289e8b65fba53",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "590cc1e29c2450c8fa07779f65cd2dbb1e6bba0b87cd93ab3d4931375956d88e"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_reverse-A-normal",
+      "sequence": "upper_reverse",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "upper_reverse-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.17199999999866,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.779099787678167e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "60d5c589f712c9671a1e8ee77b911a71a3dd3cd9b3c609207a31c8b690f31c32",
+            "result.json": "24d6a57741bd699c9b417348c37e8bf3a2db40dcc610928d43894d9174229980",
+            "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+            "live.usda": "a02d284d8d5d7dbe065f226e33b4ded5e96e3972f47a55d3ec7550cd9593fc73",
+            "replay.usda": "026510afdf1beb56fd926ab43a43ce1cb15ace0f3534692e8b077ed1b498ca52",
+            "self-clearance.json": "c3df731726a23273dc89ca22b3dff8f67be4d57655194a79d018e35f3e1a7577",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "d0e6939e4fad4e512c47991288ca338dab4f457e0bedd276a8a5a437e9a572b6"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_reverse-A-stale_ok",
+      "sequence": "upper_reverse",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "upper_reverse-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 68.46800000000076,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.779099787678167e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "60d5c589f712c9671a1e8ee77b911a71a3dd3cd9b3c609207a31c8b690f31c32",
+            "result.json": "fd17bd4c3c66f5a6d7d6bf7b1ce12fc09950741e6cb4efe4b38fa4f8de70b281",
+            "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+            "live.usda": "a02d284d8d5d7dbe065f226e33b4ded5e96e3972f47a55d3ec7550cd9593fc73",
+            "replay.usda": "026510afdf1beb56fd926ab43a43ce1cb15ace0f3534692e8b077ed1b498ca52",
+            "self-clearance.json": "c3df731726a23273dc89ca22b3dff8f67be4d57655194a79d018e35f3e1a7577",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "d0e6939e4fad4e512c47991288ca338dab4f457e0bedd276a8a5a437e9a572b6"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_reverse-B-stale_ok",
+      "sequence": "upper_reverse",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "upper_reverse-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 68.0,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "5bd2d229f871f9582e11d145f0cadf6a5f7cf26adb6b56cdc2c1f35d51d9eb61",
+            "result.json": "51a24e65a5275bf53f99cd3b3bf975ef6f405e1f306ed70b6889cd324cb36aa5",
+            "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+            "live.usda": "f266d69c511684daca4d0c8c4d4136da4a979c4adf3745dcd51d4aa37f61892e",
+            "replay.usda": "1b88095c8fe64a2f1f9ff1e7c171517027aaa1eb76752a398959790649e6db28",
+            "self-clearance.json": "1921e08cdeac781f7dc66faa359cc8e58ed68deb43c26f2606f1009cd21336da",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "f335c7e7b98e4c1d889ce9a58dfb66382031aaae314c69e661c0bc6f7988c342"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 3885,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "upper_reverse-B-normal",
+      "sequence": "upper_reverse",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "upper_reverse-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 72.01599999999962,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "5bd2d229f871f9582e11d145f0cadf6a5f7cf26adb6b56cdc2c1f35d51d9eb61",
+            "result.json": "0a9f150c3cd8a7dd3f2912f0f13c588f7ef6827d33a6d6439f3ff929207e60de",
+            "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+            "live.usda": "f266d69c511684daca4d0c8c4d4136da4a979c4adf3745dcd51d4aa37f61892e",
+            "replay.usda": "1b88095c8fe64a2f1f9ff1e7c171517027aaa1eb76752a398959790649e6db28",
+            "self-clearance.json": "1921e08cdeac781f7dc66faa359cc8e58ed68deb43c26f2606f1009cd21336da",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "f335c7e7b98e4c1d889ce9a58dfb66382031aaae314c69e661c0bc6f7988c342"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 3885,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_reverse-A-normal",
+      "sequence": "lower_reverse",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "lower_reverse-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 68.29699999999866,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.779099787678167e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "3bcdd88cad4324f9577b0cdd92cb1737367a469b8bf03c9b3ea5327daf802cbd",
+            "result.json": "6039f80efa49441069ce239cc48d9fd0e62c7fa0cee1f0278cfc312988fd8a4d",
+            "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+            "live.usda": "9dcc683ac78f6eebba7cc1a51f778bdecb83fc7d9d62e47014f8385d7de19c97",
+            "replay.usda": "026510afdf1beb56fd926ab43a43ce1cb15ace0f3534692e8b077ed1b498ca52",
+            "self-clearance.json": "c3df731726a23273dc89ca22b3dff8f67be4d57655194a79d018e35f3e1a7577",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "06348923848e314123aa01df67e069f5eb2087d4b71a9b8658ff72b1d4975262"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_reverse-A-stale_ok",
+      "sequence": "lower_reverse",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "lower_reverse-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.03100000000268,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.779099787678167e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "3bcdd88cad4324f9577b0cdd92cb1737367a469b8bf03c9b3ea5327daf802cbd",
+            "result.json": "8bfa651704d73d20bf1d8ab1d8bb306ecbce6067ae488a537803ae1163c9c144",
+            "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+            "live.usda": "9dcc683ac78f6eebba7cc1a51f778bdecb83fc7d9d62e47014f8385d7de19c97",
+            "replay.usda": "026510afdf1beb56fd926ab43a43ce1cb15ace0f3534692e8b077ed1b498ca52",
+            "self-clearance.json": "c3df731726a23273dc89ca22b3dff8f67be4d57655194a79d018e35f3e1a7577",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "06348923848e314123aa01df67e069f5eb2087d4b71a9b8658ff72b1d4975262"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3886,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_reverse-B-stale_ok",
+      "sequence": "lower_reverse",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "lower_reverse-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.68699999999808,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "d480330cfd3663f7452dcfb8be8ff38ac5a3ce73792c43b879811e6b6362b303",
+            "result.json": "18204947ea0a7cab90ae6b803832dc38387fcec0bb79f3addc805781b99b7b09",
+            "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+            "live.usda": "8eac99236f1282bc795b3e55fed220573e072f6b5ba5554d692932e27afc38ea",
+            "replay.usda": "1b88095c8fe64a2f1f9ff1e7c171517027aaa1eb76752a398959790649e6db28",
+            "self-clearance.json": "1921e08cdeac781f7dc66faa359cc8e58ed68deb43c26f2606f1009cd21336da",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "284ddaf6734a2960ea48ab2431617d9cc8d579df3d95fa2ec9dc223eb70536bb"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 3885,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lower_reverse-B-normal",
+      "sequence": "lower_reverse",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "lower_reverse-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 69.43800000000192,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1668,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "d480330cfd3663f7452dcfb8be8ff38ac5a3ce73792c43b879811e6b6362b303",
+            "result.json": "9142747f997d00bc2b3e1589d4620f17c13e0d55feee2eca3dff37fc15fbaa43",
+            "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+            "live.usda": "8eac99236f1282bc795b3e55fed220573e072f6b5ba5554d692932e27afc38ea",
+            "replay.usda": "1b88095c8fe64a2f1f9ff1e7c171517027aaa1eb76752a398959790649e6db28",
+            "self-clearance.json": "1921e08cdeac781f7dc66faa359cc8e58ed68deb43c26f2606f1009cd21336da",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "284ddaf6734a2960ea48ab2431617d9cc8d579df3d95fa2ec9dc223eb70536bb"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 3885,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_good-A-normal",
+      "sequence": "both_good",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "both_good-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 67.43699999999808,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "85b7350fd5584890ddf87e1fb7f9f15b9c269da9261e66e6347bc35d7f4203fc",
+            "result.json": "1bfc37c3605f0ac7185ec30bb8198da7ea3e450c08b0d4e550f20cee2b43f775",
+            "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+            "live.usda": "c59a0eb549ee11f1544c3e3d661026f9a161c29456062282b1b8d4ee48b78f46",
+            "replay.usda": "c0bec6698087d679262d3bf84e5f8d27b60a23d7526f583e28307ffb8fe47ee2",
+            "self-clearance.json": "7dd556b04eeffb2935ba0b5d03e70c0b25215ccc597d6e0d14e68c0e404933c0",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "21e45e9a9658f268746e925ea0f1d1c4676aaf047cffca309a02d3b3887f931c"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_good-A-stale_ok",
+      "sequence": "both_good",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "both_good-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 67.40599999999904,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.00395487999561972,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6837425418499627e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "3a150d8aa25f23f75bf26f6c2e254bfc50fb9ecc1d458a33bcefb4f20a84bc26",
+            "result.json": "0517a732d98a7ad961f123d1faa177223a4041d5b9d275199b99417b8dfd8873",
+            "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+            "live.usda": "c59a0eb549ee11f1544c3e3d661026f9a161c29456062282b1b8d4ee48b78f46",
+            "replay.usda": "c0bec6698087d679262d3bf84e5f8d27b60a23d7526f583e28307ffb8fe47ee2",
+            "self-clearance.json": "7dd556b04eeffb2935ba0b5d03e70c0b25215ccc597d6e0d14e68c0e404933c0",
+            "gripper-mesh.json": "7198dcddfbce05ee78484677ab8efc4ec4c80e8852724d3764b63744f2f80354",
+            "payload-clearance.json": "d66748e35d68825184fda3fc4d005e0b44150a2ca77e08ad892af729be07ac45"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196649690016432,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1035.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_good-B-stale_ok",
+      "sequence": "both_good",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "both_good-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 68.20400000000154,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "bca171c3697dd9649e84b0dca59024b5c45848a859fbde045837d876dcaa1a8f",
+            "result.json": "a758bbd725e3831e10c2c4555410069b5b79dfb6ce027705444ab30d057542fd",
+            "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+            "live.usda": "81e078ab9f52135562d31673476f386f066797ad4c42910602484eb0adaf8c8c",
+            "replay.usda": "b67d4a2e05bcf19dc7b57f24f75b2d7a55d909a0ad9213bff5ff8ee635d12e0d",
+            "self-clearance.json": "0d4cec5d9b613c262e61d6d5ffb2b63a399a8c27226a7ad2f6fcdbe3d015c160",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "5623c1dca3875b0d792c1b6a03fce38af64958bf2a432ada548ff45b534053e5"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_good-B-normal",
+      "sequence": "both_good",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "both_good-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 67.95300000000134,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1584,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.8433373516215625e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "836cd77cb0584a3a604b2da4fedd9a7dbe003adc2d8982cf8ac8a86c6c80d5b1",
+            "result.json": "5d5c77de318564a39b81895f2ef769458eb4896e6da426919b02cf291e02a7b6",
+            "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+            "live.usda": "81e078ab9f52135562d31673476f386f066797ad4c42910602484eb0adaf8c8c",
+            "replay.usda": "b67d4a2e05bcf19dc7b57f24f75b2d7a55d909a0ad9213bff5ff8ee635d12e0d",
+            "self-clearance.json": "0d4cec5d9b613c262e61d6d5ffb2b63a399a8c27226a7ad2f6fcdbe3d015c160",
+            "gripper-mesh.json": "b37723b4b37331ffd043a665945bff9010544d90d2af2566c9afbb3fa07b48f0",
+            "payload-clearance.json": "1e20504a001d9f551240a862c70443c3a21cb09911bb6204a00fe7018da649f1"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.6095126860855616e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019430551260835038,
+            "payload_interpolated_poses": 3624,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 565.2,
+              "part": "P1",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_bad-A-normal",
+      "sequence": "both_bad",
+      "placement": "A",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "both_bad-A-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 75.31199999999808,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1711,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.7707589681543653e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "d994382b3c7c4f2c3eff0a8745802bf1b3bcb232534d48b1e4d463a8c50e8870",
+            "result.json": "e5d5d289664fa102e166a99d2736dafc9e2a3a2ea4e5fa68f6328662a1f82be2",
+            "motion.jsonl": "4cb25880f105c80bdcb8f5cf762f14c34884f3bf8a489094a448a8c615cad002",
+            "live.usda": "17deea50cf690689316f9acce1503a281b78231168b7360fc0e22edc568f5b4b",
+            "replay.usda": "5506ac741ccab78b65ca51d16a796a648be6fa0c74103e14067e826e84c54280",
+            "self-clearance.json": "ca9fb34be8136b8760c697bb5b95416d5c07d3e331c732d9e5f77de542660291",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "084ed0384b02da076fbb358f14007277bf6324304bd806f4744a77072207bc3a"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 4148,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_bad-A-stale_ok",
+      "sequence": "both_bad",
+      "placement": "A",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "both_bad-A-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 74.57800000000134,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1711,
+          "clearance_m": 0.003954879995619942,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.7707589681543653e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "d994382b3c7c4f2c3eff0a8745802bf1b3bcb232534d48b1e4d463a8c50e8870",
+            "result.json": "79dd986b3388c6b5ae52a79330e8e5df82c538107c4039c2a02a1f34162221c3",
+            "motion.jsonl": "4cb25880f105c80bdcb8f5cf762f14c34884f3bf8a489094a448a8c615cad002",
+            "live.usda": "17deea50cf690689316f9acce1503a281b78231168b7360fc0e22edc568f5b4b",
+            "replay.usda": "5506ac741ccab78b65ca51d16a796a648be6fa0c74103e14067e826e84c54280",
+            "self-clearance.json": "ca9fb34be8136b8760c697bb5b95416d5c07d3e331c732d9e5f77de542660291",
+            "gripper-mesh.json": "06b0707ff703600241c1df4945946ae2d5bca4b62597af08dc6165ce0b940078",
+            "payload-clearance.json": "084ed0384b02da076fbb358f14007277bf6324304bd806f4744a77072207bc3a"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.0071966054487564435,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 3.353622135549017e-08,
+            "payload_pin_radial_lower_bound_m": 0.00022793930305738943,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.045920161216061794,
+            "payload_nonmating_lower_bound_m": 0.00019410255741658666,
+            "payload_interpolated_poses": 4148,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/Part_handling/Indexed_infeed/Formed_endless_belt/Formed_endless_belt_mesh",
+              "frame": 1119.0,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_bad-B-stale_ok",
+      "sequence": "both_bad",
+      "placement": "B",
+      "condition": "stale_ok",
+      "attempts": [
+        {
+          "attempt_id": "both_bad-B-stale_ok/attempt-01",
+          "status": "completed",
+          "wall_seconds": 70.92199999999866,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1711,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "72b9d70c3a6acf57935967630ab48bf8576767ecaa9496aec7e5d6b94fd455f3",
+            "result.json": "e976d894c33869cf5c3f0073638d08369777afa02ae8b5ca8100618051f6725a",
+            "motion.jsonl": "685ee00e4a4284f2e09791a13e2c40cda8f1a8cc63ce4219c05e3fbd1d5ef566",
+            "live.usda": "b7f3c5cf156f3f90beefa057ce9d236c7e7a8cf4784a6cf8e9bfb7b8a143a44e",
+            "replay.usda": "0f80a8ffeb214885d367740cbe26dc3baf8562f1f5fb407a7869896f34d098f9",
+            "self-clearance.json": "e91c6c1829dcca612b21458008d8d16a77546cffb124c7758974e0c661df06c3",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "399aa8abee1747b5d5beeedd452653fea36fa90a9e8f16483bfbfacbc70b4664"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 4147,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "both_bad-B-normal",
+      "sequence": "both_bad",
+      "placement": "B",
+      "condition": "normal",
+      "attempts": [
+        {
+          "attempt_id": "both_bad-B-normal/attempt-01",
+          "status": "completed",
+          "wall_seconds": 70.98500000000058,
+          "core_verified": true,
+          "geometry_verified": true,
+          "frames": 1711,
+          "clearance_m": 0.003954879995619831,
+          "replay": {
+            "max_tcp_difference_m": 0.0,
+            "max_part_difference_m": 0.0,
+            "max_part_quaternion_difference": 2.6583033767526943e-07,
+            "offline_inspections": 2
+          },
+          "sha256": {
+            "events.json": "72b9d70c3a6acf57935967630ab48bf8576767ecaa9496aec7e5d6b94fd455f3",
+            "result.json": "d6e4af0b470754f427fec82fb4079291bb6ffbb30e1a02f6dbc19636e9fa1e86",
+            "motion.jsonl": "685ee00e4a4284f2e09791a13e2c40cda8f1a8cc63ce4219c05e3fbd1d5ef566",
+            "live.usda": "b7f3c5cf156f3f90beefa057ce9d236c7e7a8cf4784a6cf8e9bfb7b8a143a44e",
+            "replay.usda": "0f80a8ffeb214885d367740cbe26dc3baf8562f1f5fb407a7869896f34d098f9",
+            "self-clearance.json": "e91c6c1829dcca612b21458008d8d16a77546cffb124c7758974e0c661df06c3",
+            "gripper-mesh.json": "d14c4690030ab11db1ee95b908e22c9d6c4279c03bb1ea245a498df9d0fb2bce",
+            "payload-clearance.json": "399aa8abee1747b5d5beeedd452653fea36fa90a9e8f16483bfbfacbc70b4664"
+          },
+          "geometry_audit": {
+            "self_clearance_lower_bound_m": 0.007196623737348418,
+            "self_pairs_per_frame": 28,
+            "checked_grasps": 4,
+            "payload_sampled_clearance_lower_bound_m": 1.597035973158285e-05,
+            "payload_pin_radial_lower_bound_m": 0.00022793179334883173,
+            "audit_source_sha256": {
+              "audit_self_clearance.py": "52ca61dc7cb727efeb7ff5d3ed571edfc6e0c57c8f79d67badd78178947760fe",
+              "audit_gripper_mesh.py": "3038c73ffa3da9e30f3d78da37989c8fe7673ba52c4a854c4b77cd9517f13ca6",
+              "verify_payload.py": "6953d1936531553b181103da21205ca96147ab4ac1446e51d27e241387e729e3"
+            },
+            "payload_gauge_hardware_lower_bound_m": 0.04592013163313169,
+            "payload_nonmating_lower_bound_m": 0.00019415738000660987,
+            "payload_interpolated_poses": 4147,
+            "closest_payload_interface": {
+              "equipment": "/World/Equipment/ToolingLocator/ToolingLocator",
+              "frame": 1467.2,
+              "part": "P2",
+              "part_mesh": "Infeed_bracket_Foot_Machined"
+            }
+          },
+          "script_sha256": "b87c6f7848f2e38930bb041ab656a586c1e980d2d0aea1966e758da684c672c6",
+          "replay_verifier_sha256": "b7a4048b1b88d734fbab5e6aac90d1e42361ad55cce2e20a6f7886474fc82bfd",
+          "model_manifest_sha256": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+          "robot_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+          "source_sha256": {
+            "cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+            "inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+            "cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+            "cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+            "cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+            "run_inspection.py": "b1c1effd43f35dc70a340460a798fa9d14f9a461f5ceb2d7363300fd313871f3"
+          }
+        }
+      ]
+    }
+  ],
+  "paired_contrasts": [
+    {
+      "sequence": "upper_cross",
+      "placement": "A",
+      "normal_bins": [
+        "OK",
+        "NG"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "upper_cross",
+      "placement": "B",
+      "normal_bins": [
+        "OK",
+        "NG"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "lower_cross",
+      "placement": "A",
+      "normal_bins": [
+        "OK",
+        "NG"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "lower_cross",
+      "placement": "B",
+      "normal_bins": [
+        "OK",
+        "NG"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "upper_reverse",
+      "placement": "A",
+      "normal_bins": [
+        "NG",
+        "OK"
+      ],
+      "stale_bins": [
+        "NG",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "upper_reverse",
+      "placement": "B",
+      "normal_bins": [
+        "NG",
+        "OK"
+      ],
+      "stale_bins": [
+        "NG",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "lower_reverse",
+      "placement": "A",
+      "normal_bins": [
+        "NG",
+        "OK"
+      ],
+      "stale_bins": [
+        "NG",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "lower_reverse",
+      "placement": "B",
+      "normal_bins": [
+        "NG",
+        "OK"
+      ],
+      "stale_bins": [
+        "NG",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "both_good",
+      "placement": "A",
+      "normal_bins": [
+        "OK",
+        "OK"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "both_good",
+      "placement": "B",
+      "normal_bins": [
+        "OK",
+        "OK"
+      ],
+      "stale_bins": [
+        "OK",
+        "OK"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P1"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "both_bad",
+      "placement": "A",
+      "normal_bins": [
+        "NG",
+        "NG"
+      ],
+      "stale_bins": [
+        "NG",
+        "NG"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    },
+    {
+      "sequence": "both_bad",
+      "placement": "B",
+      "normal_bins": [
+        "NG",
+        "NG"
+      ],
+      "stale_bins": [
+        "NG",
+        "NG"
+      ],
+      "normal_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "stale_consumed_result_ids": [
+        "P1",
+        "P2"
+      ],
+      "max_paired_probe_difference_mm": 0.0,
+      "max_paired_infeed_position_difference_mm": 0.0
+    }
+  ],
+  "completed_matched_pairs": 12,
+  "sampled_geometry": {
+    "verified_runs": 24,
+    "checked_grasps": 96,
+    "sampled_link_frames": 39368,
+    "sampled_nonadjacent_link_pair_frames": 1102304,
+    "interpolated_carried_part_poses": 92210,
+    "min_arm_equipment_bound_m": 0.00395487999561972,
+    "min_self_clearance_bound_m": 0.0071966054487564435,
+    "min_payload_gauge_hardware_bound_m": 0.04592013163313169,
+    "min_payload_nonmating_bound_m": 0.00019410255741658666,
+    "min_payload_pin_radial_bound_m": 0.00022793179334883173,
+    "min_payload_including_precision_fit_bound_m": 3.353622135549017e-08
+  },
+  "max_probe_minus_geometry_abs_mm": 0.0001719113896783142,
+  "max_actual_minus_commanded_infeed_xy_mm": 0.00010910447861745573,
+  "min_release_to_tray_mm": 3.0195116996765137,
+  "max_release_to_tray_mm": 3.0263662338256836,
+  "prior_runtime_revision": {
+    "allocation_sha256": "39b79b2bce6f0671abd5b16b40209a3095e8d09e95616e73c6732eb80f955481",
+    "planned": 24,
+    "startup_attempts": 2,
+    "unstarted": 22,
+    "source_sha256": {
+      "protocols/cell-c-softwarex-v1.json": "8a24b33506172e8761fa3158c23328c0ca35ffb1cfb1c590f35d186428ba1d59",
+      "scripts/run_cell_c_extension.py": "6404322af4c6df1defab42cb855fa89571f49fb11293522a1822b50dc483cf2b",
+      "src/cellio/inspection/study/run_inspection.py": "da021680798e149b8b75a47a34fa2ca2f801195ce7341bc461fdfea426c36b96",
+      "src/cellio/inspection/study/cell_c_motion.py": "4a2eca6591077062935b2c61be307e8d9ad884ca9b5f97fd0a15deac713f19ae",
+      "src/cellio/inspection/study/cell_c_inspection_logic.py": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+      "src/cellio/inspection/study/cell_c_handling.py": "fb9565d7bb685dfbecb3f044c3ca8e9b4058357c65108f34fa10fa30c4cc3481",
+      "src/cellio/inspection/study/floor_epoxy.png": "f6426879f5f80adf8946025c489286d2e599c101a02795315219ea021575e2f3",
+      "src/cellio/inspection/study/inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+      "src/cellio/inspection/study/prepare.py": "75ada4c2119e2abcd316b3dfa78072797d89ca1465b38dc6ce0e5d4c305b3437",
+      "src/cellio/inspection/study/render_study.py": "635cb04c61acbb0f8fd7bc2c7a101686fac7bf6fc18b10da4d38444012fb83e1"
+    },
+    "attempts": [
+      {
+        "id": "upper_cross-A-normal",
+        "started_utc": "2026-11-20T08:33:42.831430+00:00",
+        "exit_code": 0,
+        "status_record_present": true,
+        "observed_0xc0000139": true,
+        "inspection_events": 0,
+        "sha256": {
+          "start.json": "a6f50dc028a68cd2aca83ce55f7d9636e7de719ee4d11a36194564d45262fc42",
+          "stdout.log": "79499becbb995f0997846391f6a055db1e2e4eab72d22f5992990d6d4ded91af",
+          "stderr.log": "15ba529e1f6a298e472f4181c80335c89be63baf62e336bb4b04fb918d28c982",
+          "status.json": "d124c752b14870f653e6fffd4514fea07f574c3ab23b61da6da41316f1676e6b"
+        }
+      },
+      {
+        "id": "upper_cross-A-stale_ok",
+        "started_utc": "2026-11-20T08:34:30.197529+00:00",
+        "exit_code": null,
+        "status_record_present": false,
+        "observed_0xc0000139": true,
+        "inspection_events": 0,
+        "sha256": {
+          "start.json": "09ace7a58f9e978428fdd16e1a08d5a208ab89ccb3b69667e667fa0ebeb6bb9c",
+          "stdout.log": "00f9c6ad80e63421277fdbbc3742d7fded281ff6f3dfe07e98d7f38c35b8bd44",
+          "stderr.log": "9b75a6212e05ccc163276bf58d9b16623dee5c84d8cb6833cd9ac09d7d861166"
+        }
+      }
+    ],
+    "reason": "Kit startup failed after standalone USD had already been loaded; revised runtime starts Kit before composing USD. Same scientific protocol and placement recipes."
+  }
+}

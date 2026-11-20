@@ -1,0 +1,144 @@
+{
+  "schema": "cellio.inspection.publication-camera/1",
+  "series": "cell-c-softwarex-v1-r2",
+  "allocation_sha256": "6c5a7e096c6def556fb8ed750b5d2b8903b32750680e909b1359723786552790",
+  "script_sha256": "b4489fc0331c7af29879e74c2f248d09c1592dce094e5a1256386223e78702e3",
+  "camera": {
+    "eye_m": [
+      1.02,
+      -0.81,
+      1.58
+    ],
+    "target_m": [
+      0.475,
+      -0.023,
+      0.878
+    ],
+    "up": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "focal_mm": 49.0,
+    "horizontal_aperture_mm": 36.0,
+    "projection": "perspective",
+    "raw_size_px": [
+      1260,
+      900
+    ],
+    "renderer": "Isaac Sim 6.2 RTX PathTracing",
+    "samples_per_pixel_per_frame": 32,
+    "rt_subframes": 4,
+    "render_steps_per_still": 5,
+    "timeline_delta_s": 0.0
+  },
+  "composition": "Matching camera projection; full native RGB panels, with source-derived text in the outer margins.",
+  "panels": [
+    {
+      "case": "upper_cross-A-normal",
+      "attempt": "attempt-01",
+      "current_part": "P2",
+      "frame": 1626,
+      "part_local_height_mm": 33.25001802295457,
+      "probe_height_mm": 33.249968872358316,
+      "result_owner": "P2",
+      "observed_bin": "NG",
+      "settled_position_m": [
+        0.49989938735961914,
+        0.16003328561782837,
+        0.8540000319480896
+      ],
+      "settled_quaternion_wxyz": [
+        0.9999998807907104,
+        2.5297049432992935e-07,
+        9.592622518539429e-08,
+        -0.0006037166458554566
+      ],
+      "input_sha256": {
+        "result.json": "2934c4fd1680e09de2e6ee186802613efa8129a24e215cf7da254a2453eeca58",
+        "events.json": "c504d8015a69d90035ea53d8f5943c37d75d7e6a7f2495b181fed5cfcec5a1c8",
+        "motion.jsonl": "f40b2999b3a9de13a16c97621437368b957554a6ddc556b02b38c6d2cb2bfd78",
+        "replay.usda": "e77c0c8736b107f42ac43cb3600ad9d1bbe31afd39c55732622adf62deef8c6c",
+        "live.usda": "77bf74758559a8d871889e5eacc6179a312eeee7a2027cd0e29d7204d2d58a9c",
+        "stage/stage-manifest.json": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+        "stage/cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+        "stage/inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+        "stage/floor_epoxy.png": "f6426879f5f80adf8946025c489286d2e599c101a02795315219ea021575e2f3",
+        "recipe.json": "20c68196c367027e78998338666894b769fa55aa823d150ab525d9c59e778106",
+        "status.json": "751c8205ee3cdf840ff2568c43f82a7e21cb7bc6619baf60a29858eb700284d1"
+      },
+      "rendered_timecode": 1626.0,
+      "fps": 30.0,
+      "stage_range": [
+        0.0,
+        1626.0
+      ],
+      "staged_position_m": [
+        0.49989938735961914,
+        0.16003328561782837,
+        0.8540000319480896
+      ],
+      "staged_quaternion_wxyz": [
+        0.9999998177630754,
+        2.5297047844001176e-07,
+        9.592621915994924e-08,
+        -0.0006037166079340074
+      ],
+      "raw_image_sha256": "6ac22e61b9fd3d4626af9a60215bb712e8db28c1fc2e1e80cd8a882f04c144e8"
+    },
+    {
+      "case": "upper_cross-A-stale_ok",
+      "attempt": "attempt-01",
+      "current_part": "P2",
+      "frame": 1583,
+      "part_local_height_mm": 33.25001802295457,
+      "probe_height_mm": 33.249968872358316,
+      "result_owner": "P1",
+      "observed_bin": "OK",
+      "settled_position_m": [
+        0.5000168681144714,
+        -0.19014789164066315,
+        0.8540000319480896
+      ],
+      "settled_quaternion_wxyz": [
+        0.9999997019767761,
+        4.307366907596588e-08,
+        6.426125764846802e-08,
+        0.0008878312655724585
+      ],
+      "input_sha256": {
+        "result.json": "b644febd2e9bb6d271217f7bce939e02a77c95cb2b06f2284c5c913097cbe78e",
+        "events.json": "c5e92a3839344c6ade0e3a96cd80f6739522b296e384c8d845bff5943a8d0649",
+        "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+        "replay.usda": "c0bec6698087d679262d3bf84e5f8d27b60a23d7526f583e28307ffb8fe47ee2",
+        "live.usda": "b4792a2240dce64697a12ebbd6986f6bdf21e619cb004cc4a52d83cc23a17210",
+        "stage/stage-manifest.json": "47afc601b4b52474a5d232516c4e7e0053ea953a7e539fa220abb639bad9a971",
+        "stage/cell_c_inspection.usda": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+        "stage/inspection_equipment.usdc": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+        "stage/floor_epoxy.png": "f6426879f5f80adf8946025c489286d2e599c101a02795315219ea021575e2f3",
+        "recipe.json": "806e75f7dbe1eeba67c55381ace1329c7292b4c66cf2c64218825a95eeb2ca66",
+        "status.json": "8da19d089d6d81edb053d646be810c714792b95ecfa88e118e4619748f103a17"
+      },
+      "rendered_timecode": 1583.0,
+      "fps": 30.0,
+      "stage_range": [
+        0.0,
+        1583.0
+      ],
+      "staged_position_m": [
+        0.5000168681144714,
+        -0.19014789164066315,
+        0.8540000319480896
+      ],
+      "staged_quaternion_wxyz": [
+        0.999999605877817,
+        4.307366493813392e-08,
+        6.426125147527006e-08,
+        0.0008878311802837738
+      ],
+      "raw_image_sha256": "22b618a7543674f8a90059a13c3e9759ff8e8fe04794802191352f0de343f6c0"
+    }
+  ],
+  "figure": "inspection-trays.png",
+  "figure_sha256": "540293e21cec21cdb0df396a85ef5bf8fe01dad23be8829668a5c79a8cb92f3e"
+}

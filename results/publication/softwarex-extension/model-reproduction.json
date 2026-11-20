@@ -1,0 +1,61 @@
+{
+  "schema": "cellio.cell-c-model-reproduction/1",
+  "software": {
+    "authoring": "Blender 5.1.1",
+    "authoring_threads": 2,
+    "stage_unit_m": 1.0,
+    "up_axis": "Z"
+  },
+  "source_root": "src/cellio/inspection/study",
+  "source_sha256": {
+    "build_equipment.py": "51f4ddd3b6398bf58832d4d392beebf67b7c463302ee863b1b8c8a701600de41",
+    "gauge_model.py": "8cd693dee17ec4d8c79c19c2cee51e0f8ee1651a9f1adc85c827549539576d7f",
+    "handling_model.py": "a95b9b1f7287df653c7615b790a1b0608a4107352681ab811c689417df926819",
+    "shop_context.py": "2df594bca68d6992a1d540e0ba82d1f2cf7e7308af6bd6d014491ed1f2caac29",
+    "skid_model.py": "6dc40c5529edc2a5eda39baf38f40b916b498af24c44d405ff2923148c261453",
+    "render_study.py": "635cb04c61acbb0f8fd7bc2c7a101686fac7bf6fc18b10da4d38444012fb83e1",
+    "prepare.py": "75ada4c2119e2abcd316b3dfa78072797d89ca1465b38dc6ce0e5d4c305b3437"
+  },
+  "rebuild": {
+    "method": "Rebuilt into an empty output directory with Blender in background factory-startup mode. Independently reopened the distributed and rebuilt USDC layers and joined every prim by its full USD path.",
+    "compared_prims": 1266,
+    "meshes": 531,
+    "matching_positions_connectivity_and_bindings": true,
+    "equipment_external_references": [],
+    "source_geometry_digest": "c5b93d23f0a4fcd98b2fec33683a3a2fc7f958e50fd3c73214ad280f478f4906",
+    "packaged_sha256": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+    "regenerated_sha256": "e69aa1124443eda7e1b96a92d2dfa72a7fd3b136fffc991798b84b06cb5a8157",
+    "materials": 51,
+    "shaders": 51,
+    "xformable": 1077,
+    "points": 75359,
+    "faces": 75790,
+    "compared_shader_properties": 766,
+    "aspects_by_prim": "Identical USD prim type and path, local mesh vertices, face counts, face connectivity and material binding targets. Checked full 4-by-4 world transforms. For shaders and materials, compared each default attribute value and upstream connection path.",
+    "rebuild_identity": "The two USDC byte digests differ. Prim declaration order differs. Reproduction is evaluated on composed geometry and materials.",
+    "world_matrix_digest_decimal_places": 7,
+    "measured_maximum_absolute_world_matrix_element_difference": 0.0,
+    "measured_maximum_absolute_vertex_difference_m": 0.0,
+    "verified_floor_texture": "Byte-identical regenerated procedural floor PNG",
+    "floor_texture_sha256": "f6426879f5f80adf8946025c489286d2e599c101a02795315219ea021575e2f3"
+  },
+  "local_assembly": {
+    "prims_with_franka": 1673,
+    "cameras": [
+      "Deck",
+      "Gauge",
+      "Overview"
+    ],
+    "asset_entry": "franka-e656467ba73b750b75e17286/remote/omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Robots_Multiphysics/FrankaRobotics/FrankaPanda/franka/franka.usda",
+    "asset_entry_sha256": "cbdbfc4481e0420aa30c2e57c39cce91006cb29b93bc2e06becaf4304c20ea30",
+    "verified_asset_lock_sha256": "500ce6cf5d66beb6234027857c9b84d0e701c0c07e4a09b4a5c2ecff0b36b313",
+    "local_stage_sha256": "ef1fa9a2098790e8fb485e87f0108ed762e2a656c9cdf4e99937663005ad597c",
+    "stage_digest_scope": "The generated local stage references the user's installed Franka with its absolute path; its byte digest is workstation-specific.",
+    "relocation_check": "Built an offline wheel from a separate source copy, extracted it to a fresh installation directory, and invoked CellIO from a different empty working directory. Checked the resolved installed module, the two owned data files, the three cameras, the composed Panda hand geometry, and both bundled replay decisions."
+  },
+  "distribution": {
+    "included": "Original CellIO equipment USDC, procedural floor texture, Python model sources and runtime under the CellIO MIT license.",
+    "external": "NVIDIA Franka asset and transitive assets, Isaac Sim, PhysX and cuMotion/XRDF are acquired separately under the upstream terms.",
+    "check": "The equipment layer has zero external references. The inspected wheel includes one equipment USDC and one floor PNG under the study package; no vendor USD, MDL or XRDF is included there."
+  }
+}

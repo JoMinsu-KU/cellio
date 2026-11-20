@@ -1,0 +1,19 @@
+{
+  "archive_bytes": 53874,
+  "archive_sha256": "68488e1d102d16f83c1ad7c98d972aa2e93b2f931655bc7e32f9f36d4a525b19",
+  "observations_checked": 48,
+  "parts": 48,
+  "planned_cases": 24,
+  "python": "3.12.16",
+  "replay_sha256": "47da82e59afb50d557d2c79d6a842b9cdf803065f2ea2543c3cf8462afafe024",
+  "replayed_cases": 24,
+  "second_part_false_accepts": 4,
+  "second_part_stale_results": 6,
+  "verdicts": {
+    "FAIL": 6,
+    "PASS": 18
+  },
+  "verified": true,
+  "witness_zip_sha256": "68488e1d102d16f83c1ad7c98d972aa2e93b2f931655bc7e32f9f36d4a525b19",
+  "wsl_kernel": "5.15.167.4-microsoft-standard-WSL2"
+}

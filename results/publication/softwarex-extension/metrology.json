@@ -1,0 +1,81 @@
+{
+  "protocol_sha256": "85d086cd298cedbf4e2fd59d8e85a73e80aa365d1eac0dcc2108702cf6033022",
+  "model_sha256": "9c4ffe62548b2786a15a8d525cff66cfe67340e99f2d44f9106c4aed300087f2",
+  "measurement_code_sha256": "16d1f1fc7d204881efd940375811923fc8cea041bf00980bb525c4a8fa2aa92b",
+  "passed": true,
+  "tolerance_endpoints": [
+    {
+      "drawing_error_mm": -0.201,
+      "expected": "NG",
+      "geometry_mm": 32.79901947826147,
+      "probe_mm": 32.79902599751949,
+      "observed": "NG",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": -0.2,
+      "expected": "OK",
+      "geometry_mm": 32.80001785606146,
+      "probe_mm": 32.80002437531948,
+      "observed": "OK",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": -0.199,
+      "expected": "OK",
+      "geometry_mm": 32.801016233861446,
+      "probe_mm": 32.80102275311947,
+      "observed": "OK",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": 0.0,
+      "expected": "OK",
+      "geometry_mm": 33.00001751631498,
+      "probe_mm": 33.000024035573006,
+      "observed": "OK",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": 0.199,
+      "expected": "OK",
+      "geometry_mm": 33.19901879876852,
+      "probe_mm": 33.19902531802654,
+      "observed": "OK",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": 0.2,
+      "expected": "OK",
+      "geometry_mm": 33.20001717656851,
+      "probe_mm": 33.20002369582653,
+      "observed": "OK",
+      "passed": true
+    },
+    {
+      "drawing_error_mm": 0.201,
+      "expected": "NG",
+      "geometry_mm": 33.201019279658794,
+      "probe_mm": 33.20102579891682,
+      "observed": "NG",
+      "passed": true
+    }
+  ],
+  "invalid_presentations": [
+    {
+      "case": "lifted",
+      "reason": "Underside-to-rest gaps outside ±0.15 mm: [0.32000651925800927, 0.32000651925800927, 0.32000651925800927]",
+      "passed": true
+    },
+    {
+      "case": "laterally_misregistered",
+      "reason": "Locating holes are 1.0000 mm off the pins (limit 0.35 mm)",
+      "passed": true
+    },
+    {
+      "case": "tilted",
+      "reason": "Part tilt 1.0000° exceeds the seating limit 0.15°",
+      "passed": true
+    }
+  ]
+}

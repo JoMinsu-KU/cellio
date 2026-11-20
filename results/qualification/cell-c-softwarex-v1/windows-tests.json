@@ -1,0 +1,89 @@
+{
+  "schema": "cellio.inspection.windows-qualification/1",
+  "development_version": "1.1.0.dev1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "regression": {
+    "command": "python -m pytest -q -ra --tb=short --basetemp work/cell-c-full-cpu-tests02/pytest --junitxml work/cell-c-full-cpu-tests02/junit.xml",
+    "python": "3.12.16",
+    "pytest": "8.4.2",
+    "junit_duration_s": 147.184,
+    "started_at": "2026-11-20T17:40:53.741272+09:00",
+    "junit_sha256": "cddf0fd7e6ee2139053c3f51aaf26980039ec46bdecd05ae7c8292a0e2b7dd9d",
+    "counts": {
+      "tests": 447,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 1,
+      "passed": 446
+    },
+    "skipped_tests": [
+      "tests.integration.test_isaac_contracts.test_isaac_real_one_step_and_hard_reload"
+    ],
+    "skip_reason": "The opt-in native Isaac hard-reload integration test requires CELLIO_RUN_ISAAC_TESTS and CELLIO_ASSET_CACHE."
+  },
+  "clean_source_wheel_and_cpu_install": {
+    "version": "1.1.0.dev1",
+    "python": "3.12.7",
+    "platform": "Windows",
+    "unavailable_runtime_modules": [
+      "isaacsim",
+      "omni",
+      "pxr"
+    ],
+    "examples": {
+      "normal": {
+        "exit_code": 0,
+        "verdict": "PASS",
+        "destinations": [
+          "OK",
+          "NG"
+        ],
+        "result_ids": [
+          "P1",
+          "P2"
+        ]
+      },
+      "stale_ok": {
+        "exit_code": 5,
+        "verdict": "FAIL",
+        "destinations": [
+          "OK",
+          "OK"
+        ],
+        "result_ids": [
+          "P1",
+          "P1"
+        ]
+      }
+    },
+    "wheel": {
+      "name": "cellio-1.1.0.dev1-py3-none-any.whl",
+      "bytes": 1293524,
+      "sha256": "f33610d68e4523e673d2763b1a0b43d71a848c13142733b23682ed915fe08e8b",
+      "python_sources": 100,
+      "source_date_epoch": 1767225600
+    }
+  },
+  "verification_of_installed_wheel_on_native_output": {
+    "sequence": "upper_cross",
+    "placement": "A",
+    "compared": [
+      "normal",
+      "stale_ok"
+    ],
+    "geometry_audits_included": true,
+    "comparison_sha256": "22ce24d7411e5abe46a0b5a42c24a57285c7ec84a3e89fc00c8f233d0af38eb7",
+    "actual_bins": {
+      "normal": [
+        "OK",
+        "NG"
+      ],
+      "stale_ok": [
+        "OK",
+        "OK"
+      ]
+    }
+  },
+  "reproduce_clean_wheel": "python scripts/check_cell_c_distribution.py --cpu-python PATH_TO_CPU_PYTHON --out FRESH_DIRECTORY",
+  "distribution_check_script_sha256": "501ff296d2691cfc792f48312e932e3a9cde55ffec373cc09692350a77ba6803"
+}
