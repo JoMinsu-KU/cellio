@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+The first stable three-cell release includes the conveyor, clamping and dimensional inspection plugins. All three use the shared episode runner and offline evaluator. The inspection controller, plant, evidence readers and acceptance rules are identical to the qualified `1.1.0.dev2` candidate. The release includes a Python 3.12 wheel and 24 compact inspection records for CPU replay. [Three-cell validation](results/qualification/cell-c-framework/README.md) · [Inspection and sorting guide](docs/cell_c.md)
+
 ## 1.1.0.dev2 (development snapshot)
 
 Cell C joins the installed scene plugins. Its gauge readings drive sorting commands through the shared episode controller and command router. The normal and stale-result scenarios use the same `validate`, `run`, `verify-artifact` and `evaluate` commands as Cells A and B. The earlier inspection recordings remain available for replay. [Cell C workflow](docs/cell_c.md)

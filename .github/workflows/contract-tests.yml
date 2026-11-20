@@ -20,4 +20,5 @@ jobs:
       - run: python -m pytest -q
       - run: python -m cellio validate --config examples/cell_a/healthy.yaml
       - run: python -m cellio validate --config examples/cell_b/healthy.yaml
+      - run: python -m cellio validate --config examples/cell_c/healthy.yaml
       - run: python -m cellio acceptance --level r0 --report work/r0.json
