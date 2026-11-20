@@ -1,0 +1,14 @@
+{
+  "schema": "cellio.inspection.history-cross-platform/1",
+  "environments": [
+    "Windows CPython 3.12",
+    "Ubuntu WSL CPython 3.12"
+  ],
+  "native_attempts_imported_per_platform": 24,
+  "matched_part_records": 48,
+  "matched_rule_verdicts_and_first_witnesses": 120,
+  "case_results_digest": "43217c656efffc7ee5bc2b8482b1c3ee38f2bf1bb41093ce9a9d69abab53f96d",
+  "windows_receipt_sha256": "d49c862cfa92a49e7381f97c78502012b43bf6acc6f72bfbd13c4f317aa08bf3",
+  "wsl_receipt_sha256": "d49c862cfa92a49e7381f97c78502012b43bf6acc6f72bfbd13c4f317aa08bf3",
+  "receipt_bytes_equal": true
+}

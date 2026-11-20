@@ -1,0 +1,22 @@
+{
+  "platform": "Ubuntu on WSL2",
+  "environment": "cellio-audit",
+  "python": "3.12.16",
+  "suite": "CellIO full source checkout, including shared three-cell framework and archive tests",
+  "command": "PYTHONPATH=<checkout>/src python -m pytest -q -p no:cacheprovider --basetemp=<fresh-temporary-directory> --junitxml=<local-report.xml>",
+  "counts": {
+    "tests": 455,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 454
+  },
+  "skipped": [
+    {
+      "test": "tests.integration.test_isaac_contracts.test_isaac_real_one_step_and_hard_reload",
+      "reason": "Set CELLIO_RUN_ISAAC_TESTS and CELLIO_ASSET_CACHE on a 6.2 runtime"
+    }
+  ],
+  "junit_sha256": "3e05071df6c5f2e21a92aae0a4de65a48c83396719787bfcfbd0a1c5d6c8b211",
+  "elapsed_s": 33.992
+}

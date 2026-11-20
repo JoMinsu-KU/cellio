@@ -1,0 +1,1290 @@
+{
+  "cases": [
+    {
+      "artifact_digest": "53a16fe4cd7dd36a9a92e166cc596d14460b39fb15d5bc1c048e2c2118ca3604",
+      "case": "upper_cross-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018267,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 33.14996509891333,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295457,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 33.249968872358316,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6504
+        ]
+      },
+      "rules_digest": "0ccef018cb460c7b3a7b7067af8ca494b4e4ced6f6372ee951696c035ca1ff01",
+      "source_sha256": {
+        "events.json": "c504d8015a69d90035ea53d8f5943c37d75d7e6a7f2495b181fed5cfcec5a1c8",
+        "motion.jsonl": "f40b2999b3a9de13a16c97621437368b957554a6ddc556b02b38c6d2cb2bfd78",
+        "result.json": "2934c4fd1680e09de2e6ee186802613efa8129a24e215cf7da254a2453eeca58"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "e4b2f23b24d6023be08ef6b4273f7b9c5b26adc89c36553afdd52dc12bb1da7b",
+      "case": "upper_cross-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018267,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 33.14996509891333,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295457,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.249968872358316,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "FAIL",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "c5e92a3839344c6ade0e3a96cd80f6739522b296e384c8d845bff5943a8d0649",
+        "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+        "result.json": "b644febd2e9bb6d271217f7bce939e02a77c95cb2b06f2284c5c913097cbe78e"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "2180d348918c73e31d96e9215e3e520d20c2cd7f8dce3d9588f611c8899d15f4",
+      "case": "upper_cross-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018244,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 33.14984441879276,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295436,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.249967723850915,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "FAIL",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "ebfb78baf4e6c02bdb997925f5e5a0896a3d4d8f3405d61b24f57ae0139bebd3",
+        "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+        "result.json": "9d6c873b3ed45c2de104f86fec844e5ce06d55c30d1f2bdc221c7f9992364d25"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "eae3cbb1d40654251b6e4ad42fcd0fd4022ae00d0a95f0759ed5880cc8772bd1",
+      "case": "upper_cross-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018244,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 33.14984441879276,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295436,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 33.249967723850915,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6504
+        ]
+      },
+      "rules_digest": "0ccef018cb460c7b3a7b7067af8ca494b4e4ced6f6372ee951696c035ca1ff01",
+      "source_sha256": {
+        "events.json": "1a93419edb2078e65705216705a6dd0f1372b0de1b7e2892c1712fd7cb6e7351",
+        "motion.jsonl": "f6aee350ef5701f3120df01f785aae94c1dbfc5d90cf56841018d469ff70a81a",
+        "result.json": "dfc7db43c30069dd21bca344adb35ce471da0f61309b579ce3ad84e68bd69afd"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "6b0c11e99d2881a1e9dd3854beb9b047cfe6f748a5f9d17f4bebd63878d87738",
+      "case": "lower_cross-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447535,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84996747117819,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967561,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.749967859079355,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6504
+        ]
+      },
+      "rules_digest": "0ccef018cb460c7b3a7b7067af8ca494b4e4ced6f6372ee951696c035ca1ff01",
+      "source_sha256": {
+        "events.json": "8a7f0f3173328a48ba936b1663f5980003b83199c675cf63df266f82dbe898de",
+        "motion.jsonl": "f40b2999b3a9de13a16c97621437368b957554a6ddc556b02b38c6d2cb2bfd78",
+        "result.json": "aa0be6ca0b857a987a7d0697b46ddc5e091cd2968ad35afde386fb22b245dc67"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "00cd1cd45eb5c82091cd74213c5e6600f6e26ba0b207a173e68980cc645191bc",
+      "case": "lower_cross-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447535,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84996747117819,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967561,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.749967859079355,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "FAIL",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "31eaa658b99092dbd506b36432c768b6d4cb92f7b000401662b56e3bcbe6ec72",
+        "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+        "result.json": "af462eb752e7afb95a6a4419029009daff6240ae87c04b0aff8af710305edd32"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "21b86974913c0c8243834633a4d2ce4121c2efdff5cebc1b9d579c377e4d4049",
+      "case": "lower_cross-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.8500187024473,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84984679105762,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.750017009675396,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.749966710571954,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "FAIL",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "7ae6beb2022d7c36ada9b8038481c940600763a15522bcb3bcd8b6e4ad75744d",
+        "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+        "result.json": "2632373da88eeed66408b6b6cfe40a6f315040e2bfbe63ae4f9ff63469979717"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "498290c2c52f7f19abce9ee73bae3cbdae79d113a9f7033bd68719274ebf5c27",
+      "case": "lower_cross-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.8500187024473,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84984679105762,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.750017009675396,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.749966710571954,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6504
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6504
+        ]
+      },
+      "rules_digest": "0ccef018cb460c7b3a7b7067af8ca494b4e4ced6f6372ee951696c035ca1ff01",
+      "source_sha256": {
+        "events.json": "866b0a512525cf04f747e303ebc18a211321a9c109fe5c53f67485342a7662e2",
+        "motion.jsonl": "f6aee350ef5701f3120df01f785aae94c1dbfc5d90cf56841018d469ff70a81a",
+        "result.json": "35aea1152fb53b4558b841395f4d267ce9d4ff46d124403314ce78900bb56a31"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "9ecafb5a91ea394942f99bde351ce726404bf884db2d98a9c27605a96a868705",
+      "case": "upper_reverse-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.250018022954585,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24996679168524,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018255,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.14990559184816,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "60d5c589f712c9671a1e8ee77b911a71a3dd3cd9b3c609207a31c8b690f31c32",
+        "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+        "result.json": "24d6a57741bd699c9b417348c37e8bf3a2db40dcc610928d43894d9174229980"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "93ddc8fe30d322c3798d86972c489d35e7cfdf6b751ff804a0b91a94d34e5c1b",
+      "case": "upper_reverse-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.250018022954585,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24996679168524,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018255,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.14990559184816,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "60d5c589f712c9671a1e8ee77b911a71a3dd3cd9b3c609207a31c8b690f31c32",
+        "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+        "result.json": "fd17bd4c3c66f5a6d7d6bf7b1ce12fc09950741e6cb4efe4b38fa4f8de70b281"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "6ac21c7aa9b5bafa520c69597ab4863c8b392d1c8741f3c24d30b7f118fdb818",
+      "case": "upper_reverse-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295435,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24984611156467,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.150016330182666,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.14996250199065,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "5bd2d229f871f9582e11d145f0cadf6a5f7cf26adb6b56cdc2c1f35d51d9eb61",
+        "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+        "result.json": "51a24e65a5275bf53f99cd3b3bf975ef6f405e1f306ed70b6889cd324cb36aa5"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "22d37772cb2bb259f453657c7441517b2298084e85036736f8da65ae8be3f922",
+      "case": "upper_reverse-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295435,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24984611156467,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.150016330182666,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.14996250199065,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "5bd2d229f871f9582e11d145f0cadf6a5f7cf26adb6b56cdc2c1f35d51d9eb61",
+        "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+        "result.json": "0a9f150c3cd8a7dd3f2912f0f13c588f7ef6827d33a6d6439f3ff929207e60de"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "a959c990131efc2c9bdfc5090be05c3c52ffdb9366fb5fe71c6d53e6a8a452a0",
+      "case": "lower_reverse-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.750017009675624,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 32.74996577840628,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447414,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.84990796411302,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "3bcdd88cad4324f9577b0cdd92cb1737367a469b8bf03c9b3ea5327daf802cbd",
+        "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+        "result.json": "6039f80efa49441069ce239cc48d9fd0e62c7fa0cee1f0278cfc312988fd8a4d"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "92530e828e1c0f99e30ac975ef6674afbab9a915d74b9c9591642f85abb6de5c",
+      "case": "lower_reverse-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.750017009675624,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 32.74996577840628,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447414,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.84990796411302,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "3bcdd88cad4324f9577b0cdd92cb1737367a469b8bf03c9b3ea5327daf802cbd",
+        "motion.jsonl": "d05c9e49c62024d52e7913b2c2403bdcb669cb1a15317afae86ed0780ffd74d6",
+        "result.json": "8bfa651704d73d20bf1d8ab1d8bb306ecbce6067ae488a537803ae1163c9c144"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "43d63c82e8180df48f0a4b46406c6a4d919ac0021a90f9630d83da0dff3cebf3",
+      "case": "lower_reverse-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967539,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 32.74984509828571,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.85001870244753,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.84996487425551,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "d480330cfd3663f7452dcfb8be8ff38ac5a3ce73792c43b879811e6b6362b303",
+        "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+        "result.json": "18204947ea0a7cab90ae6b803832dc38387fcec0bb79f3addc805781b99b7b09"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "2a83e84fcddab0191aab381c6b9ee62380550f06bea2f2dfeb10b01c5b9aea70",
+      "case": "lower_reverse-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967539,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 32.74984509828571,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.85001870244753,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 32.84996487425551,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6668
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6668
+        ]
+      },
+      "rules_digest": "e56e4374167ee8b3250a1789cb1f562a193b037c7e97e08e8e2e910dac88ced1",
+      "source_sha256": {
+        "events.json": "d480330cfd3663f7452dcfb8be8ff38ac5a3ce73792c43b879811e6b6362b303",
+        "motion.jsonl": "704e802e80ca8278db802a5f3e71025eb6f6b23acbc8fd167b027821a559d0db",
+        "result.json": "9142747f997d00bc2b3e1589d4620f17c13e0d55feee2eca3dff37fc15fbaa43"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "371a4c694b0200724cfbbcaf8f37369224a4c82161d31d02e58d9e57c961929c",
+      "case": "both_good-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447535,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84996747117819,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018266,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.149967179586405,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "85b7350fd5584890ddf87e1fb7f9f15b9c269da9261e66e6347bc35d7f4203fc",
+        "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+        "result.json": "1bfc37c3605f0ac7185ec30bb8198da7ea3e450c08b0d4e550f20cee2b43f775"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "094d680e1802ea7507bb25348616a47953cd152752764a0dddba3af507ea5e02",
+      "case": "both_good-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.850018702447535,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84996747117819,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.15001633018266,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.149967179586405,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "3a150d8aa25f23f75bf26f6c2e254bfc50fb9ecc1d458a33bcefb4f20a84bc26",
+        "motion.jsonl": "ca7d00c79cd7b52b79e6a83fae9d1cbc4dd7fdbc078addacb9f67d1b3268a1f9",
+        "result.json": "0517a732d98a7ad961f123d1faa177223a4041d5b9d275199b99417b8dfd8873"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "aa128e6325e68cc787c42a872d5cec62eff6c73af5dd288f37989c07a75ec45a",
+      "case": "both_good-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.8500187024473,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84984679105762,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.150016330182446,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.149966031079,
+          "result_part_id": "P1"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "FAIL",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "bca171c3697dd9649e84b0dca59024b5c45848a859fbde045837d876dcaa1a8f",
+        "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+        "result.json": "a758bbd725e3831e10c2c4555410069b5b79dfb6ce027705444ab30d057542fd"
+      },
+      "verdict": "FAIL"
+    },
+    {
+      "artifact_digest": "76339e3488637475babe9c6834213a9cd088a82dcd29111326fe37f0f46cdce2",
+      "case": "both_good-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 32.8500187024473,
+          "observed_bin": "OK",
+          "part": "P1",
+          "probe_height_mm": 32.84984679105762,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "OK",
+          "expected_bin": "OK",
+          "geometry_height_mm": 33.150016330182446,
+          "observed_bin": "OK",
+          "part": "P2",
+          "probe_height_mm": 33.149966031079,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5140
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6332
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6332
+        ]
+      },
+      "rules_digest": "27f40068535137a18770a823941c9086dad455794c9414c3248caa08c6b2ee42",
+      "source_sha256": {
+        "events.json": "836cd77cb0584a3a604b2da4fedd9a7dbe003adc2d8982cf8ac8a86c6c80d5b1",
+        "motion.jsonl": "e218f972a04b857cc8d4927553aded953c644edac31b9024eb6b8736f7c8c08a",
+        "result.json": "5d5c77de318564a39b81895f2ef769458eb4896e6da426919b02cf291e02a7b6"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "c1a389ade81b5c9c2e47f6884550335e67b01c636d5b5d47c1cd67f3a8f4e449",
+      "case": "both_bad-A-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.250018022954585,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24996679168524,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.7500170096755,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.74990627134111,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6840
+        ]
+      },
+      "rules_digest": "5e6a7ce9649db5ddb4d594837688cb700d62608e3c737cc08616865d23c3c070",
+      "source_sha256": {
+        "events.json": "d994382b3c7c4f2c3eff0a8745802bf1b3bcb232534d48b1e4d463a8c50e8870",
+        "motion.jsonl": "4cb25880f105c80bdcb8f5cf762f14c34884f3bf8a489094a448a8c615cad002",
+        "result.json": "e5d5d289664fa102e166a99d2736dafc9e2a3a2ea4e5fa68f6328662a1f82be2"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "6a23ec397c5fd2985a85b38895899c70c034a887b2e3c8eb00f874570842fd61",
+      "case": "both_bad-A-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.250018022954585,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24996679168524,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.7500170096755,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.74990627134111,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6840
+        ]
+      },
+      "rules_digest": "5e6a7ce9649db5ddb4d594837688cb700d62608e3c737cc08616865d23c3c070",
+      "source_sha256": {
+        "events.json": "d994382b3c7c4f2c3eff0a8745802bf1b3bcb232534d48b1e4d463a8c50e8870",
+        "motion.jsonl": "4cb25880f105c80bdcb8f5cf762f14c34884f3bf8a489094a448a8c615cad002",
+        "result.json": "79dd986b3388c6b5ae52a79330e8e5df82c538107c4039c2a02a1f34162221c3"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "4adf21542e623cf240c2fa8df955a36e60d4050b2dfeaf5a9063bc99c248b971",
+      "case": "both_bad-B-stale_ok",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295435,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24984611156467,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967562,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.7499631814836,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6840
+        ]
+      },
+      "rules_digest": "5e6a7ce9649db5ddb4d594837688cb700d62608e3c737cc08616865d23c3c070",
+      "source_sha256": {
+        "events.json": "72b9d70c3a6acf57935967630ab48bf8576767ecaa9496aec7e5d6b94fd455f3",
+        "motion.jsonl": "685ee00e4a4284f2e09791a13e2c40cda8f1a8cc63ce4219c05e3fbd1d5ef566",
+        "result.json": "e976d894c33869cf5c3f0073638d08369777afa02ae8b5ca8100618051f6725a"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "artifact_digest": "926c216abc4a43c2ef2f1c344d133c6bdfcb1c4920e251e482b53215f3473648",
+      "case": "both_bad-B-normal",
+      "parts": [
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 33.25001802295435,
+          "observed_bin": "NG",
+          "part": "P1",
+          "probe_height_mm": 33.24984611156467,
+          "result_part_id": "P1"
+        },
+        {
+          "commanded_bin": "NG",
+          "expected_bin": "NG",
+          "geometry_height_mm": 32.75001700967562,
+          "observed_bin": "NG",
+          "part": "P2",
+          "probe_height_mm": 32.7499631814836,
+          "result_part_id": "P2"
+        }
+      ],
+      "requirements": {
+        "cell_c.r01.measurement": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r02.result_owner": [
+          "PASS",
+          5476
+        ],
+        "cell_c.r03.command_followed": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r04.destination": [
+          "PASS",
+          6840
+        ],
+        "cell_c.r14.sequence": [
+          "PASS",
+          6840
+        ]
+      },
+      "rules_digest": "5e6a7ce9649db5ddb4d594837688cb700d62608e3c737cc08616865d23c3c070",
+      "source_sha256": {
+        "events.json": "72b9d70c3a6acf57935967630ab48bf8576767ecaa9496aec7e5d6b94fd455f3",
+        "motion.jsonl": "685ee00e4a4284f2e09791a13e2c40cda8f1a8cc63ce4219c05e3fbd1d5ef566",
+        "result.json": "d6e4af0b470754f427fec82fb4079291bb6ffbb30e1a02f6dbc19636e9fa1e86"
+      },
+      "verdict": "PASS"
+    }
+  ],
+  "cases_digest": "43217c656efffc7ee5bc2b8482b1c3ee38f2bf1bb41093ce9a9d69abab53f96d",
+  "historical_native_attempts": 24,
+  "method": "Common evaluate on sparse sealed observations of historical native first attempts",
+  "new_simulations": 0,
+  "observations_sha256": "58226a833d3f7c8627a8ab9cf8436e5c3923ebbe6d4dfa81f22700ca7be92f51",
+  "parts_checked": 48,
+  "rule_verdicts_and_first_witnesses_checked": 120,
+  "schema": "cellio.inspection.framework-historical-equivalence/1",
+  "summary_sha256": "d0801c3258897e288c3721f079302e450a1bc310f778ab5d66d4ce301aae059d",
+  "verdicts": {
+    "FAIL": 6,
+    "PASS": 18
+  },
+  "witness_archive_sha256": "68488e1d102d16f83c1ad7c98d972aa2e93b2f931655bc7e32f9f36d4a525b19"
+}

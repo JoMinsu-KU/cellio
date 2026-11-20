@@ -1,0 +1,11 @@
+{
+  "test": "test_isaac_real_one_step_and_hard_reload",
+  "role": "Supplement to the Windows CPU test suite, exercising its opt-in native test on the same workstation",
+  "version": "1.1.0.dev2",
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "time_s": 14.396,
+  "junit_sha256": "14d92e5d604a69f68321647acaab4ce87d0a15d29b1c684751cdeeef86f5db43",
+  "doctor": true
+}

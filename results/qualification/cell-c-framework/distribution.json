@@ -1,0 +1,22 @@
+{
+  "schema": "cellio.framework-distribution/1",
+  "version": "1.1.0.dev2",
+  "source_commit": "87f0f636990518d731346475527f734f9f676b96",
+  "wheel": "cellio-1.1.0.dev2-py3-none-any.whl",
+  "bytes": 1312792,
+  "sha256": "c454bf0e9ae9ccf93fbedb23617656897de8aa6a8a7afca3e97629e54c39cb70",
+  "independent_rebuild_byte_identical": true,
+  "packaged_sources_verified": 105,
+  "scene_entry_points": {
+    "cell_a": "cellio.plugins.reference:cell_a",
+    "cell_b": "cellio.plugins.reference:cell_b",
+    "cell_c": "cellio.inspection.framework:cell_c"
+  },
+  "packaged_cell_c_scenarios": [
+    "both_good.yaml",
+    "both_good_stale.yaml",
+    "healthy.yaml",
+    "stale_ok.yaml"
+  ],
+  "source_date_epoch": 1767225600
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "cellio.three-cell-framework.regression/1",
+  "development_version": "1.1.0.dev2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "interpreter": "cellio-isaac62",
+  "python": "3.12.16",
+  "pytest": "8.4.2",
+  "fixture_scope": "CPU, including mock profiles and replay of native evidence; fresh Isaac Sim runs tracked separately",
+  "command": "python -m pytest -q --basetemp work/framework-full-tests-01 --junitxml work/framework-full-tests-01.xml",
+  "start": "2026-11-20T18:34:55.896341+09:00",
+  "duration_seconds": 247.154,
+  "counts": {
+    "tests": 455,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 1,
+    "passed": 454
+  },
+  "skipped_tests": [
+    {
+      "test": "tests.integration.test_isaac_contracts.test_isaac_real_one_step_and_hard_reload",
+      "reason": "Set CELLIO_RUN_ISAAC_TESTS and CELLIO_ASSET_CACHE on a 6.2 runtime"
+    }
+  ],
+  "cell_c_framework_and_native_inventory_tests": 8,
+  "junit_sha256": "712ee0b0f71a53bf8571f15118be362ff3d8b39c151d3b2a9626877c266b9ba4"
+}

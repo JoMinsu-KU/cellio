@@ -1,0 +1,13 @@
+{
+  "schema": "cellio.framework-cross-platform/1",
+  "windows": "Isaac Sim 6.2 native execution and Windows wheel evaluation",
+  "linux": "Independent evaluation in Ubuntu WSL using the same wheel and CPU dependencies",
+  "windows_receipt_sha256": "1877447011c040d50fb045686ba1637d86d79ce7cbb2db6640ddfc162a9b4afc",
+  "wsl_receipt_sha256": "1877447011c040d50fb045686ba1637d86d79ce7cbb2db6640ddfc162a9b4afc",
+  "receipt_bytes_equal": true,
+  "cases": 6,
+  "matched_rules_including_first_witness": 54,
+  "total_physics_steps": 43200,
+  "checked_cell_c_applied_sorting_decisions": 8,
+  "offline_simulator_required": false
+}
