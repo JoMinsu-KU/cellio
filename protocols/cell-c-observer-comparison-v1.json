@@ -1,0 +1,14 @@
+{
+  "id": "cell-c-observer-comparison-v1",
+  "parent": "cell-c-softwarex-v1",
+  "scope": "Observer comparison on the first two-part attempt per registered design point; the published A/B first-attempt table is a separately identified retrospective descriptive comparison.",
+  "unit": "One ordered pair of parts. The positive condition for comparison is stale_ok with a dimensionally acceptable first part: this is where the implemented latch should actually suppress the update for P2. Reference controllers and stale_ok following a rejected first part are negative controls.",
+  "observers": {
+    "cycle_completion": "Flag when the second release and settled output never occur. Incomplete native observations are listed separately as unavailable to the cross-observer comparison; report this denominator.",
+    "output_quality": "Flag a run when the actual settled bin for either part differs from its independently known drawing class. Recompute class from frozen per-sequence dimensions. Recompute bin from transformed footprint, position, height and speeds.",
+    "result_owner": "Flag a run when the result owner for either part differs from the ID of the physical part currently undergoing inspection."
+  },
+  "controls": "Retain OK then OK and NG then NG cases, reverse direction, plus both sides of the tolerance window. Report observed fault activation and wrong output separately. A stale tag can coexist with a correct bin.",
+  "expected": "Output checks can see wrong physical routing only; provenance can also see a stale result that yields the right bin by coincidence. Reused P1/P2 initial placements across conditions are matched design points.",
+  "report": "Enumerate each planned case, unavailable cases, confusion counts TP/FN/FP/TN and paired physical effects. Do not extrapolate rates to a population of manufacturing cells. Capture input/output hashes and compare Windows and WSL audit output byte-for-byte."
+}

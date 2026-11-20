@@ -25,6 +25,9 @@ def parser():
         "--json", action="store_true", help="Write structured error details to stdout"
     )
     cmds = p.add_subparsers(dest="command", required=True)
+    from cellio.inspection.commands import add_commands
+
+    add_commands(cmds)
     d = cmds.add_parser("doctor")
     d.add_argument("--profile", choices=["isaac62", "mock", "audit"], default="isaac62")
     d.add_argument("--level", choices=["static", "import", "smoke"], default="smoke")
@@ -155,6 +158,10 @@ def single(a):
 
 
 def perform(a):
+    if a.command == "inspection":
+        from cellio.inspection.commands import perform as inspection
+
+        return inspection(a)
     if a.command == "doctor":
         output = (
             a.output or data_root() / "locks" / f"doctor-{a.profile}-{a.level}.json"

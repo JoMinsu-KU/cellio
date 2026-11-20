@@ -1,0 +1,38 @@
+{
+  "id": "cell-c-softwarex-v1",
+  "design": "prospectively specified local commissioning extension",
+  "date_utc": "2026-11-20",
+  "unit": "One new native Isaac process, two ordered parts without resetting the result latch. Pair controllers by sequence and physical placement schedule.",
+  "nominal_mm": 33.0,
+  "tolerance_mm": 0.20,
+  "reference_geometry_error_limit_mm": 0.001,
+  "probe_to_drawing_limit_mm": 0.020,
+  "source_witness_xy_error_limit_mm": 0.30,
+  "sequences": {
+    "upper_cross": {"errors_mm":[0.15,0.25],"truth":["OK","NG"]},
+    "lower_cross": {"errors_mm":[-0.15,-0.25],"truth":["OK","NG"]},
+    "upper_reverse": {"errors_mm":[0.25,0.15],"truth":["NG","OK"]},
+    "lower_reverse": {"errors_mm":[-0.25,-0.15],"truth":["NG","OK"]},
+    "both_good": {"errors_mm":[-0.15,0.15],"truth":["OK","OK"]},
+    "both_bad": {"errors_mm":[0.25,-0.25],"truth":["NG","NG"]}
+  },
+  "placement_profiles": {
+    "A": {"infeed_offsets_mm":[[-1.5,0.6],[1.0,-0.7]]},
+    "B": {"infeed_offsets_mm":[[1.5,-0.6],[-1.0,0.7]]}
+  },
+  "placement_definition": "XY translation from the indexed belt's nominal underside center (-440,-248,899) mm. Pose stays axis-aligned at issue. The actual part must settle before pickup. These fixed schedules are design points, not random samples; compare P1/P2 and the two signs separately.",
+  "conditions": ["normal","stale_ok"],
+  "scheduled_order": "Sequence in declared order. Within each sequence run profile A then B. Alternate controller order per successive sequence-profile pair, normal then stale first. Each arm is a fresh native process.",
+  "expected_native_runs": 24,
+  "expected_inspections": 48,
+  "virtual_hardware": "Native CPU-TGS PhysX under gravity, 120 Hz; pose and carry readout 30 Hz. Robot achieves a joint-limited kinematic path; the acquired payload has a virtual translational attachment, free contact settlement upon release. A one-slot output tray is externally emptied after the first settled output without resetting the latch.",
+  "primary_endpoints": [
+    "Reference: both physical bins match the independent bracket-local geometry verdict, and both consumed result IDs match the part being routed, in all 12 pairs.",
+    "Stale OK: both profiles of each good-to-bad sequence physically false-accept the second bracket; stale ID is P1. NG-to-OK and NG-to-NG do not activate stale-OK on P2. OK-to-OK consumes P1's result while physical classification remains correct.",
+    "Both controllers: each settled output must be reconstructed from actual recorded part footprint, pose, final speed and support height rather than command/label alone.",
+    "Both controllers: independent replay of every recorded TCP/body pose and probe raycast, reference mesh height, correct registered geometry and infeed offsets. Four acquisitions and four releases per two-part run, no unresolved equipment clearance, stock joint limits."
+  ],
+  "additional_geometry_checks": "Post hoc numerical diagnostics are labeled. Run archived nonadjacent-link, bilateral-grip and payload/fixture audits on qualified physical traces; report coverage and unresolved checks explicitly.",
+  "failure_policy": "Allocate all 24 rows before execution. Record each first-attempt outcome and all retries separately. Preserve partial data. No retuning accepted as first-pass data. Same-code retry permitted for infrastructure faults; a changed implementation requires a new versioned run series. Exclude technical failure from endpoint numerators but retain it in planned counts.",
+  "interpretation": "Purposeful two-sided boundary examples excluding the ambiguous exact tolerance endpoint; no population reliability or real hardware transfer inference. Historical 33.000/33.600 mm demonstration excluded. Sources and protocol hashed before first native launch."
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0.dev1 (development snapshot)
+
+Cell C adds dimensional inspection, per-part result ownership, physical tray witnesses and a CPU-only example replay. Its simulator and independent USD checks use the `cellio inspection` command. The distribution includes original inspection equipment geometry and its authoring code. The simulator resolves the robot separately from the user's verified asset cache. [Cell C commands and model scope](docs/cell_c.md)
+
+The extension has a separate prospective two-part experimental protocol. A retrospective audit of the Cell B F4 controller records also identifies whether a clamp-close command was issued at any point during each episode. [Cell C design](protocols/cell-c-softwarex-v1.json) · [Cell B command opportunities](results/publication/softwarex-extension/cell-b-f4-opportunities.json)
+
 ## 1.0.0
 
 The workstation profile uses Windows 11 and a dedicated Conda Python 3.12 environment for simulation. WSL2 supplies a second Python runtime for offline verdict and witness comparison.

@@ -1,0 +1,4 @@
+# Native and offline audit manifests include these scripts' original bytes.
+cell_c_motion.py -text whitespace=cr-at-eol
+audit_gripper_mesh.py -text whitespace=cr-at-eol
+audit_self_clearance.py -text whitespace=cr-at-eol

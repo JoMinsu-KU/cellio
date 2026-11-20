@@ -1,0 +1,704 @@
+{
+  "attempts": [
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "c9c19cd8-9140-46df-9ef2-237f92e2af0d",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "80a6a5bcd8da0af5157e093b9347cbdb7781680209e77f6a91bd2e7bfac5bad7",
+      "repeat": 1,
+      "scene_seed": 1000,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "03ebf218-9130-403a-9a35-90cd0b70b58b",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "18c4cbd2d808017f9823d92efa54f5a0825fc2da6dc61b8be61217deff0f4924",
+      "repeat": 0,
+      "scene_seed": 1000,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "d7d34aec-72fa-4981-8d52-d18a9036ca6c",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "e1614a6504599d1da315f2db1627a1a97cecc5a673fbe4710ac8fa4eb5372f0d",
+      "repeat": 0,
+      "scene_seed": 1000,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "4fbd45a9-30f2-4f80-810f-6444b2580889",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "3ecf398d14897e463e2458ac37a6335ce0519220134a20c6039c5df9ccc9aca1",
+      "repeat": 1,
+      "scene_seed": 1000,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "fdc8caa9-8617-40e1-895f-8d0414731e1a",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "11f38e70c53653a0f02bec893181236f45674f4ef9aaa6aa66965f24112e88f4",
+      "repeat": 0,
+      "scene_seed": 1001,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "740e2b1d-7ece-4092-b03e-ce730d658246",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "9160a7c1136e5e63727e36ecadcc421e3d105602cde5af0f92f77b51543b5e56",
+      "repeat": 1,
+      "scene_seed": 1001,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "85513991-442e-4263-9132-1e3cf0ceb656",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "b70e97f128a3b204cdfa84d2ae6db8927d1573125fb659c0578d2e13b46c80d4",
+      "repeat": 0,
+      "scene_seed": 1001,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "aa68606f-2d66-4138-9ad9-505c70d94e5d",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "fe5944dc6328c2c6c881fd1816f9fd9492bd2e61871492cc51619206683a6417",
+      "repeat": 1,
+      "scene_seed": 1001,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "4bcf7d0c-dafc-45ca-85d5-cf1af28a1ae4",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "ca1cc6765c728bf98fd66eddee5b80abaae7c14163c2f6d0e0aa6186c5e74a06",
+      "repeat": 0,
+      "scene_seed": 1002,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "c9271d92-15c4-45c6-aec6-a35781d92b22",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "60d5bdbfc877753c91d9d8bf416e2419226bbe256ca61716c20230a41acceffb",
+      "repeat": 1,
+      "scene_seed": 1002,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "e0d9efdd-f606-4ce2-aaac-4dfd5277a198",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "fff8594172c71bb764a0d1b3c9f71a24eda835e1bca8846d8a7537595d3e1768",
+      "repeat": 0,
+      "scene_seed": 1002,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "1cd9f16b-6a1a-4ada-bd21-89f8468e888c",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "0673fa866f9a2b3bb615c24cd20448530ddd7bf7a4bf0914bd7c87e0c34b50b5",
+      "repeat": 1,
+      "scene_seed": 1002,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "b5e50923-04ef-47b4-9942-8c7e5d77863d",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "be72cb6ddc2d85d7fef45fd6f77fa28a07170530a6c4009e6e920e3c4d2b9435",
+      "repeat": 1,
+      "scene_seed": 1003,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "4d183f31-6b73-4d54-9c92-308ebb9a6f61",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "1385a9604863df1ac207bee470db7da4564e85310ed6ac09391925366c75641e",
+      "repeat": 0,
+      "scene_seed": 1003,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "f0ae1dd3-21ae-43c0-b335-125d1a5cc33e",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "20ba1dc3e7614f93e155c5a77b9b49424a76b99efeeab192923e2011ccb05f99",
+      "repeat": 1,
+      "scene_seed": 1003,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "eb52d919-3dbd-4101-8fe9-3a5ddfabe8b7",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "42c94eb5120c0e8e68a0f5d4ce5e349d41dff0d7616146b57634b5284afd08ea",
+      "repeat": 0,
+      "scene_seed": 1003,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "d0fb19d0-dfb5-47e0-a71d-b6293e36c0d8",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3669,
+      "issued_close_steps": [
+        3552
+      ],
+      "manifest_sha256": "6d189b8462e326bd67430044d12450732de2d593ac43c14647b6c9e540b6b85c",
+      "repeat": 1,
+      "scene_seed": 1004,
+      "trigger_step": 3549
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "9acf26c7-3a53-4038-b320-e9deb9dbbc13",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "003219aafb13fdab49921fdcf55bc408224c855af1b55413179391d1b9caff5f",
+      "repeat": 1,
+      "scene_seed": 1004,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "1e1775ab-5c64-4d84-9b64-9195e69f0418",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3669,
+      "issued_close_steps": [
+        3552
+      ],
+      "manifest_sha256": "f7b99af5f28a3d9e62611c84e2bb3914a8640c361ab221561506e1604416b897",
+      "repeat": 0,
+      "scene_seed": 1004,
+      "trigger_step": 3549
+    },
+    {
+      "all_target_intents_in_window": 0,
+      "attempt_id": "5d3950f9-c48c-4db8-8dde-3c7c355c3269",
+      "controller": "mutant.c_m4",
+      "delayed_packets": 0,
+      "end_exclusive": 3393,
+      "issued_close_steps": [],
+      "manifest_sha256": "037b260ab0bbeb2bbde5eb6992735178ec131faf3fe17757370945cd960184c4",
+      "repeat": 0,
+      "scene_seed": 1004,
+      "trigger_step": 3273
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "1f3a9222-ab23-4492-bf70-247b0f0de57e",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "af8c1f1dd6b052e0bae5fe9db39626a5aa4135ec20c78952faa8959654054cc3",
+      "repeat": 1,
+      "scene_seed": 1005,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "0c639430-c578-4f88-aba7-6f24c6bba260",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "c9a1b9ed9fe91ae3b7d4b3d7da4e876bb1a1e8061f793fca1e5bd413917e0342",
+      "repeat": 0,
+      "scene_seed": 1005,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "6a9ece2b-bbbf-4f0f-a8fd-cb6d6e8eb8fc",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "667beddb272d4ce218f954f90b05a31edc05f9e795070c585974b9d8c9d18070",
+      "repeat": 0,
+      "scene_seed": 1006,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "c4b929a0-568c-4e9f-b763-b61787d8086b",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "5e3c8021f210097fb30d2580a28e329a2ad90573a7b3d3108b9cedd3f3b63151",
+      "repeat": 1,
+      "scene_seed": 1006,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "013f5ec6-dec3-4ff0-bb6f-03040e6d449d",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "73434c86b8640040432136430702a1652b0b85984bbc85d849aa36b1fa4f84be",
+      "repeat": 0,
+      "scene_seed": 1007,
+      "trigger_step": 3573
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "952b7a28-b57c-46b2-8155-1041885d25dc",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "f4ceee9a25f2d62e29538d5e8477f32a6c6589cdae671b2a2aaecded90ffb74d",
+      "repeat": 1,
+      "scene_seed": 1007,
+      "trigger_step": 3573
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "6be56a84-7bf5-47d2-ab07-bfd45f67ba50",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "3128b4aaac782223022e78f81adef5826805a16315eb5dc2a4b5cc1384f78fc7",
+      "repeat": 1,
+      "scene_seed": 1008,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "a5d72716-1c59-4625-9c9d-b23b3fb41e8c",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3689,
+      "issued_close_steps": [
+        3572
+      ],
+      "manifest_sha256": "43cd0228b625437d22d8c6a43506b4ee10698a72dc6c15d7dbec83a9767960ba",
+      "repeat": 0,
+      "scene_seed": 1008,
+      "trigger_step": 3569
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "52e89227-a573-44e0-8650-989319ae9c7f",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3669,
+      "issued_close_steps": [
+        3552
+      ],
+      "manifest_sha256": "0bc3107338680dc64a15bc2c79fbbec73d4ae3bd47d261dc649303ac0831f332",
+      "repeat": 0,
+      "scene_seed": 1009,
+      "trigger_step": 3549
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "8f5617ff-a67a-441d-b824-09e5d55da140",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3669,
+      "issued_close_steps": [
+        3552
+      ],
+      "manifest_sha256": "d3bc81bca4e48c52a8e585e029f38b72f20de953f483f51649055db9a52447fd",
+      "repeat": 1,
+      "scene_seed": 1009,
+      "trigger_step": 3549
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "bc3383ef-d2b4-4d4c-91ae-f2d74e5fc140",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3681,
+      "issued_close_steps": [
+        3564
+      ],
+      "manifest_sha256": "6447ed52bf65f37c1cb4c9cf6e94d61b9ec593401604f934857d90312335b09c",
+      "repeat": 0,
+      "scene_seed": 1010,
+      "trigger_step": 3561
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "1ac2b06e-dd86-41a3-8a82-2c93125ba8a2",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3681,
+      "issued_close_steps": [
+        3564
+      ],
+      "manifest_sha256": "8c3d63f24ee9417a3744ebfcf0b40928a5e46519cd6147bd16aa60a75e7778e1",
+      "repeat": 1,
+      "scene_seed": 1010,
+      "trigger_step": 3561
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "fdd8533e-ab58-4efb-8a98-9bdaf49a5906",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "a149339240bbe813db857de1af8370ac338bd19bb3333b9e783d231dd0569356",
+      "repeat": 1,
+      "scene_seed": 1011,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "131adc99-cb1c-443f-8963-f266bb79dd02",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "e0c8232033b3fc4e4bb13a286a07eff0b3715a807ac5bfb470eeba169f34c13b",
+      "repeat": 0,
+      "scene_seed": 1011,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "2cb4ab26-004d-4311-8926-416fa4a05239",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "2d4117097a50a4d191bc4fb4b9a092bc6f3b190a7cb220d6fba0d5bfcdecdfd3",
+      "repeat": 1,
+      "scene_seed": 1012,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "d6005eb3-6be6-48bc-9e8b-0b9b18cf0463",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3677,
+      "issued_close_steps": [
+        3560
+      ],
+      "manifest_sha256": "44f4f5b7aeba859c7a7c1641e9259b6407ae0300422bf03ced2f5f326362385d",
+      "repeat": 0,
+      "scene_seed": 1012,
+      "trigger_step": 3557
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "a9c5ec61-bab8-4cfa-bb4c-bacf38f84386",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3685,
+      "issued_close_steps": [
+        3568
+      ],
+      "manifest_sha256": "19529c7cfd98ea4aded2d71ed2f27d1e719d7fa4fe5f37d95c3a995f250e136b",
+      "repeat": 1,
+      "scene_seed": 1013,
+      "trigger_step": 3565
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "0e3d159a-ab1c-46d5-b715-00a2a79f3cc6",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3685,
+      "issued_close_steps": [
+        3568
+      ],
+      "manifest_sha256": "74799c7c58f244f7c5fe251088557e9ab9d4ad00f1ebac042ce0971e3c05d85d",
+      "repeat": 0,
+      "scene_seed": 1013,
+      "trigger_step": 3565
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "47fa560d-eeb8-4a86-bfc6-c5cf1cd935b1",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3713,
+      "issued_close_steps": [
+        3596
+      ],
+      "manifest_sha256": "bde15ea53524fe6aa93b827d4a6566f78c70c2a3105113396755886685e199a3",
+      "repeat": 0,
+      "scene_seed": 1014,
+      "trigger_step": 3593
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "9bde19ed-33af-4380-9a95-b0e00ba991bd",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3713,
+      "issued_close_steps": [
+        3596
+      ],
+      "manifest_sha256": "759a58a5fbaf0057d500f80e200fd12f65150436581aa924aab2a81ddcffbb66",
+      "repeat": 1,
+      "scene_seed": 1014,
+      "trigger_step": 3593
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "3a3a2619-6fa4-4440-8113-ddc7a144a26d",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3665,
+      "issued_close_steps": [
+        3548
+      ],
+      "manifest_sha256": "7f49994a1c6a214b940b948b3363afcfbb23afbc0c9013134c8f34c9af26da03",
+      "repeat": 0,
+      "scene_seed": 1015,
+      "trigger_step": 3545
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "cea699b6-7551-4a2e-9b11-1f0dbe3d4b34",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3665,
+      "issued_close_steps": [
+        3548
+      ],
+      "manifest_sha256": "7a5d1e2661cf0a35dd2af4f51a3aa1752cadf9ccd09e625812fb951a78c68063",
+      "repeat": 1,
+      "scene_seed": 1015,
+      "trigger_step": 3545
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "1eebc34e-c3f6-4599-bf00-b199c79cfd33",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "755d6cca6a60b9dac08de470acf020c1d2b83c0566ba2eab0d4e820e03f1596b",
+      "repeat": 0,
+      "scene_seed": 1016,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "54418385-1dc2-4d48-9e91-46c8164eef1e",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3697,
+      "issued_close_steps": [
+        3580
+      ],
+      "manifest_sha256": "0acf5a74ec89e376ce69c7427bb825f0ac0d990bd01b38b908319581effc62b8",
+      "repeat": 1,
+      "scene_seed": 1016,
+      "trigger_step": 3577
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "252d9fa8-4c66-414a-b995-8639e02f347b",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "d438a0562650af2615e65bd497f98309b9a0c7fdd18730e882e69c2732cc4fb6",
+      "repeat": 1,
+      "scene_seed": 1017,
+      "trigger_step": 3573
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "223ca93a-ce02-4148-995f-afd1a0979dc3",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "b9271df3f78f8bbeea5d93d801a0ee6512b444d063c5813f539f31374179492c",
+      "repeat": 0,
+      "scene_seed": 1017,
+      "trigger_step": 3573
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "8734f54e-7179-4543-af17-5370e7d8eecb",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3661,
+      "issued_close_steps": [
+        3544
+      ],
+      "manifest_sha256": "e6cded840d96b38fbdfa8bea15b5394fbdb4886be8ba7e4d7bcfd6958900de94",
+      "repeat": 0,
+      "scene_seed": 1018,
+      "trigger_step": 3541
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "653bf1ea-facd-4bc6-9ca7-9afee60e13eb",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3661,
+      "issued_close_steps": [
+        3544
+      ],
+      "manifest_sha256": "ff35b88f8fc25b9ab39a5913b2ca279375f8b159eaaf8c402bdbad09d71d7ba2",
+      "repeat": 1,
+      "scene_seed": 1018,
+      "trigger_step": 3541
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "362a4a65-bfbc-43b3-8794-214411ca4d20",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "d25125bc8fbf27e71f27696b4d7e5e6383189eb86dc8994553c8886fb8c75ab5",
+      "repeat": 0,
+      "scene_seed": 1019,
+      "trigger_step": 3573
+    },
+    {
+      "all_target_intents_in_window": 1,
+      "attempt_id": "96cddc1c-5890-4946-8e2e-ea50da32550c",
+      "controller": "reference",
+      "delayed_packets": 1,
+      "end_exclusive": 3693,
+      "issued_close_steps": [
+        3576
+      ],
+      "manifest_sha256": "e469df1a277a4e18302359ed48aebae1b20191c26b226c9525563ed07a2b007d",
+      "repeat": 1,
+      "scene_seed": 1019,
+      "trigger_step": 3573
+    }
+  ],
+  "groups": {
+    "mutant.c_m4": {
+      "any_close_intent_anywhere": 0,
+      "any_delayed_packets": 0,
+      "any_target_intent_during_fault": 0,
+      "attempts": 10,
+      "close_issue_minus_trigger_steps": {}
+    },
+    "reference": {
+      "any_close_intent_anywhere": 40,
+      "any_delayed_packets": 40,
+      "any_target_intent_during_fault": 40,
+      "attempts": 40,
+      "close_issue_minus_trigger_steps": {
+        "3": 40
+      }
+    }
+  },
+  "source_index_sha256": "08bc7dadd1d8100438bc14c9e5936f4432833952c139e8a8b5df8f390be61985",
+  "type": "retrospective_full_episode_opportunity_audit"
+}

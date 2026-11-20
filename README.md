@@ -6,6 +6,8 @@ The simulator runs on Windows 11 in the dedicated Conda environment `cellio-isaa
 
 The [installation guide](docs/installation.md) describes both runtimes. Follow the [Cell A](docs/quickstart_cell_a.md) and [Cell B](docs/quickstart_cell_b.md) quickstarts to run the simulator.
 
+The [Cell C inspection example](docs/cell_c.md) adds a machined-bracket gauge and two sorting trays. The robot presents successive parts to the gauge and the controller assigns each result to a part ID. Run `cellio inspection replay --example stale_ok` to examine a previously recorded misroute on a CPU with no simulator. Its two-part experiments have their own protocol and denominators.
+
 ## Registered workstation evaluation
 
 On 19 November 2026, candidate `8ad96bd` finished all 820 registered first attempts in 14 h 12 min 32 s. Each attempt completed 7,200 physics steps. There were no retries, cancellations or infrastructure errors. Windows and WSL2 agreed on all 13,940 requirement verdicts and first witness steps. The reference results below count compliance with the requirements, including the required response to a fault. [Local archive checksum and size](results/publication/candidate-8ad96bd/local-archive.json)

@@ -10,3 +10,9 @@ results/publication/candidate-8ad96bd/primary/matched-mutant-pairs.json -text wh
 # The original WSL commissioning record includes the checksum of this exact script.
 results/qualification/commission-v1/audit.py -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 *.usdc binary
+# The compact examples and campaign receipts are compared by exact byte digest on both operating systems.
+src/cellio/inspection/examples/*.json -text whitespace=cr-at-eol
+results/qualification/cell-c-softwarex-v1/*.json -text whitespace=cr-at-eol
+results/qualification/cell-c-softwarex-v1/*.jsonl -text whitespace=cr-at-eol
+results/publication/softwarex-extension/*.json -text whitespace=cr-at-eol
+results/publication/softwarex-extension/*.zip binary

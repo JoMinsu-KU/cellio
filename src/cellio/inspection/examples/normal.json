@@ -1,0 +1,150 @@
+{
+  "schema": "cellio.inspection.witness.v1",
+  "condition": "normal",
+  "source_sha256": {
+    "result.json": "da14e05bab2b15e80ec3f85671b174efcf5ab9511f61fa763176160a0c17cda8",
+    "events.json": "e4556faad0ce24447a5a756dc751095fdd94ab0ee3009a2cc430c17adc9a028d",
+    "motion.jsonl": "1aad75c26bbcbceb66cce86ca4c2d5065789be02a00a78134079ef9d1db18acd"
+  },
+  "events": [
+    {
+      "frame": 0,
+      "event": "infeed_index",
+      "part": "P1"
+    },
+    {
+      "frame": 217,
+      "event": "grasp",
+      "part": "P1",
+      "station": "infeed"
+    },
+    {
+      "frame": 374,
+      "event": "release",
+      "part": "P1",
+      "station": "fixture"
+    },
+    {
+      "frame": 467,
+      "event": "inspection",
+      "part": "P1"
+    },
+    {
+      "frame": 563,
+      "event": "grasp",
+      "part": "P1",
+      "station": "fixture"
+    },
+    {
+      "frame": 717,
+      "event": "release",
+      "part": "P1",
+      "station": "OK"
+    },
+    {
+      "frame": 765,
+      "event": "output_settled",
+      "part": "P1"
+    },
+    {
+      "frame": 777,
+      "event": "external_takeaway",
+      "part": "P1"
+    },
+    {
+      "frame": 868,
+      "event": "infeed_index",
+      "part": "P2"
+    },
+    {
+      "frame": 1034,
+      "event": "grasp",
+      "part": "P2",
+      "station": "infeed"
+    },
+    {
+      "frame": 1191,
+      "event": "release",
+      "part": "P2",
+      "station": "fixture"
+    },
+    {
+      "frame": 1284,
+      "event": "inspection",
+      "part": "P2"
+    },
+    {
+      "frame": 1380,
+      "event": "grasp",
+      "part": "P2",
+      "station": "fixture"
+    },
+    {
+      "frame": 1576,
+      "event": "release",
+      "part": "P2",
+      "station": "NG"
+    },
+    {
+      "frame": 1625,
+      "event": "output_settled",
+      "part": "P2"
+    }
+  ],
+  "parts": [
+    {
+      "part": "P1",
+      "geometry_height_mm": 33.00001751631487,
+      "probe_height_mm": 32.99984560492519,
+      "result_part_id": "P1",
+      "commanded_bin": "OK",
+      "release_position_m": [
+        0.5000173449516296,
+        -0.19005441665649414,
+        0.8570196032524109
+      ],
+      "physical_output": {
+        "position_m": [
+          0.5000171065330505,
+          -0.19014829397201538,
+          0.8540000319480896
+        ],
+        "orientation_wxyz": [
+          0.9999997615814209,
+          1.1437805369496346e-07,
+          1.30385160446167e-07,
+          0.000890238443389535
+        ],
+        "linear_speed_m_s": 0.0,
+        "angular_speed_rad_s": 0.0
+      }
+    },
+    {
+      "part": "P2",
+      "geometry_height_mm": 33.600016497075444,
+      "probe_height_mm": 33.599966268327286,
+      "result_part_id": "P2",
+      "commanded_bin": "NG",
+      "release_position_m": [
+        0.5000046491622925,
+        0.15997011959552765,
+        0.8570263981819153
+      ],
+      "physical_output": {
+        "position_m": [
+          0.49989932775497437,
+          0.1600332111120224,
+          0.8539999723434448
+        ],
+        "orientation_wxyz": [
+          0.9999999403953552,
+          2.3440225049853325e-07,
+          1.7695128917694092e-08,
+          -0.0006043792818672955
+        ],
+        "linear_speed_m_s": 0.0,
+        "angular_speed_rad_s": 0.0
+      }
+    }
+  ]
+}
