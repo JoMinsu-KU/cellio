@@ -9,7 +9,7 @@ Publish a zero-argument descriptor factory using the workcell's stable ID in the
 lab_cell = "lab_workcell.descriptor:make_scene"
 ```
 
-Add the installed ID to the comma-separated `CELLIO_SCENE_ALLOWLIST` in both environments. The two canonical scenes are included by default. Use the ID as `scene.cell_id` and `requirements.preset` in the scenario. Run `cellio validate --config <scenario.yaml>` in the environment that will execute it.
+Add the installed ID to the comma-separated `CELLIO_SCENE_ALLOWLIST` in both environments. The three bundled scenes (`cell_a`, `cell_b`, `cell_c`) are enabled by default. Use the ID as `scene.cell_id` and `requirements.preset` in the scenario. Run `cellio validate --config <scenario.yaml>` in the environment that will execute it.
 
 | Descriptor member | Required behavior |
 | --- | --- |

@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import queue
+import re
 import threading
 from time import perf_counter_ns
 from pathlib import Path
@@ -19,6 +20,7 @@ from cellio.io import (
 
 ZERO = "00" * 32
 STOP = object()
+ARCHIVED_INSPECTION = "cellio.inspection.archived-observations/1"
 FILES = frozenset(
     """
     manifest.start.json config.resolved.json environment.lock.json requirements.lock
@@ -44,6 +46,41 @@ def read_json(path):
         return json.load(stream)
 
 
+def _native_files(config, result):
+    if (
+        config.get("profile") != "isaac62_lockstep"
+        or result.get("completion_status") != "COMPLETED"
+    ):
+        return set()
+    scene = config["scene"]["cell_id"]
+    provider = result.get("scene_plugin") or {}
+    declared = provider.get("evidence", {}).get("native_artifacts", [])
+    from cellio.plugins import BUILTINS, scene_plugin
+
+    if scene in BUILTINS:
+        registered = scene_plugin(scene).evidence_manifest().get("native_artifacts", [])
+        if declared != registered:
+            raise trace_error(
+                "Native artifact declaration differs from the installed scene"
+            )
+    if not isinstance(declared, list) or any(
+        not isinstance(name, str)
+        or not re.fullmatch(r"native/[a-zA-Z0-9_-]+\.(?:json|jsonl)", name)
+        for name in declared
+    ):
+        raise trace_error("Invalid native artifact declaration")
+    if len(declared) != len(set(declared)):
+        raise trace_error("Duplicate native artifact name")
+    return set(declared)
+
+
+def _file_record(root, name):
+    path = root / name
+    if path.resolve() != root.resolve() / name or path.is_symlink():
+        raise trace_error(f"Artifact path escapes attempt: {name}")
+    return {"size": path.stat().st_size, "sha256": file_hash(path)}
+
+
 class AttemptWriter:
     def __init__(
         self,
@@ -62,6 +99,7 @@ class AttemptWriter:
     ):
         self.path = Path(directory)
         self.path.mkdir(parents=True, exist_ok=False)
+        self.config = config
         self.ids = dict(
             run_id=run_id,
             attempt_id=attempt_id,
@@ -274,6 +312,8 @@ class AttemptWriter:
             }
             for f in sorted(FILES - {"performance.json"})
         }
+        for name in sorted(_native_files(self.config, result)):
+            listing[name] = _file_record(self.path, name)
         if result.get("video") is not None:
             name = "videos/viewport.mp4"
             video = self.path / name
@@ -338,6 +378,15 @@ def iter_records(path):
 
 
 def frames(path):
+    manifest = Path(path) / "manifest.final.json"
+    if (
+        manifest.is_file()
+        and read_json(manifest).get("schema_version") == ARCHIVED_INSPECTION
+    ):
+        from cellio.inspection.archive import archived_frames
+
+        yield from archived_frames(Path(path))
+        return
     for record in iter_records(path):
         if record["record_type"] in ("tick", "final_snapshot"):
             yield {
@@ -366,18 +415,27 @@ def _verify(path):
     ):
         raise trace_error("Manifest digest differs from COMPLETE")
     manifest = read_json(manifest_path)
+    if not isinstance(manifest, dict):
+        raise trace_error("Invalid final manifest")
+    if manifest.get("schema_version") == ARCHIVED_INSPECTION:
+        from cellio.inspection.archive import verify_archive
+
+        return verify_archive(path)
     video_path = "videos/viewport.mp4"
     names = set(manifest["files"])
-    if names not in (FILES, FILES | {video_path}):
-        raise trace_error("Manifest file inventory is incomplete or unknown")
-    for name, meta in manifest["files"].items():
-        f = path / name
-        if f.resolve() != path.resolve() / name or f.is_symlink():
-            raise trace_error(f"Artifact path escapes attempt: {name}")
-        if f.stat().st_size != meta["size"] or file_hash(f) != meta["sha256"]:
+    if not FILES <= names:
+        raise trace_error("Manifest file inventory is incomplete")
+    for name in FILES:
+        if _file_record(path, name) != manifest["files"][name]:
             raise trace_error(f"File checksum mismatch: {name}")
     result = read_json(path / "result.json")
     config = read_json(path / "config.resolved.json")
+    required = FILES | _native_files(config, result)
+    if names not in (required, required | {video_path}):
+        raise trace_error("Manifest file inventory is incomplete or unknown")
+    for name in names - FILES:
+        if _file_record(path, name) != manifest["files"][name]:
+            raise trace_error(f"File checksum mismatch: {name}")
     horizon = config["episode"]["horizon_steps"]
     video = result.get("video")
     if bool(video) != (video_path in names):

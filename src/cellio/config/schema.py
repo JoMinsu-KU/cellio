@@ -1,7 +1,7 @@
 """The versioned configuration schema for installed scene descriptors."""
 
 from cellio.core.faults.spec import MODEL_IDS
-from cellio.plugins import BUILTINS
+from cellio.plugins import BUILTINS, scene_plugin
 
 ID = {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,95}$"}
 CELLS = BUILTINS
@@ -44,7 +44,11 @@ def dynamic_map(values):
     }
 
 
-def config_schema(scene_ids=CELLS, controller_ids=CONTROLLERS):
+def config_schema(scene_ids=None, controller_ids=None, *, scene_parameters=None):
+    if scene_ids is None:
+        return _builtin_schema()
+    if controller_ids is None:
+        controller_ids = CONTROLLERS
     const = lambda value: {"const": value}
     triggers = [
         obj({"kind": const("at_step"), "at_step": integer(0)}, ["kind", "at_step"]),
@@ -122,6 +126,8 @@ def config_schema(scene_ids=CELLS, controller_ids=CONTROLLERS):
         },
         ["cell_id"],
     )
+    if scene_parameters is not None:
+        scene["properties"]["parameters"] = scene_parameters
     scene["allOf"] = [
         {
             "if": {
@@ -185,3 +191,38 @@ def config_schema(scene_ids=CELLS, controller_ids=CONTROLLERS):
         ],
     )
     return {"$schema": "https://json-schema.org/draft/2020-12/schema", **result}
+
+
+def _builtin_schema():
+    # Package consumers can validate any built-in scene using one exported schema.
+    # Bind controller IDs and scene-specific parameters to the selected descriptor.
+    controllers = {}
+    parameters = {}
+    for name in CELLS:
+        plugin = scene_plugin(name)
+        controllers[name] = tuple(plugin.controller_presets())
+        schema = getattr(plugin, "scene_parameters_schema", None)
+        if schema is not None:
+            parameters[name] = schema()
+    all_ids = dict.fromkeys(i for ids in controllers.values() for i in ids)
+    result = config_schema(
+        CELLS, all_ids, scene_parameters={"type": "object"} if parameters else None
+    )
+    result["allOf"] = [
+        {
+            "if": {
+                "properties": {"scene": {"properties": {"cell_id": {"const": name}}}}
+            },
+            "then": {
+                "properties": {
+                    "controller": {"properties": {"id": enum(ids)}},
+                    "scene": {
+                        "properties": {"parameters": parameters.get(name, False)}
+                    },
+                    "requirements": {"properties": {"preset": {"const": name}}},
+                }
+            },
+        }
+        for name, ids in controllers.items()
+    ]
+    return result

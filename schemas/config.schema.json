@@ -23,7 +23,8 @@
           "type": "string",
           "enum": [
             "cell_a",
-            "cell_b"
+            "cell_b",
+            "cell_c"
           ]
         },
         "revision": {
@@ -35,6 +36,9 @@
             "canonical",
             "conveyor_speed_plus_10pct"
           ]
+        },
+        "parameters": {
+          "type": "object"
         }
       },
       "required": [
@@ -88,7 +92,8 @@
             "mutant.c_m3",
             "mutant.c_m4",
             "mutant.c_m5",
-            "mutant.c_m6"
+            "mutant.c_m6",
+            "mutant.stale_ok"
           ]
         },
         "revision": {
@@ -1086,7 +1091,8 @@
           "type": "string",
           "enum": [
             "cell_a",
-            "cell_b"
+            "cell_b",
+            "cell_c"
           ]
         },
         "revision": {
@@ -1192,5 +1198,163 @@
     "seeds",
     "requirements"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "scene": {
+            "properties": {
+              "cell_id": {
+                "const": "cell_a"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "controller": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "reference",
+                  "mutant.c_m1",
+                  "mutant.c_m2",
+                  "mutant.c_m3",
+                  "mutant.c_m4",
+                  "mutant.c_m5",
+                  "mutant.c_m6"
+                ]
+              }
+            }
+          },
+          "scene": {
+            "properties": {
+              "parameters": false
+            }
+          },
+          "requirements": {
+            "properties": {
+              "preset": {
+                "const": "cell_a"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scene": {
+            "properties": {
+              "cell_id": {
+                "const": "cell_b"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "controller": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "reference",
+                  "mutant.c_m1",
+                  "mutant.c_m2",
+                  "mutant.c_m3",
+                  "mutant.c_m4",
+                  "mutant.c_m5",
+                  "mutant.c_m6"
+                ]
+              }
+            }
+          },
+          "scene": {
+            "properties": {
+              "parameters": false
+            }
+          },
+          "requirements": {
+            "properties": {
+              "preset": {
+                "const": "cell_b"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scene": {
+            "properties": {
+              "cell_id": {
+                "const": "cell_c"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "controller": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "reference",
+                  "mutant.stale_ok"
+                ]
+              }
+            }
+          },
+          "scene": {
+            "properties": {
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "errors_mm": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "infeed_offsets_mm": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "requirements": {
+            "properties": {
+              "preset": {
+                "const": "cell_c"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

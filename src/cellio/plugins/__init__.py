@@ -10,7 +10,8 @@ from pathlib import Path
 from cellio.io import CellIOError, digest, file_hash
 
 GROUP = "cellio.scene_plugins"
-BUILTINS = ("cell_a", "cell_b")
+REFERENCE_SCENES = ("cell_a", "cell_b")
+BUILTINS = (*REFERENCE_SCENES, "cell_c")
 ID = re.compile(r"[a-z][a-z0-9_.-]{0,95}")
 
 
@@ -103,11 +104,15 @@ def _resolve(name, allowlist):
         raise CellIOError("CFG_PLUGIN", f"Multiple providers for {name}")
     if entries:
         plugin = next(iter(entries)).load()()
-    elif name in BUILTINS:
+    elif name in REFERENCE_SCENES:
         # A source checkout and an editable/wheel install use the same factory.
         from .reference import reference_scene
 
         plugin = reference_scene(name)
+    elif name == "cell_c":
+        from cellio.inspection.framework import cell_c
+
+        plugin = cell_c()
     else:
         raise CellIOError(
             "CFG_PLUGIN_UNKNOWN", f"Missing installed entry point: {name}"

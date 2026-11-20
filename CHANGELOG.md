@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0.dev2 (development snapshot)
+
+Cell C joins the installed scene plugins. Its gauge readings drive sorting commands through the shared episode controller and command router. The normal and stale-result scenarios use the same `validate`, `run`, `verify-artifact` and `evaluate` commands as Cells A and B. The earlier inspection recordings remain available for replay. [Cell C workflow](docs/cell_c.md)
+
 ## 1.1.0.dev1 (development snapshot)
 
 Cell C adds dimensional inspection, per-part result ownership, physical tray witnesses and a CPU-only example replay. Its simulator and independent USD checks use the `cellio inspection` command. The distribution includes original inspection equipment geometry and its authoring code. The simulator resolves the robot separately from the user's verified asset cache. [Cell C commands and model scope](docs/cell_c.md)

@@ -1,0 +1,14 @@
+schema_version: cellio.config/1.0
+scenario_id: cell_c.healthy
+profile: isaac62_lockstep
+scene:
+  cell_id: cell_c
+  parameters:
+    errors_mm: [0.15, 0.25]
+    infeed_offsets_mm: [[-1.5, 0.6], [1.0, -0.7]]
+controller:
+  id: reference
+seeds: {scene: 0, controller: 0, fault: 0}
+requirements: {preset: cell_c}
+faults: []
+episode: {horizon_steps: 7200, warmup_steps: 0, reset_mode: fresh_process}

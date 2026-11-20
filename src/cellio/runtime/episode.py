@@ -273,6 +273,9 @@ class _Run:
             )
         check_ports(self.plugin, self.plant)
         self.notify("LOADING")
+        configure_attempt = getattr(self.plant, "configure_attempt", None)
+        if configure_attempt is not None:
+            configure_attempt(self.directory.resolve(), cfg)
         self.plant.load(
             {
                 **cfg["scene"],
@@ -763,7 +766,7 @@ class _Run:
             "benchmark_mode": self.mode,
             "video": self.video,
             "completion_status": self.status,
-            "task_outcome": task_outcome(
+            "task_outcome": getattr(self.plugin, "task_outcome", task_outcome)(
                 self.requirement_results, self.status == "COMPLETED"
             )
             if reqs

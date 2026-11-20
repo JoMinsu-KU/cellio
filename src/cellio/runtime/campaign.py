@@ -11,7 +11,8 @@ import re
 import sysconfig
 
 from cellio.config import read_document, resolve
-from cellio.config.schema import CELLS, MODELS
+from cellio.config.schema import MODELS
+from cellio.plugins import REFERENCE_SCENES, scene_plugin
 from cellio.io import CellIOError, canonical, digest, file_hash, write_json
 
 
@@ -52,6 +53,8 @@ def suite_design(suite):
 
 
 def initial_state(cell, seed):
+    if cell not in REFERENCE_SCENES:
+        return scene_plugin(cell).initial_state_sampler(seed)
     from cellio.scenes import get_scene
 
     scene = get_scene(cell)
@@ -85,7 +88,11 @@ def scenario(
     *,
     variant="canonical",
 ):
-    if cell not in CELLS or arm not in ARMS:
+    if cell not in REFERENCE_SCENES:
+        if variant != "canonical":
+            raise CellIOError("CFG_REFERENCE", f"Unsupported scene variant: {variant}")
+        return scene_plugin(cell).scenario_presets(arm, seed, controller, profile)
+    if arm not in ARMS:
         raise CellIOError("CFG_REFERENCE", f"Unknown cell/arm: {cell}/{arm}")
     a = cell == "cell_a"
     faults = []

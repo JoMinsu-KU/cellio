@@ -11,9 +11,9 @@ from yaml.constructor import ConstructorError
 
 from cellio.core.faults.spec import compile_fault
 from cellio.io import CellIOError
-from cellio.plugins import BUILTINS, allowed_scenes, scene_plugin
+from cellio.plugins import REFERENCE_SCENES, allowed_scenes, scene_plugin
 
-from .schema import CTRL_DEFAULTS, config_schema
+from .schema import CONTROLLERS, CTRL_DEFAULTS, config_schema
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -64,16 +64,28 @@ _types = Draft202012Validator.TYPE_CHECKER.redefine(
     "integer", lambda _, v: type(v) is int
 )
 _validator_type = extend(Draft202012Validator, type_checker=_types)
-_validator = _validator_type(config_schema())
+_validator = _validator_type(config_schema(REFERENCE_SCENES, CONTROLLERS))
 
 
 def resolve(doc, *, project_root=None):
     validator = _validator
     scene = doc.get("scene", {}) if isinstance(doc, dict) else {}
     cell = scene.get("cell_id") if isinstance(scene, dict) else None
-    if isinstance(cell, str) and cell not in BUILTINS and cell in allowed_scenes():
+    plugin = None
+    if (
+        isinstance(cell, str)
+        and cell not in REFERENCE_SCENES
+        and cell in allowed_scenes()
+    ):
         plugin = scene_plugin(cell)
-        validator = _validator_type(config_schema((cell,), plugin.controller_presets()))
+        schema = getattr(plugin, "scene_parameters_schema", None)
+        validator = _validator_type(
+            config_schema(
+                (cell,),
+                plugin.controller_presets(),
+                scene_parameters=schema() if schema is not None else None,
+            )
+        )
     error = next(validator.iter_errors(doc), None)
     if error:
         raise CellIOError("CFG_SCHEMA", error.message, path=error.json_path)
@@ -130,6 +142,9 @@ def resolve(doc, *, project_root=None):
         }
         if set(expected["requirements"]) - registered:
             raise CellIOError("CFG_REFERENCE", "Unknown expected requirement")
+    validate = getattr(plugin, "validate_config", None)
+    if validate is not None:
+        validate(cfg)
     return cfg
 
 

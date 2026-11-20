@@ -13,6 +13,7 @@ import re
 
 import numpy as np
 from pxr import Gf, Usd, UsdGeom, Vt
+from cellio.inspection.decision import update_latch
 
 
 NOMINAL_MM = 33.0
@@ -59,8 +60,7 @@ class InspectionController:
             raise InspectionError(f"Duplicate inspection cycle for {part_id}")
         self._seen.add(part_id)
         # The fault suppresses the write after an OK result, including its tag.
-        if not (self.stale_ok and self._result and self._result[1] == "OK"):
-            self._result = (part_id, "OK" if reading.within_tolerance else "NG")
+        self._result = update_latch(self._result, part_id, reading.within_tolerance, self.stale_ok)
         origin, route = self._result
         return Decision(part_id, origin, route, origin == part_id)
 

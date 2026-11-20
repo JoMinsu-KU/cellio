@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cellio"
-version = "1.1.0.dev1"
+version = "1.1.0.dev2"
 description = "Scene-bound I/O fault injection and regression testing for robotic workcells"
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
@@ -21,6 +21,7 @@ cellio = "cellio.cli:main"
 [project.entry-points."cellio.scene_plugins"]
 cell_a = "cellio.plugins.reference:cell_a"
 cell_b = "cellio.plugins.reference:cell_b"
+cell_c = "cellio.inspection.framework:cell_c"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -37,6 +38,7 @@ where = ["src"]
 "share/cellio/protocols" = ["protocols/*.yaml", "protocols/*.json"]
 "share/cellio/examples/cell_a" = ["examples/cell_a/*.yaml"]
 "share/cellio/examples/cell_b" = ["examples/cell_b/*.yaml"]
+"share/cellio/examples/cell_c" = ["examples/cell_c/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

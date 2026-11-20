@@ -1,0 +1,19 @@
+{
+  "schema": "cellio.three-cell-qualification/1",
+  "purpose": "Exercise the same installed CLI, scene loader, episode, artifact verification and independent evaluation on three physical workcells.",
+  "profile": "isaac62_lockstep",
+  "cases": [
+    {"id": "cell_a_healthy", "config": "examples/cell_a/healthy.yaml", "cell": "cell_a", "compliance": "PASS"},
+    {"id": "cell_b_healthy", "config": "examples/cell_b/healthy.yaml", "cell": "cell_b", "compliance": "PASS"},
+    {"id": "cell_c_upper_reference", "config": "examples/cell_c/healthy.yaml", "cell": "cell_c", "compliance": "PASS", "owners": ["P1", "P2"], "destinations": ["OK", "NG"]},
+    {"id": "cell_c_upper_stale", "config": "examples/cell_c/stale_ok.yaml", "cell": "cell_c", "compliance": "FAIL", "owners": ["P1", "P1"], "destinations": ["OK", "OK"]},
+    {"id": "cell_c_both_good_reference", "config": "examples/cell_c/both_good.yaml", "cell": "cell_c", "compliance": "PASS", "owners": ["P1", "P2"], "destinations": ["OK", "OK"]},
+    {"id": "cell_c_both_good_stale", "config": "examples/cell_c/both_good_stale.yaml", "cell": "cell_c", "compliance": "FAIL", "owners": ["P1", "P1"], "destinations": ["OK", "OK"]}
+  ],
+  "criteria": [
+    "Launch each new case with cellio validate and cellio run --headless in its own run directory.",
+    "Require COMPLETED, the selected scene plugin, native Isaac backend, a verified common artifact, agreement of online and offline verdicts and first witness steps, and the declared compliance.",
+    "For Cell C independently derive each result owner and actual settled tray from the native events, dimensional observations and motion evidence. Check the native routing against the shared command records.",
+    "Keep development failures and identifiers on the workstation. Count the cases individually and report historical imports separately."
+  ]
+}

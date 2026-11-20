@@ -54,9 +54,8 @@ def read_attempt(artifact, requirements=None, *, on_frame=None):
     result = read(path / "result.json")
     identity = read(path / "manifest.start.json")
     rules = rule_list(config, requirements)
-    oracle = scene_plugin(config["scene"]["cell_id"]).create_oracle(
-        config["episode"]["horizon_steps"]
-    )
+    plugin = scene_plugin(config["scene"]["cell_id"])
+    oracle = plugin.create_oracle(config["episode"]["horizon_steps"])
     oracle.reset(rules, identity["generation"])
     last = None
     for f in frames(path):
@@ -88,6 +87,7 @@ def read_attempt(artifact, requirements=None, *, on_frame=None):
         else {}
     )
     comparable = bool(expected) and same_revision
+    evidence_summary = getattr(oracle, "evidence_summary", None)
     return {
         "schema_version": "cellio.evaluation/1.0",
         "source_artifact_ids": [verified["attempt_id"]],
@@ -99,7 +99,7 @@ def read_attempt(artifact, requirements=None, *, on_frame=None):
         "completion_status": verified["completion_status"],
         "completion_reason": result.get("reason"),
         "requirements": json_value(final),
-        "task_outcome": task_outcome(final, complete),
+        "task_outcome": getattr(plugin, "task_outcome", task_outcome)(final, complete),
         "compliance_verdict": reduce_category(
             r for r, s in zip(final, rules) if s["category"] == "compliance"
         ),
@@ -108,6 +108,12 @@ def read_attempt(artifact, requirements=None, *, on_frame=None):
         "same_rule_revision": same_revision,
         "online_offline_equal": not differences if comparable else None,
         "differences": differences,
+        **(
+            {"scene_evidence": json_value(evidence_summary())}
+            if evidence_summary
+            else {}
+        ),
+        **{k: verified[k] for k in ("source_kind", "coverage") if k in verified},
     }
 
 

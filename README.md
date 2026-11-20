@@ -1,12 +1,21 @@
 # CellIO
 
-CellIO tests how a robotic workcell responds to sensor, command-delivery, and actuator faults. The development contract defines two Franka workcells, independent verdicts, evidence recording, and a campaign with 820 first attempts.
+CellIO is a Python framework for testing robotic workcells in Isaac Sim and replaying their evidence on a CPU. It ships three scene plugins. Cell A transfers a part from a conveyor, Cell B clamps and processes a part, and Cell C measures and sorts two successive brackets. Each scene supplies its plant, controller, signals and acceptance rules. The shared engine runs the scenario, records commands and observations, and seals the evidence for independent evaluation.
 
 The simulator runs on Windows 11 in the dedicated Conda environment `cellio-isaac62`. WSL2 uses `cellio-audit` for offline verification. Both use CPython 3.12. The [implementation and evaluation specification](./CellIO_Development_Specification_v1.0_20261118.md) includes the workstation profile in revision 1.1.
 
 The [installation guide](docs/installation.md) describes both runtimes. Follow the [Cell A](docs/quickstart_cell_a.md) and [Cell B](docs/quickstart_cell_b.md) quickstarts to run the simulator.
 
-The [Cell C inspection example](docs/cell_c.md) adds a machined-bracket gauge and two sorting trays. The robot presents successive parts to the gauge and the controller assigns each result to a part ID. Run `cellio inspection replay --example stale_ok` to examine a previously recorded misroute on a CPU with no simulator. Its two-part experiments have their own protocol and denominators.
+With the simulator environment and assets ready, choose a scenario in `examples/cell_a`, `examples/cell_b` or `examples/cell_c`. The same commands validate, run and evaluate each scene.
+
+```console
+cellio validate --config examples/cell_c/healthy.yaml
+cellio run --config examples/cell_c/healthy.yaml --headless
+cellio verify-artifact --artifact <attempt-directory>
+cellio evaluate --artifact <attempt-directory>
+```
+
+The [inspection and sorting guide](docs/cell_c.md) covers result ownership, tray placement and offline evidence. Try `cellio inspection replay --example stale_ok` to inspect a recorded misroute on a CPU without installing the simulator. The [plugin contract](docs/add_a_cell.md) describes how to register another workcell. The original 820-run A/B campaign and the two-part Cell C study retain their respective protocols and denominators.
 
 ## Registered workstation evaluation
 

@@ -69,6 +69,15 @@ def add_commands(commands):
         action="store_true",
         help="Return code 5 for a detected violation",
     )
+    archived = actions.add_parser(
+        "import", help="Seal a historical inspection record for cellio evaluate"
+    )
+    archived.add_argument(
+        "input", type=Path, help="Native episode directory or witness JSON"
+    )
+    archived.add_argument(
+        "--output", required=True, type=Path, help="New artifact directory"
+    )
 
 
 def _execute(script, args):
@@ -117,6 +126,10 @@ def _replay(args):
 def perform(args):
     if args.action == "replay":
         return _replay(args)
+    if args.action == "import":
+        from .archive import import_archive
+
+        return import_archive(args.input, args.output), 0
     output = args.output.resolve()
     if output.exists():
         raise CellIOError("CFG_INSPECTION_OUTPUT", f"Output already exists: {output}")

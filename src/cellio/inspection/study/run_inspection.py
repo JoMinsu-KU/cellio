@@ -89,7 +89,7 @@ class Recorder:
         self.layer.GetRootLayer().Save()
 
 
-def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, recipe=None):
+def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, recipe=None, bridge=None):
     app = start_application({"headless": True, "multi_gpu": False, "limit_cpu_threads": 4,
                              "disable_viewport_updates": True, "width": 640, "height": 400})
     # Let Kit initialize its USD runtime before composing the optional local scene.
@@ -97,7 +97,7 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
     import omni.usd
     from pxr import Usd, UsdGeom
     from cellio.inspection.study.cell_c_handling import CellHandling, STATIONS, make_physics_scene, start_physics
-    from cellio.inspection.study.cell_c_inspection_logic import InspectionController, measure_part, part_truth, set_boss_error, set_tooling
+    from cellio.inspection.study.cell_c_inspection_logic import Decision, InspectionController, measure_part, part_truth, set_boss_error, set_tooling
     from cellio.inspection.study.cell_c_motion import CellCMotion
 
     sources = [scene,scene.parent/"inspection_equipment.usdc",HERE/"cell_c_motion.py",HERE/"cell_c_handling.py",
@@ -130,10 +130,12 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
     set_tooling(stage, .11, True)
     set_tooling(stage, .11, True, time=0)
     motion = CellCMotion(stage, check_clearance=not diagnostic)
-    control = InspectionController(stale_ok=stale)
+    control = InspectionController(stale_ok=stale) if bridge is None else None
     stage.GetRootLayer().Save()
     runtime = start_physics()
     handling.bind()
+    if bridge is not None:
+        bridge.start(runtime)
     rec = Recorder(folder, stage, handling)
     rows = []
     phase, attached = "initial", None
@@ -142,7 +144,10 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
     def sample(frame, tcp):
         if attached is not None:
             handling.follow(attached, tcp)
-        runtime.step(steps=4, update_fabric=True)
+        if bridge is None:
+            runtime.step(steps=4, update_fabric=True)
+        else:
+            bridge.advance_frame()
         rec.record(frame, phase, tcp)
 
     def hold(frames=1):
@@ -151,6 +156,8 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
 
     def event(name, **fields):
         rec.event(motion.frame, name, **fields)
+        if bridge is not None and name != "inspection":
+            bridge.event(motion.frame, name, fields)
 
     def move(xyz, name):
         nonlocal phase
@@ -246,7 +253,11 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
             set_tooling(stage, 0., False, time=motion.frame, reading=reading)
             set_tooling(stage, 0., False, reading=reading)
             tooling_state = (0.,0.,reading)
-            decision = control.inspect(part, reading)
+            if bridge is None:
+                decision = control.inspect(part, reading)
+            else:
+                owner, route = bridge.inspect(motion.frame, part, reading.height_mm, reading.within_tolerance, truth["height_mm"])
+                decision = Decision(part, owner, route, part == owner)
             event("inspection", part=part, probe=asdict(reading), reference=truth, decision=asdict(decision))
             hold(10)
             tool(0., .11, True)
@@ -270,6 +281,8 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
                    "decision":asdict(decision), "fixture_seat":seat, "physical_output":actual,
                    "correct_destination": actual["region"] == ("OK" if truth["within_tolerance"] else "NG")}
             rows.append(row)
+            if bridge is not None:
+                bridge.set_output(actual)
             event("output_settled", part=part, observed=actual["region"], correct=row["correct_destination"])
             if n == 0:
                 hold(12)
@@ -291,6 +304,8 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
                   "motion_trace_sha256":digest(folder/"motion.jsonl")}
         write_json(folder/"result.json",result)
         print("COMPLETED",folder,flush=True)
+        if bridge is not None:
+            bridge.finish()
         return 0
     except Exception as exc:
         import traceback
@@ -298,6 +313,17 @@ def run(folder, stale, diagnostic=False, *, static_stage=None, assets=None, reci
                                           "traceback":traceback.format_exc()})
         rec.finish()
         raise
+    finally:
+        if bridge is not None and not rec.file.closed:
+            # A configured horizon or cancellation can stop the parent between poses.
+            # Persist only observations already made; full native replay requires completion.
+            rec.finish()
+            write_json(folder/"result.json", {
+                "status":"incomplete", "condition":"stale_ok" if stale else "normal",
+                "parts":rows, "recipe":recipe, "last_recorded_frame":rec.last_frame,
+                "last_physics_step":bridge.step, "phase":phase, "fps":30,
+                "motion_trace_sha256":digest(folder/"motion.jsonl"), "source_sha256":source_hashes,
+            })
 
 
 if __name__ == "__main__":
