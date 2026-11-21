@@ -22,6 +22,7 @@ from cellio.core.models import (
     json_value,
 )
 from cellio.core.oracle import reduce_category, task_outcome
+from cellio.core.oracle.identity import rule_lock
 from cellio.core.signals import for_controller, view_hash
 from cellio.io import digest
 from cellio.plugins import check_ports, plugin_provenance, scene_plugin
@@ -246,6 +247,9 @@ class _Run:
             ancestor = ancestor.parent
         if self.backend == "isaac62" and shutil.disk_usage(ancestor).free < 2 * 1024**3:
             raise CellIOError("ENV_DISK_SPACE", "less than 2 GiB available")
+        self.rules = self.plugin.requirement_presets(self.horizon)
+        if self.mode != "B0":
+            self.oracle = self.plugin.create_oracle(self.horizon)
         self.writer = self.writer_factory(
             self.directory,
             run_id=self.run_id,
@@ -258,11 +262,12 @@ class _Run:
             assets=self.assets,
             protocol=self.protocol,
             requirements_lock=self.requirements_lock,
+            rules_identity=rule_lock(
+                self.plugin, self.horizon, self.rules, self.oracle
+            ),
         )
         self.clock = StepClock(self.episode_id, self.generation, self.horizon)
-        self.rules = self.plugin.requirement_presets(self.horizon)
-        if self.mode != "B0":
-            self.oracle = self.plugin.create_oracle(self.horizon)
+        if self.oracle is not None:
             self.oracle.reset(self.rules, self.generation)
         self.notify("BOOTING")
         if self.plant is None:

@@ -19,6 +19,7 @@ Add the installed ID to the comma-separated `CELLIO_SCENE_ALLOWLIST` in both env
 | `signal_bindings()`, `create_mapper()`, `create_world_predicates()` | Declare typed public signals. Map raw snapshots to nominal readings and sample physical trigger predicates before observation faults. Return immutable readings with the current generation and tick. |
 | `controller_presets()`, `create_controller(id)` | List accepted IDs and instantiate a controller using the public observation/receipt view. |
 | `requirement_presets(horizon)`, `create_oracle(horizon)` | Provide declared rules and a monitor that reads live and decoded frames. Supply boundary fixtures for each new atomic predicate. |
+| `oracle_source_modules()` | Optional declaration of the Python source modules determining replay semantics. Omission leaves the evaluator identity unverified. See [rule identity](rule_identity.md). |
 | `scenario_presets(arm, seed, controller, profile)`, `initial_state_sampler(seed)` | Provide healthy and applicable fault scenarios, seeded initial states, bounds and units. |
 | `evidence_manifest()` | List the asset sources, license, units and supported fault families. |
 

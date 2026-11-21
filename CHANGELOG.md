@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+Previously, reloading an installed preset twice could report identical rule revisions after the preset had changed. New execution records seal the resolved rule specifications and evaluator identity. Replay reports whether the observations produced the recorded verdicts and whether the rules used to compare them can be verified. Existing archives remain readable. [Replay semantics](docs/rule_identity.md)
+
+The release includes eight representative native artifacts for CPU evaluation. Six come from the current three-cell qualification. Two original A/B campaign records illustrate a late stop dwell and a configured command delay that never took effect. [Native replay instructions](docs/native_replay.md)
+
 ## 1.1.0
 
 The first stable three-cell release includes the conveyor, clamping and dimensional inspection plugins. All three use the shared episode runner and offline evaluator. The inspection controller, plant, evidence readers and acceptance rules are identical to the qualified `1.1.0.dev2` candidate. The release includes a Python 3.12 wheel and 24 compact inspection records for CPU replay. [Three-cell validation](results/qualification/cell-c-framework/README.md) · [Inspection and sorting guide](docs/cell_c.md)

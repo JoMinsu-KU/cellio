@@ -32,7 +32,7 @@ def development_timeline(path, output):
         result["backend"] != "isaac62"
         or len(faults) != 1
         or faults[0]["actual_start"] is None
-        or assessed["online_offline_equal"] is not True
+        or assessed["observed_results_equal"] is not True
     ):
         raise ValueError(
             "A native realized fault and matching independent replay are required"
@@ -47,6 +47,8 @@ def development_timeline(path, output):
     )
     info = timeline(trial, output)
     info["origin"] = "development commissioning"
+    info["observed_results_equal"] = assessed["observed_results_equal"]
+    info["same_rule_revision"] = assessed["same_rule_revision"]
     info["events"] = [
         (faults[0][k], label)
         for k, label in (

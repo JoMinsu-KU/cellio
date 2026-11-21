@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cellio"
-version = "1.1.0"
+version = "1.1.1"
 description = "Scene-bound I/O fault injection and regression testing for robotic workcells"
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
@@ -32,7 +32,7 @@ where = ["src"]
 
 [tool.setuptools.data-files]
 "share/cellio" = ["THIRD_PARTY_NOTICES.md"]
-"share/cellio/docs" = ["docs/cell_c.md"]
+"share/cellio/docs" = ["docs/cell_c.md", "docs/native_replay.md", "docs/rule_identity.md"]
 "share/cellio/fixtures/oracle" = ["fixtures/oracle/gold.json", "fixtures/oracle/gold.sha256"]
 "share/cellio/schemas" = ["schemas/*.json"]
 "share/cellio/protocols" = ["protocols/*.yaml", "protocols/*.json"]

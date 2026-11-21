@@ -305,6 +305,12 @@ def read_trial(directory, row, records, provenance):
         )
         if mismatch or (missing and trial.status == "COMPLETED"):
             issue = "ONLINE_OFFLINE_MISMATCH" if mismatch else "ONLINE_RESULTS_MISSING"
+            if missing and trial.eval.get("observed_results_equal") is not None:
+                issue = (
+                    "RULE_IDENTITY_MISMATCH"
+                    if trial.eval["same_rule_revision"] is False
+                    else "RULE_IDENTITY_UNVERIFIED"
+                )
             trial.error = (trial.error + "; " if trial.error else "") + issue
     except (OSError, ValueError, KeyError, TypeError) as exc:
         trial.status, trial.error, trial.eval, trial.fault = (

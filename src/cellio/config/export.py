@@ -19,9 +19,10 @@ def export_schemas(directory):
         "generation": integer(0),
         "previous_hash": record_hash,
         "record_hash": record_hash,
+        "rule_lock_sha256": record_hash,
         "step": {"type": ["integer", "null"], "minimum": 0},
     }
-    trace = obj(fields, [key for key in fields if key != "step"])
+    trace = obj(fields, [key for key in fields if key not in ("step", "rule_lock_sha256")])
     trace["properties"].update(
         {
             k: {}

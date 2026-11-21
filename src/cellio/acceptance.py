@@ -133,6 +133,7 @@ def assess(level, campaign_root, report_path):
             "unit/test_oracle_temporal.py",
             "unit/test_oracle_frames.py",
             "integration/test_episode_worker.py",
+            "integration/test_rule_identity.py",
         ],
     }
     gates = {key: _tests(root, files) for key, files in suites.items()}

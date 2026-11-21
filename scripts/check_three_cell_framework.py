@@ -97,6 +97,7 @@ def check(condition, run_root):
         == condition["cell"]
         and result["completion_status"] == evaluated["completion_status"] == "COMPLETED"
         and evaluated["online_offline_equal"] is True
+        and evaluated["same_rule_revision"] is True
         and evaluated["compliance_verdict"] == result["compliance_verdict"] == expected
     ):
         raise ValueError(
@@ -111,6 +112,7 @@ def check(condition, run_root):
         "controller": config["controller"]["id"],
         "artifact_digest": evaluated["source_digest"],
         "rules_digest": evaluated["rules_digest"],
+        "same_rule_revision": evaluated["same_rule_revision"],
         "ticks": checked["ticks"],
         "requirements": len(evaluated["requirements"]),
         "compliance": expected,

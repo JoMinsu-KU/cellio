@@ -46,6 +46,8 @@ def test_archived_observations_use_common_verify_evaluate_at_original_ticks(
     evaluation = cli(capsys, "evaluate", "--artifact", artifact)
     assert evaluation["source_digest"] == verified["artifact_digest"]
     assert evaluation["online_offline_equal"] is None
+    assert evaluation["observed_results_equal"] is None
+    assert evaluation["rule_identity_status"] == "unavailable"
     assert evaluation["source_kind"] == "portable_witness"
     expected = "PASS" if sample == "normal" else "FAIL"
     assert evaluation["compliance_verdict"] == expected

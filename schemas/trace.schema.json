@@ -39,6 +39,10 @@
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     },
+    "rule_lock_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
     "step": {
       "type": [
         "integer",

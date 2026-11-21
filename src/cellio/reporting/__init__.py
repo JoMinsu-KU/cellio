@@ -137,6 +137,8 @@ def attempt_replay(t):
         "status": t.status,
         "error": t.error,
         "online_offline_equal": t.eval.get("online_offline_equal"),
+        "same_rule_revision": t.eval.get("same_rule_revision"),
+        "observed_results_equal": t.eval.get("observed_results_equal"),
         "source_digest": t.eval.get("source_digest"),
         "rules_digest": t.eval.get("rules_digest"),
         "end_step": t.eval.get("end_step"),

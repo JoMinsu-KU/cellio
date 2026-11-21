@@ -94,7 +94,7 @@ def summarize(path):
     if (
         evidence["completion_status"] != "COMPLETED"
         or evidence["end_step"] != 7200
-        or not evidence["online_offline_equal"]
+        or evidence["observed_results_equal"] is not True
     ):
         raise ValueError(
             "A complete 7200-step run with matching online and replayed witnesses is required"
@@ -131,6 +131,8 @@ def summarize(path):
         "rules_sha256": evidence["rules_digest"],
         "all_witnesses_sha256": digest(witnesses),
         "online_offline_equal": evidence["online_offline_equal"],
+        "observed_results_equal": evidence["observed_results_equal"],
+        "same_rule_revision": evidence["same_rule_revision"],
         "task_outcome": evidence["task_outcome"],
         "compliance": evidence["compliance_verdict"],
         "requirements": {

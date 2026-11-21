@@ -11,6 +11,19 @@ class ReferenceScene:
     def __init__(self, name):
         self.scene_id = name
 
+    def oracle_source_modules(self):
+        return tuple(
+            "cellio.core.oracle." + name
+            for name in (
+                "audit",
+                "engine",
+                "geometry",
+                "presets",
+                "projector",
+                "temporal",
+            )
+        )
+
     def build_config(self):
         from cellio.scenes import get_scene
 

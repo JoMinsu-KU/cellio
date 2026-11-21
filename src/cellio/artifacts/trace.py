@@ -5,22 +5,24 @@ import os
 import queue
 import re
 import threading
-from time import perf_counter_ns
 from pathlib import Path
+from time import perf_counter_ns
 
+from cellio.core.oracle.identity import LOCK_FILE, validate_rule_lock
 from cellio.io import (
     CellIOError,
     atomic_write,
     canonical,
+    digest,
     file_hash,
     json_value,
     write_json,
 )
 
-
 ZERO = "00" * 32
 STOP = object()
 ARCHIVED_INSPECTION = "cellio.inspection.archived-observations/1"
+ATTEMPT_SCHEMA = "cellio.attempt/1.1"
 FILES = frozenset(
     """
     manifest.start.json config.resolved.json environment.lock.json requirements.lock
@@ -96,10 +98,14 @@ class AttemptWriter:
         assets,
         protocol,
         requirements_lock,
+        rules_identity,
     ):
         self.path = Path(directory)
         self.path.mkdir(parents=True, exist_ok=False)
         self.config = config
+        validate_rule_lock(rules_identity, config)
+        self.rule_lock_digest = digest(rules_identity)
+        write_json(self.path / LOCK_FILE, rules_identity)
         self.ids = dict(
             run_id=run_id,
             attempt_id=attempt_id,
@@ -197,7 +203,13 @@ class AttemptWriter:
         self.started = True
         write_json(self.path / "initial_snapshot.json", initial_snapshot)
         self._enqueue(
-            ("episode_start", {"step": None if initial_snapshot is None else 0})
+            (
+                "episode_start",
+                {
+                    "step": None if initial_snapshot is None else 0,
+                    "rule_lock_sha256": self.rule_lock_digest,
+                },
+            )
         )
 
     @staticmethod
@@ -310,7 +322,7 @@ class AttemptWriter:
                 "size": (self.path / f).stat().st_size,
                 "sha256": file_hash(self.path / f),
             }
-            for f in sorted(FILES - {"performance.json"})
+            for f in sorted((FILES | {LOCK_FILE}) - {"performance.json"})
         }
         for name in sorted(_native_files(self.config, result)):
             listing[name] = _file_record(self.path, name)
@@ -332,7 +344,13 @@ class AttemptWriter:
         }
         manifest = self.path / "manifest.final.json"
         write_json(
-            manifest, {**self.ids, "files": listing, "last_record_hash": self.previous}
+            manifest,
+            {
+                **self.ids,
+                "schema_version": ATTEMPT_SCHEMA,
+                "files": listing,
+                "last_record_hash": self.previous,
+            },
         )
         atomic_write(
             self.path / "COMPLETE", (file_hash(manifest) + "\n").encode("ascii")
@@ -421,6 +439,9 @@ def _verify(path):
         from cellio.inspection.archive import verify_archive
 
         return verify_archive(path)
+    if manifest.get("schema_version") not in (None, ATTEMPT_SCHEMA):
+        raise trace_error("Unsupported attempt manifest schema")
+    locked = manifest.get("schema_version") == ATTEMPT_SCHEMA
     video_path = "videos/viewport.mp4"
     names = set(manifest["files"])
     if not FILES <= names:
@@ -431,11 +452,18 @@ def _verify(path):
     result = read_json(path / "result.json")
     config = read_json(path / "config.resolved.json")
     required = FILES | _native_files(config, result)
+    if locked:
+        required |= {LOCK_FILE}
     if names not in (required, required | {video_path}):
         raise trace_error("Manifest file inventory is incomplete or unknown")
     for name in names - FILES:
         if _file_record(path, name) != manifest["files"][name]:
             raise trace_error(f"File checksum mismatch: {name}")
+    lock_digest = None
+    if locked:
+        lock = read_json(path / LOCK_FILE)
+        validate_rule_lock(lock, config)
+        lock_digest = digest(lock)
     horizon = config["episode"]["horizon_steps"]
     video = result.get("video")
     if bool(video) != (video_path in names):
@@ -493,6 +521,11 @@ def _verify(path):
         kind = record["record_type"]
         if ended or ((kind == "episode_start") != (count == 0)):
             raise trace_error("Invalid stream boundary")
+        if kind == "episode_start" and (
+            ("rule_lock_sha256" in record) != locked
+            or record.get("rule_lock_sha256") != lock_digest
+        ):
+            raise trace_error("Recorded rule lock differs from the trace start")
         if kind in ("tick", "final_snapshot"):
             k = record["step"]
             tick = record["truth"]["tick"]
@@ -626,4 +659,5 @@ def _verify(path):
         "ticks": ticks,
         "end_step": result["end_step"],
         "artifact_digest": previous,
+        **({"rule_lock_sha256": lock_digest} if locked else {}),
     }

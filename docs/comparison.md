@@ -11,3 +11,13 @@ The comparison uses the three implementations named in specification §2.4. Each
 CellIO evaluates observations, commands and joint targets against the same simulated Franka episode and records separate physical-state evidence. The three projects use different scenes, controllers and clocks. Their reported timing and success rates therefore cannot establish a paired performance difference on the CellIO workstation. Within-project comparisons use paired input states in the overhead protocol and the researcher-authored manual scripts. [Overhead protocol](../protocols/overhead-v1.yaml) · [Manual comparison implementation](../scripts/compare_manual.py)
 
 For the native Isaac comparison, we ran the manual and modular implementations in separate processes at pilot seed 0. Cell A used F1 stuck high and Cell B used F3. In both pairs, all 7,201 recorded time points matched for raw and observed signals, issued and applied commands, and the number of records on each channel. The independent requirement verdicts and first witness steps also agreed. The comparison files include both attempt IDs, input identities and script hashes. [Cell A native results](../results/workstation/manual-baseline-a-f1-high.json) · [Cell B native results](../results/workstation/manual-baseline-b-f3.json)
+
+## Recorded evidence and runtime monitoring
+
+| Tool and scope | Input and check | What the user can inspect |
+| --- | --- | --- |
+| Metriplane v0.2.0 | Turns recorded workcell data into events and evidence bundles and checks event evidence across replays. | A reader can trace an event in a bundle and compare replay outputs. [SoftwareX article](https://doi.org/10.1016/j.softx.2026.103104) · [Published-version regression code](https://github.com/Miko997/metriplane/blob/v0.2.0/metriplane/atlas/regression.py) |
+| RTAMT | Evaluates Signal Temporal Logic specifications against input signals, supporting online and offline monitoring. | A user can examine how robustly a signal satisfies a temporal formula. [RTAMT article](https://doi.org/10.1007/s10009-023-00720-3) |
+| CellIO v1.1.1 | Runs a workcell controller under scheduled faults and seals the observations, issued and applied commands, and rule specification for replay. | On the recorded A/B cases, a reader can recover the first missed stop deadline or check whether the controller issued a command that the configured delay could affect. On C, a reader can compare the inspected part, result owner and observed tray. [Eight-case replay procedure](native_replay.md) |
+
+The comparisons describe the documented operations of each tool. The CellIO experiments measure the three workcells under the registered protocols. No cross-tool timing measurements were collected.

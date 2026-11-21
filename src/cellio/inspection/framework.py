@@ -406,6 +406,9 @@ class InspectionScene:
     def create_oracle(self, horizon):
         return InspectionOracle(horizon)
 
+    def oracle_source_modules(self):
+        return ("cellio.inspection.framework_oracle", "cellio.inspection.replay")
+
     def task_outcome(self, results, complete):
         goal = next((r for r in results if r.requirement_id == SEQUENCE), None)
         if goal and goal.verdict == Verdict.PASS:

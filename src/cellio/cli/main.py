@@ -71,7 +71,17 @@ def parser():
     )
     ev = cmds.add_parser("evaluate")
     ev.add_argument("--artifact", type=Path, required=True)
-    ev.add_argument("--requirements", type=Path)
+    rules = ev.add_mutually_exclusive_group()
+    rules.add_argument(
+        "--requirements",
+        type=Path,
+        help="Evaluate a supplied rule list or named preset",
+    )
+    rules.add_argument(
+        "--recorded-rules",
+        action="store_true",
+        help="Evaluate the rule specification sealed by the writer",
+    )
     output = cmds.add_parser("report")
     output.add_argument("--campaign", type=Path, required=True)
     output.add_argument("--output", type=Path, required=True)
@@ -222,7 +232,7 @@ def perform(a):
     if a.command == "evaluate":
         from cellio.analysis import evaluate
 
-        return evaluate(a.artifact, a.requirements), 0
+        return evaluate(a.artifact, a.requirements, recorded_rules=a.recorded_rules), 0
     if a.command == "report":
         from cellio.reporting import report
 

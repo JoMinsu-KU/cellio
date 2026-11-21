@@ -2,9 +2,9 @@ cff-version: 1.2.0
 message: "Cite the software revision and protocol hash used for the experiment."
 title: "CellIO: Scene-bound I/O fault injection and regression testing for robotic workcells in Isaac Sim"
 type: software
-version: "1.1.0"
-date-released: 2026-11-20
-url: "https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.0"
+version: "1.1.1"
+date-released: 2026-11-21
+url: "https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.1"
 authors:
   - name: "CellIO contributors"
 repository-code: "https://github.com/JoMinsu-KU/cellio"

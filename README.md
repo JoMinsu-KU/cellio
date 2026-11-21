@@ -2,14 +2,14 @@
 
 CellIO is a Python framework for testing robotic workcells in Isaac Sim and replaying their evidence on a CPU. It ships three scene plugins. Cell A transfers a part from a conveyor, Cell B clamps and processes a part, and Cell C measures and sorts two successive brackets. Each scene supplies its plant, controller, signals and acceptance rules. The shared engine runs the scenario, records commands and observations, and seals the evidence for independent evaluation.
 
-To replay a recorded inspection on a CPU, use Python 3.12 and install the [v1.1.0 release wheel](https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.0).
+To replay a recorded inspection on a CPU, use Python 3.12 and install the [v1.1.1 release wheel](https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.1).
 
 ```console
-python -m pip install https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.0/cellio-1.1.0-py3-none-any.whl
+python -m pip install https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.1/cellio-1.1.1-py3-none-any.whl
 cellio inspection replay --example stale_ok
 ```
 
-The example reports that the second bracket consumed the first bracket's inspection result and reached the accept tray. The release also provides a ZIP of 24 two-part cases and SHA-256 checksums. [Evidence and independent replay across three workcells](results/qualification/cell-c-framework/README.md)
+The example reports that the second bracket consumed the first bracket's inspection result and reached the accept tray. To re-evaluate full native records on a CPU, download the eight-case native archive and follow the [replay instructions](docs/native_replay.md). A separate ZIP contains 24 compact two-part cases. [Evidence and independent replay across three workcells](results/qualification/cell-c-framework/README.md)
 
 The simulator runs on Windows 11 in the dedicated Conda environment `cellio-isaac62`. WSL2 uses `cellio-audit` for offline verification. Both use CPython 3.12. The [implementation and evaluation specification](./CellIO_Development_Specification_v1.0_20261118.md) includes the workstation profile in revision 1.1.
 
