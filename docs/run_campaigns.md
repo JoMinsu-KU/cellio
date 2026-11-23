@@ -74,16 +74,40 @@ python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" --o
 python scripts/reproduce_figures.py --campaign "$campaign_root/overhead-v1" --output "$campaign_root/release-evidence/overhead-wsl"
 ```
 
-To combine the measured panels for publication, pass the other raw suite directories alongside the canonical campaign. Both scripts replay the available attempts. Figure 4 groups all registered controllers by cell and fault arm. Figure 6 draws each panel from the corresponding suite.
+An oracle-only campaign also regenerates the interface diagram, the checked-in native camera views, the gold confusion matrix, and Tables 2 and 4. Supply `--timeline-attempt <sealed-attempt-directory>` to include a separately identified commissioning trace in Figure 3. The workstation snapshot used Cell A attempt `5efc632a-4535-42b0-82da-666a6162b9ef`. The output `figures/index.json` identifies the available inputs, measured panels and file hashes. [Workstation figures and tables](../results/publication/README.md)
 
-For the archived workstation evaluation, use `candidate-8ad96bd` in both campaign-root variables. Its Figure 2 source directory, `$campaign_root/release-evidence/fixed-camera`, contains the two captured PNGs and their provenance. Add `--renders "$campaign_root/release-evidence/fixed-camera"` to regenerate the figure from that local capture.
+### Reproduce the archived 820-run A/B campaign
+
+The published condition counts were generated with commit `8ad96bdfb04e29e3ad78c51c3776ecebee61eecf`. Rebuilding them requires the original `canonical-v1` directory with its frozen plan, ledger and all 820 sealed first attempts. The complete raw archive is held on the workstation. Its public inventory records the SHA-256 and the plan and ledger digests. The published tables are available to readers with no access to the raw archive. [Archive inventory](../results/publication/candidate-8ad96bd/local-archive.json) · [Published counts and tables](../results/publication/candidate-8ad96bd/README.md)
+
+For a CPU check with public inputs, use the v1.1.1 wheel and the eight recordings in `native-replay-v1.1.1.zip`. Six recordings were made with v1.1.1. The two historical A/B recordings reproduce their recorded verdicts and first witnesses under v1.1.1, but predate recorded rule identities. The v1.1.1 campaign aggregator therefore treats those historical outcomes as `UNKNOWN`. [Replay the eight recordings](native_replay.md)
+
+With the original data, start in a separate directory on x86-64 Ubuntu or WSL. Use the historical checkout and its own Python 3.12 environment so that both the publication scripts and the imported evaluator come from the same commit.
 
 ```sh
-python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output "$campaign_root/release-evidence/publication"
-python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" --companion-campaign "$campaign_root/overhead-v1" --companion-campaign "$campaign_root/reset-v1" --companion-campaign "$campaign_root/soak-v1" --output "$campaign_root/release-evidence/publication"
+git clone --no-checkout https://github.com/JoMinsu-KU/cellio.git cellio-8ad96bd
+cd cellio-8ad96bd
+git checkout --detach 8ad96bdfb04e29e3ad78c51c3776ecebee61eecf
+conda create -n cellio-audit-8ad96bd -c conda-forge python=3.12.16 pip
+conda activate cellio-audit-8ad96bd
+python -m pip install --require-hashes -r locks/wsl-audit/requirements.lock
+python -m pip install --no-deps -e .
+
+# Set this to the absolute directory containing the original canonical-v1 suite.
+campaign_root=/path/to/candidate-8ad96bd
+python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output work/reproduced-tables
 ```
 
-An oracle-only campaign also regenerates the interface diagram, the checked-in native camera views, the gold confusion matrix, and Tables 2 and 4. Supply `--timeline-attempt <sealed-attempt-directory>` to include a separately identified commissioning trace in Figure 3. The workstation snapshot used Cell A attempt `5efc632a-4535-42b0-82da-666a6162b9ef`. The output `figures/index.json` identifies the available inputs, measured panels and file hashes. [Workstation figures and tables](../results/publication/README.md)
+Compare `work/reproduced-tables/tables/table3_conditions.csv` with the [published condition counts](../results/publication/candidate-8ad96bd/tables/table3_conditions.csv). Across all conditions, 820 first attempts were evaluable, 410 per cell. To reproduce the combined figures, also supply the original overhead, reset and soak suites for Figure 6, and the two fixed-camera PNGs with their capture index for Figure 2. Figure 4 uses the canonical controller and fault arms.
+
+```sh
+python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" \
+  --companion-campaign "$campaign_root/overhead-v1" --companion-campaign "$campaign_root/reset-v1" \
+  --companion-campaign "$campaign_root/soak-v1" --renders "$campaign_root/release-evidence/fixed-camera" \
+  --output work/reproduced-figures
+```
+
+## Package a completed campaign
 
 To package a completed canonical campaign for transfer, run the following from the release checkout. The ZIP64 archive carries the actual plan, ledger, attempt manifests and data streams. The packager verifies every first-attempt file against its archived bytes. The release manifest binds the archive digest to the source tag and dependency locks.
 

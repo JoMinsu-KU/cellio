@@ -4,7 +4,7 @@ Cell C runs two machined brackets through an indexed infeed, a locating fixture 
 
 ## Run as a CellIO scene
 
-Use the same Windows environment, verified Franka cache and doctor check as for [Cell A](quickstart_cell_a.md). From the source checkout, run the following commands. Supply the attempt directory printed by `run` to the last two commands.
+Use the same Windows environment, verified Franka cache and doctor check as for [Cell A](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/quickstart_cell_a.md). From the source checkout, run the following commands. Supply the attempt directory printed by `run` to the last two commands.
 
 ```console
 cellio validate --config examples/cell_c/healthy.yaml
