@@ -1,5 +1,7 @@
 # CellIO
 
+[![Software DOI 10.5281/zenodo.24500520](https://zenodo.org/badge/DOI/10.5281/zenodo.24500520.svg)](https://doi.org/10.5281/zenodo.24500520)
+
 CellIO is a Python framework for testing robotic workcells in Isaac Sim and replaying their evidence on a CPU. It ships three scene plugins. Cell A transfers a part from a conveyor, Cell B clamps and processes a part, and Cell C measures and sorts two successive brackets. Each scene supplies its plant, controller, signals and acceptance rules. The shared engine runs the scenario, records commands and observations, and seals the evidence for independent evaluation.
 
 ## Replay on a CPU with the release package
@@ -36,7 +38,7 @@ python -m cellio evaluate --artifact examples/traces/mock-36
 
 ## Run new simulations from the checkout
 
-The simulator runs on Windows 11 in the dedicated Conda environment `cellio-isaac62`. WSL2 uses `cellio-audit` for offline verification. Both use CPython 3.12. The [implementation and evaluation specification](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/CellIO_Development_Specification_v1.0_20261118.md) includes the workstation profile in revision 1.1.
+The simulator runs on Windows 11 in the dedicated Conda environment `cellio-isaac62`. WSL2 uses `cellio-audit` for offline verification. Both use CPython 3.12.
 
 The [installation guide](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/installation.md) describes both runtimes. Follow the [Cell A](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/quickstart_cell_a.md) and [Cell B](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/quickstart_cell_b.md) quickstarts to run the simulator.
 
@@ -49,7 +51,17 @@ cellio verify-artifact --artifact <attempt-directory>
 cellio evaluate --artifact <attempt-directory>
 ```
 
-The [inspection and sorting guide](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/cell_c.md) covers result ownership, tray placement and offline evidence. The [plugin contract](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/add_a_cell.md) describes how to register another workcell. The original 820-run A/B campaign and the two-part Cell C study retain their respective protocols and denominators.
+The [inspection and sorting guide](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/cell_c.md) covers result ownership, tray placement and offline evidence. The [plugin contract](https://github.com/JoMinsu-KU/cellio/blob/main/docs/add_a_cell.md) describes how to register another workcell. The original 820-run A/B campaign and the two-part Cell C study retain their respective protocols and denominators.
+
+## English guide to the design specification
+
+The original Korean specification defines the Cell A and Cell B experiments. Revision 1.1 sets the simulator and replay environments, the order of operations within a physics step and the evidence required to evaluate a run. The v1.1.1 release also includes the later Cell C inspection study. [Specification](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/CellIO_Development_Specification_v1.0_20261118.md) · [Cell C study](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/docs/cell_c.md)
+
+| Reader question | Where to look in the specification |
+| --- | --- |
+| What can the controller observe and when do commands take effect? | Sections 5–8 define the engine and its fixed-step interfaces. Sections 10–11 and 14 separate the sampled plant state, the delivered signal, the command request and its application. [Execution order](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/CellIO_Development_Specification_v1.0_20261118.md#sec-07) |
+| How is a violation established? | Sections 15–18 describe the reference and defective controllers, temporal rules, first witness step, attempt files and integrity checks. [Requirement evaluation](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/CellIO_Development_Specification_v1.0_20261118.md#sec-16) |
+| How were experiments selected and scored? | Sections 19 and 22–23 define the denominators, trials, reset chains and acceptance criteria. The release supplies the outcomes for the registered campaign. [Experiment plan](https://github.com/JoMinsu-KU/cellio/blob/v1.1.1/CellIO_Development_Specification_v1.0_20261118.md#sec-22) · [Recorded outcomes](https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.1) |
 
 ## Registered workstation evaluation
 

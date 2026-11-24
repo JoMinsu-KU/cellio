@@ -3,9 +3,11 @@ message: "Cite the software revision and protocol hash used for the experiment."
 title: "CellIO: Scene-bound I/O fault injection and regression testing for robotic workcells in Isaac Sim"
 type: software
 version: "1.1.1"
+doi: "10.5281/zenodo.24500520"
 date-released: 2026-11-21
 url: "https://github.com/JoMinsu-KU/cellio/releases/tag/v1.1.1"
 authors:
-  - name: "CellIO contributors"
+  - family-names: Jo
+    given-names: Minsu
 repository-code: "https://github.com/JoMinsu-KU/cellio"
 license: MIT

@@ -29,6 +29,8 @@ For hard reload, the worker reuses the plant and creates fresh signal, controlle
 
 Exercise the common contract first with an 8-step mock attempt and offline replay. Repeat with a second generation, stale callbacks, a failed advance and a write failure. Run the same lifecycle, receipt and replay checks with the physical adapter, then execute the scene's own commissioning checks. The canonical research campaigns retain their predefined cells, seeds and thresholds.
 
-The executable extension example is in [the registry and replay integration test](../tests/integration/test_scene_plugin.py). The canonical descriptor is in [reference.py](../src/cellio/plugins/reference.py).
+The v1.1.1 validation report includes the complete `lab_cell` example, using the entry point above. Under `external_mock_extension`, `extension_sources` gives the three files needed to build the package and `scenario` gives its eight-step configuration. This example delegates the Cell A controller and rules and supplies a mock plant. The recorded run identifies its installed package and reproduces all 16 requirement results on CPU replay. [Validation report](https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.1/validation-v1.1.1.json)
+
+The registry integration test exercises allowlist rejection and the simulator-independent plant lifecycle. The bundled Cell A and Cell B descriptor shows how to supply the physical adapter. [Registry test](../tests/integration/test_scene_plugin.py) · [Bundled descriptor](../src/cellio/plugins/reference.py)
 
 To trigger a fault from a controller event, include `events` in the entity registry. Map each event ID to its scalar payload fields. Each declaration supplies a type from `string`, `integer`, `number` or `boolean` and can restrict the allowed values with `enum`. Register the scene's stage names in the `stage_id` field. The compiler rejects unknown events, payload names and stage IDs before launch.
