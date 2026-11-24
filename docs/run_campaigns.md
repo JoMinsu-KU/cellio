@@ -78,9 +78,9 @@ An oracle-only campaign also regenerates the interface diagram, the checked-in n
 
 ### Reproduce the archived 820-run A/B campaign
 
-The published condition counts were generated with commit `8ad96bdfb04e29e3ad78c51c3776ecebee61eecf`. Rebuilding them requires the original `canonical-v1` directory with its frozen plan, ledger and all 820 sealed first attempts. The complete raw archive is held on the workstation. Its public inventory records the SHA-256 and the plan and ledger digests. The published tables are available to readers with no access to the raw archive. [Archive inventory](../results/publication/candidate-8ad96bd/local-archive.json) · [Published counts and tables](../results/publication/candidate-8ad96bd/README.md)
+The published condition counts were generated with commit `8ad96bdfb04e29e3ad78c51c3776ecebee61eecf`. Rebuilding them requires the original `canonical-v1` directory with its frozen plan, ledger and all 820 sealed first attempts. The [public data catalog](https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.1/cellio-original-records.json) lists the `ab` group containing the entire campaign. The [Python downloader](https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.1/cellio-original-records.py) verifies each part and the reconstructed ZIP64 archive. The archive inventory also records the plan and ledger digests. [Archive inventory](../results/publication/candidate-8ad96bd/local-archive.json) · [Published counts and tables](../results/publication/candidate-8ad96bd/README.md)
 
-For a CPU check with public inputs, use the v1.1.1 wheel and the eight recordings in `native-replay-v1.1.1.zip`. Six recordings were made with v1.1.1. The two historical A/B recordings reproduce their recorded verdicts and first witnesses under v1.1.1, but predate recorded rule identities. The v1.1.1 campaign aggregator therefore treats those historical outcomes as `UNKNOWN`. [Replay the eight recordings](native_replay.md)
+For a shorter CPU replay, use the v1.1.1 wheel and the eight recordings in `native-replay-v1.1.1.zip`. Six recordings were made with v1.1.1. The two historical A/B recordings reproduce their recorded verdicts and first witnesses under v1.1.1, but predate recorded rule identities. The v1.1.1 campaign aggregator therefore treats those historical outcomes as `UNKNOWN`. [Replay the eight recordings](native_replay.md)
 
 With the original data, start in a separate directory on x86-64 Ubuntu or WSL. Use the historical checkout and its own Python 3.12 environment so that both the publication scripts and the imported evaluator come from the same commit.
 
@@ -93,14 +93,25 @@ conda activate cellio-audit-8ad96bd
 python -m pip install --require-hashes -r locks/wsl-audit/requirements.lock
 python -m pip install --no-deps -e .
 
-# Set this to the absolute directory containing the original canonical-v1 suite.
-campaign_root=/path/to/candidate-8ad96bd
+downloads="$PWD/../cellio-records"
+campaign_root="$PWD/../candidate-8ad96bd"
+mkdir -p "$downloads" "$campaign_root/canonical-v1"
+curl -fL https://github.com/JoMinsu-KU/cellio/releases/download/v1.1.1/cellio-original-records.py -o "$downloads/cellio-original-records.py"
+python "$downloads/cellio-original-records.py" ab --directory "$downloads"
+python -m zipfile -e "$downloads/canonical-v1.zip" "$campaign_root/canonical-v1"
 python scripts/reproduce_tables.py --campaign "$campaign_root/canonical-v1" --output work/reproduced-tables
 ```
 
-Compare `work/reproduced-tables/tables/table3_conditions.csv` with the [published condition counts](../results/publication/candidate-8ad96bd/tables/table3_conditions.csv). Across all conditions, 820 first attempts were evaluable, 410 per cell. To reproduce the combined figures, also supply the original overhead, reset and soak suites for Figure 6, and the two fixed-camera PNGs with their capture index for Figure 2. Figure 4 uses the canonical controller and fault arms.
+Compare `work/reproduced-tables/tables/table3_conditions.csv` with the [published condition counts](../results/publication/candidate-8ad96bd/tables/table3_conditions.csv). Across all conditions, 820 first attempts were evaluable, 410 per cell. Figure 6 uses three additional public groups: `overhead` (180 attempts), `reset` (48 three-attempt chains) and `soak` (ten warmups and 200 measured episodes). Each performance ZIP contains whole attempts in the original suite layout. Extract all ZIPs for each group into the same campaign root. Figure 2 also requires the two fixed-camera PNGs and their capture index. Figure 4 uses the canonical controller and fault arms.
 
 ```sh
+for group in overhead reset soak; do
+  python "$downloads/cellio-original-records.py" "$group" --directory "$downloads"
+  for archive in "$downloads"/cellio-perf-"$group"-*.zip; do
+    python -m zipfile -e "$archive" "$campaign_root"
+  done
+done
+
 python scripts/reproduce_figures.py --campaign "$campaign_root/canonical-v1" \
   --companion-campaign "$campaign_root/overhead-v1" --companion-campaign "$campaign_root/reset-v1" \
   --companion-campaign "$campaign_root/soak-v1" --renders "$campaign_root/release-evidence/fixed-camera" \
